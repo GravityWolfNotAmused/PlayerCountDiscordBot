@@ -1,5 +1,8 @@
 ### **Run the bot once for Config.json**
 
+### Requirements:
+[.Net Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+
 # Getting a Steam API key
 In order to get a steam API key, you will need a domain to link it to. Trying looking into [Google's domain site](domains.google). After you have gotten a domain navigate to [Steam'd Web API Key Register](https://steamcommunity.com/dev/apikey), and get your Steam API Key. Copy your `Key` and put it in your config file by replacing `SteamAPIKeyHere` with your Steam API Key.
 
@@ -27,9 +30,9 @@ After you have created your bot and named it, you will need to copy the bots `To
 
 
 # Configuring Server's
-After you have added your Steam API key, and your bot's token you must add the `botAddress`, so we know what game server's player count to display in the status of each bot. In order to configure the bot to display the player count, you must add the IP, and the Port in the format `Address:Port` ex. `23.23.233.233:27015` where `127.0.0.1:2532` is located.
+After you have added your Steam API key, and your bot's token you must add the `botAddress`, this address is your query address for the server. This is so we know what game server's player count to display in the status of each bot. In order to configure the bot to display the player count, you must add the IP, and the Port in the format `Address:Port` ex. `23.23.233.233:27015` where `127.0.0.1:2532` is located. This address is **NOT** the connection address.
 
 ![image](https://user-images.githubusercontent.com/24533882/103163337-14008680-47ba-11eb-86eb-94c8f66d49ff.png)
 
-After all of the data has been added to the Config.json, and you have saved the file you may run the application. There is next to no logging, as all it does is update discord status, it's output is in its status. Please report any issues to [Issues tab](https://github.com/GravityWolfNotAmused/PlayerCountDiscordBot/issues).
+After all of the data has been added to the Config.json, and you have saved the file you may run the application. All logging is tied behind _isDebug variable in the Config.json. Please report any issues to [Issues tab](https://github.com/GravityWolfNotAmused/PlayerCountDiscordBot/issues).
 
