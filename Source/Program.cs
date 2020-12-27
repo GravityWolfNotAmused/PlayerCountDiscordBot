@@ -28,7 +28,7 @@ namespace PlayerCountBots
 
         public void CreateDefaults()
         {
-            _serverInformation.Add(new DayZServerBot("VPPTestBot", "127.0.0.1:2532", "DiscordKeyHere"));
+            _serverInformation.Add(new DayZServerBot("VPPTestBot", "127.0.0.1:2532", "DiscordTokenHere"));
             _updateTime = 30;
             _steamAPIKey = "SteamAPIKeyHere";
         }
