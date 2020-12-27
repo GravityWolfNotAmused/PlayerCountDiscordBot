@@ -19,6 +19,10 @@ namespace PlayerCountBots
         [JsonProperty]
         public string _steamAPIKey { get; set; }
 
+
+        [JsonProperty]
+        public bool _isDebug { get; set; }
+
         [JsonProperty]
         public List<DayZServerBot> _serverInformation;
 
@@ -237,16 +241,23 @@ namespace PlayerCountBots
             List<string> addresses = config.GetAddresses();
             if (addresses.Count == 0)
             {
-                Console.WriteLine("No Addresses to request data.");
+                if (config._isDebug)
+                {
+                    Console.WriteLine("No Addresses to request data.");
+                }
             }
 
-            Console.WriteLine("Printing addresses:");
+            if(config._isDebug)
+                Console.WriteLine("Printing addresses:");
+
             addresses.ToList().ForEach(i=>Console.WriteLine(i));
 
             foreach (string address in addresses)
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://api.steampowered.com/IGameServersService/GetServerList/v1/?key={config._steamAPIKey}&filter=\\addr\\{address}&limit=10");
-                Console.WriteLine("Response Received");
+
+                if (config._isDebug)
+                    Console.WriteLine("Response Received");
                 string responseDataStr = string.Empty;
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
@@ -260,7 +271,9 @@ namespace PlayerCountBots
                     }
                 }
 
-                Console.WriteLine("Response: " + responseDataStr);
+
+                if (config._isDebug)
+                    Console.WriteLine("Printing addresses:");
 
                 SteamServerListResponse responseObject = JsonConvert.DeserializeObject<SteamServerListResponse>(responseDataStr);
 
@@ -277,7 +290,9 @@ namespace PlayerCountBots
                     string serverAddress = entry.Key.Split(":")[0];
                     string serverPort = entry.Key.Split(":")[1];
 
-                    Console.WriteLine("Updating bot that is watching address: " + serverAddress + ":" + serverPort);
+
+                    if (config._isDebug)
+                        Console.WriteLine("Updating bot that is watching address: " + serverAddress + ":" + serverPort);
 
                     SteamServerListResponse responseList = responseData[serverAddress];
 
@@ -300,7 +315,10 @@ namespace PlayerCountBots
                                     gameStatus += $" - {queueCount} In Queue";
                                 }
 
-                                Console.WriteLine("Changed Status of : " + serverAddress + ", Status: " + gameStatus);
+
+                                if (config._isDebug)
+                                    Console.WriteLine("Changed Status of : " + serverAddress + ", Status: " + gameStatus);
+
                                 await client.SetGameAsync(gameStatus);
                             }
                         }
