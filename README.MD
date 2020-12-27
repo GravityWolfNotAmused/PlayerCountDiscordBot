@@ -3,6 +3,9 @@
 ### Requirements:
 [.Net Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
+### Notes:
+**AntiVirus software may stop the executable from running.**
+
 # Getting a Steam API key
 In order to get a steam API key, you will need a domain to link it to. Trying looking into [Google's domain site](domains.google). After you have gotten a domain navigate to [Steam'd Web API Key Register](https://steamcommunity.com/dev/apikey), and get your Steam API Key. Copy your `Key` and put it in your config file by replacing `SteamAPIKeyHere` with your Steam API Key.
 
