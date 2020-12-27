@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -226,6 +227,7 @@ namespace PlayerCountBots
                     serverBots.Add(bot.botAddress, discordBot);
                 }
 
+                Console.WriteLine("Calling first update");
                 await UpdatePlayerCounts();
             }
         }
@@ -238,9 +240,13 @@ namespace PlayerCountBots
                 Console.WriteLine("No Addresses to request data.");
             }
 
+            Console.WriteLine("Printing addresses:");
+            addresses.ToList().ForEach(i=>Console.WriteLine(i));
+
             foreach (string address in addresses)
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://api.steampowered.com/IGameServersService/GetServerList/v1/?key={config._steamAPIKey}&filter=\\addr\\{address}&limit=10");
+                Console.WriteLine("Response Received");
                 string responseDataStr = string.Empty;
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
@@ -253,6 +259,9 @@ namespace PlayerCountBots
                         }
                     }
                 }
+
+                Console.WriteLine("Response: " + responseDataStr);
+
                 SteamServerListResponse responseObject = JsonConvert.DeserializeObject<SteamServerListResponse>(responseDataStr);
 
                 if (responseObject != null)
@@ -267,6 +276,8 @@ namespace PlayerCountBots
                 {
                     string serverAddress = entry.Key.Split(":")[0];
                     string serverPort = entry.Key.Split(":")[1];
+
+                    Console.WriteLine("Updating bot that is watching address: " + serverAddress + ":" + serverPort);
 
                     SteamServerListResponse responseList = responseData[serverAddress];
 
@@ -288,6 +299,7 @@ namespace PlayerCountBots
                                     gameStatus += $" - {queueCount} In Queue";
                                 }
 
+                                Console.WriteLine("Changed Status of : " + serverAddress + ", Status: " + gameStatus);
                                 await client.SetGameAsync(gameStatus);
                             }
                         }
