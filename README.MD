@@ -7,7 +7,7 @@
 **AntiVirus software may stop the executable from running.**
 
 # Getting a Steam API key
-In order to get a steam API key, you will need a domain to link it to. Trying looking into [Google's domain site](domains.google.com). After you have gotten a domain navigate to [Steam'd Web API Key Register](https://steamcommunity.com/dev/apikey), and get your Steam API Key. Copy your `Key` and put it in your config file by replacing `SteamAPIKeyHere` with your Steam API Key.
+In order to get a steam API key, you will need a domain to link it to. Trying looking into [Google's domain site](https://domains.google.com/registrar/). After you have gotten a domain navigate to [Steam'd Web API Key Register](https://steamcommunity.com/dev/apikey), and get your Steam API Key. Copy your `Key` and put it in your config file by replacing `SteamAPIKeyHere` with your Steam API Key.
 
 ![image](https://user-images.githubusercontent.com/24533882/103162963-c9304000-47b4-11eb-814e-c6156649b908.png)
 
