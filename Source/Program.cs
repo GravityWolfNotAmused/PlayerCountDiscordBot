@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace VPPPlayerCount
+namespace PlayerCountBots
 {
     class BotConfig
     {
@@ -36,7 +36,7 @@ namespace VPPPlayerCount
         {
             List<string> addresses = new List<string>();
 
-            foreach(DayZServerBot bot in _serverInformation)
+            foreach (DayZServerBot bot in _serverInformation)
             {
                 string ipAddress = bot.botAddress.Split(":")[0];
 
@@ -51,15 +51,20 @@ namespace VPPPlayerCount
 
     class DayZServerBot
     {
+        [JsonProperty]
         public string botName { get; set; }
+
+        [JsonProperty]
         public string botAddress { get; set; }
-        public string discordAPIKey { get; set; }
+
+        [JsonProperty]
+        public string discordBotToken { get; set; }
 
         public DayZServerBot(string name, string address, string discordKey)
         {
             botName = name;
             botAddress = address;
-            discordAPIKey = discordKey;
+            discordBotToken = discordKey;
         }
     }
 
@@ -91,9 +96,9 @@ namespace VPPPlayerCount
 
         public SteamApiResponseData GetAddressDataByPort(string port)
         {
-            foreach(SteamApiResponseData data in servers)
+            foreach (SteamApiResponseData data in servers)
             {
-                if(data.addr.Split(":")[1] == port)
+                if (data.addr.Split(":")[1] == port)
                 {
                     return data;
                 }
@@ -136,7 +141,7 @@ namespace VPPPlayerCount
         public int players { get; set; }
 
         [JsonProperty]
-        public int max_players{ get; set; }
+        public int max_players { get; set; }
 
         [JsonProperty]
         public int bot { get; set; }
@@ -154,18 +159,18 @@ namespace VPPPlayerCount
         public string os { get; set; }
 
         [JsonProperty]
-        public string gametype{ get; set; }
+        public string gametype { get; set; }
 
 
         public string GetQueueCount()
         {
             string[] splitData = gametype.Split(",");
 
-            if(splitData.Length > 0)
+            if (splitData.Length > 0)
             {
-                foreach(string str in splitData)
+                foreach (string str in splitData)
                 {
-                    if(str.Contains("lqs"))
+                    if (str.Contains("lqs"))
                     {
                         string queueCount = str.Replace("lqs", "");
 
@@ -176,20 +181,19 @@ namespace VPPPlayerCount
 
             return "";
         }
-}
+    }
 
-    class VPPPlayerCountBots
+    class PlayerCountBots
     {
         BotConfig config;
         Dictionary<string, SteamServerListResponse> responseData;
-
         Dictionary<string, DiscordSocketClient> serverBots;
 
         System.Timers.Timer timer;
-        
-        static VPPPlayerCountBots bots;
 
-        public VPPPlayerCountBots()
+        static PlayerCountBots bots;
+
+        public PlayerCountBots()
         {
             config = new BotConfig();
             serverBots = new Dictionary<string, DiscordSocketClient>();
@@ -213,10 +217,10 @@ namespace VPPPlayerCount
                 string fileContents = File.ReadAllText("./Config.json");
                 config = JsonConvert.DeserializeObject<BotConfig>(fileContents);
                 Console.WriteLine($"Config.json loaded: {fileContents}");
-                foreach(DayZServerBot bot in config._serverInformation)
+                foreach (DayZServerBot bot in config._serverInformation)
                 {
                     DiscordSocketClient discordBot = new DiscordSocketClient();
-                    await discordBot.LoginAsync(Discord.TokenType.Bot, bot.discordAPIKey);
+                    await discordBot.LoginAsync(Discord.TokenType.Bot, bot.discordBotToken);
                     await discordBot.SetGameAsync("Starting Bots");
                     await discordBot.StartAsync();
                     serverBots.Add(bot.botAddress, discordBot);
@@ -253,8 +257,6 @@ namespace VPPPlayerCount
 
                 if (responseObject != null)
                 {
-//                    Console.WriteLine($"Response Data for address at {address}: {responseObject.response.servers.Count}");
-
                     if (responseData.ContainsKey(address))
                         responseData.Remove(address);
 
@@ -313,7 +315,7 @@ namespace VPPPlayerCount
             Console.WriteLine($"Timer set to go off every: {config._updateTime} second(s)");
             timer.Start();
 
-            for(; ;)
+            for (; ; )
             {
                 Thread.Sleep(100);
             }
@@ -321,12 +323,13 @@ namespace VPPPlayerCount
 
         private async void OnProcessExit(object sender, EventArgs e)
         {
-            foreach(KeyValuePair<string, DiscordSocketClient> entry in serverBots)
+            foreach (KeyValuePair<string, DiscordSocketClient> entry in serverBots)
             {
                 DiscordSocketClient bot = entry.Value;
 
-                if(bot != null)
+                if (bot != null)
                 {
+                    Console.WriteLine($"Stoping bot: {entry.Key}");
                     await bot.StopAsync();
                 }
             }
@@ -334,7 +337,7 @@ namespace VPPPlayerCount
 
         static void Main(string[] args)
         {
-            bots = new VPPPlayerCountBots();
+            bots = new PlayerCountBots();
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(bots.OnProcessExit);
 
             bots.MainAsync().GetAwaiter().GetResult();
