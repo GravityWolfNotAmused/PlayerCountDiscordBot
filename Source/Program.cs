@@ -273,38 +273,49 @@ namespace PlayerCountBots
                     }
                 }
 
+                if (responseDataStr != string.Empty)
+                {
+                    SteamServerListResponse responseObject = JsonConvert.DeserializeObject<SteamServerListResponse>(responseDataStr);
+
+                    if (responseObject != null)
+                    {
+                        if (responseData.ContainsKey(address))
+                            responseData.Remove(address);
+
+                        if (config._isDebug)
+                            Console.WriteLine("Adding Address Response Data for Address: " + address);
+
+                        responseData.Add(address, responseObject);
+                    }
+                }
+            }
+
+            if(config._isDebug)
+            {
+                Console.WriteLine("Response Data Size: " + responseData.Count);
+                responseData.ToList().ForEach(i => Console.WriteLine("Key: " + i.Key + ", Value: " + i.Value));
+            }
+
+            foreach (KeyValuePair<string, DiscordSocketClient> entry in serverBots)
+            {
+                string serverAddress = entry.Key.Split(":")[0];
+                string serverPort = entry.Key.Split(":")[1];
+
 
                 if (config._isDebug)
-                    Console.WriteLine("Printing addresses:");
+                    Console.WriteLine("Updating bot that is watching address: " + serverAddress + ":" + serverPort);
 
-                SteamServerListResponse responseObject = JsonConvert.DeserializeObject<SteamServerListResponse>(responseDataStr);
-
-                if (responseObject != null)
+                if (responseData.ContainsKey(serverAddress))
                 {
-                    if (responseData.ContainsKey(address))
-                        responseData.Remove(address);
-
-                    responseData.Add(address, responseObject);
-                }
-
-                foreach (KeyValuePair<string, DiscordSocketClient> entry in serverBots)
-                {
-                    string serverAddress = entry.Key.Split(":")[0];
-                    string serverPort = entry.Key.Split(":")[1];
-
-
-                    if (config._isDebug)
-                        Console.WriteLine("Updating bot that is watching address: " + serverAddress + ":" + serverPort);
-
                     SteamServerListResponse responseList = responseData[serverAddress];
 
                     if (responseList != null)
                     {
                         SteamApiResponseData data = responseList.GetServerDataByPort(serverPort);
-                         
+
                         if (data != null)
                         {
-                          string playersInQueue = data.GetQueueCount();
+                            string playersInQueue = data.GetQueueCount();
 
                             DiscordSocketClient client = entry.Value;
 
@@ -326,6 +337,7 @@ namespace PlayerCountBots
                         }
                     }
                 }
+
             }
         }
 
