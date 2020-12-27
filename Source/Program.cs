@@ -247,10 +247,11 @@ namespace PlayerCountBots
                 }
             }
 
-            if(config._isDebug)
+            if (config._isDebug)
+            {
                 Console.WriteLine("Printing addresses:");
-
-            addresses.ToList().ForEach(i=>Console.WriteLine(i));
+                addresses.ToList().ForEach(i => Console.WriteLine(i));
+            }
 
             foreach (string address in addresses)
             {
