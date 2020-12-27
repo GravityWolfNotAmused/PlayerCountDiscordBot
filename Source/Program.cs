@@ -222,7 +222,7 @@ namespace PlayerCountBots
                 {
                     DiscordSocketClient discordBot = new DiscordSocketClient();
                     await discordBot.LoginAsync(Discord.TokenType.Bot, bot.discordBotToken);
-                    await discordBot.SetGameAsync("Starting Bots");
+                    await discordBot.SetGameAsync("Starting Bot watching: " + bot.botAddress);
                     await discordBot.StartAsync();
                     serverBots.Add(bot.botAddress, discordBot);
                 }
