@@ -2,7 +2,9 @@
 
 # Getting a Steam API key
 In order to get a steam API key, you will need a domain to link it to. Trying looking into [Google's domain site](domains.google). After you have gotten a domain navigate to [Steam'd Web API Key Register](https://steamcommunity.com/dev/apikey), and get your Steam API Key. Copy your `Key` and put it in your config file by replacing `SteamAPIKeyHere` with your Steam API Key.
+
 ![image](https://user-images.githubusercontent.com/24533882/103162963-c9304000-47b4-11eb-814e-c6156649b908.png)
+
 ![image](https://user-images.githubusercontent.com/24533882/103163310-cd129100-47b9-11eb-955a-d7a334159e19.png)
 
 
@@ -10,12 +12,15 @@ In order to get a steam API key, you will need a domain to link it to. Trying lo
 **You must repeat this step for each server you wish to track.**
 
 First, navigate to [Discord's Developer Portal](https://discord.com/developers/applications), and create a new Application by selecting `New Application` in the top right of the page, and give you application a name:
+
 ![NewApplication](https://user-images.githubusercontent.com/24533882/103163050-da2d8100-47b5-11eb-99cd-8d6c92214f25.PNG)
 
 After you have created an Application for your discord bot, you will need to navigate to the Bot tab, and click `Add Bot`:
+
 ![AddBot](https://user-images.githubusercontent.com/24533882/103163081-4f00bb00-47b6-11eb-9745-17210b6114dc.PNG)
 
-After you have created your bot and named it, you will need to copy the bots `Token` into your config by replacing `DiscordTokenHere` with your bots token. 
+After you have created your bot and named it, you will need to copy the bots `Token` into your config by replacing `DiscordTokenHere` with your bots token.
+
 ![image](https://user-images.githubusercontent.com/24533882/103163390-9ab56380-47ba-11eb-9c44-ec7f83343078.png)
 
 ![image](https://user-images.githubusercontent.com/24533882/103163287-9b99c580-47b9-11eb-82d6-296d00dcf6fd.png)
@@ -23,6 +28,7 @@ After you have created your bot and named it, you will need to copy the bots `To
 
 # Configuring Server's
 After you have added your Steam API key, and your bot's token you must add the `botAddress`, so we know what game server's player count to display in the status of each bot. In order to configure the bot to display the player count, you must add the IP, and the Port in the format `Address:Port` ex. `23.23.233.233:27015` where `127.0.0.1:2532` is located.
+
 ![image](https://user-images.githubusercontent.com/24533882/103163337-14008680-47ba-11eb-86eb-94c8f66d49ff.png)
 
 After all of the data has been added to the Config.json, and you have saved the file you may run the application. There is next to no logging, as all it does is update discord status, it's output is in its status. Please report any issues to [Issues tab](https://github.com/GravityWolfNotAmused/PlayerCountDiscordBot/issues).
