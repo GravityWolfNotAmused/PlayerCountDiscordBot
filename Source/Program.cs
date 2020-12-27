@@ -259,6 +259,7 @@ namespace PlayerCountBots
 
                 if (config._isDebug)
                     Console.WriteLine("Response Received");
+
                 string responseDataStr = string.Empty;
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
