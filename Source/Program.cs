@@ -284,7 +284,7 @@ namespace PlayerCountBots
                     if (responseList != null)
                     {
                         SteamApiResponseData data = responseList.GetServerDataByPort(serverPort);
-
+                         
                         if (data != null)
                         {
                           string playersInQueue = data.GetQueueCount();
