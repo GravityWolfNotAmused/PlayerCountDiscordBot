@@ -44,5 +44,9 @@ After all configuration steps have been taken, we must start the bot and invite 
 https://discord.com/oauth2/authorize?client_id={clientID}&scope=bot
 ```
 
-After all of the data has been added to the Config.json, and you have saved the file you may run the application. All logging is tied behind _isDebug variable in the Config.json. Please report any issues to [Issues tab](https://github.com/GravityWolfNotAmused/PlayerCountDiscordBot/issues).
+# Issues
+All logging is tied behind _isDebug variable in the Config.json. Please report any issues to [Issues tab](https://github.com/GravityWolfNotAmused/PlayerCountDiscordBot/issues).
+
+# Changes
+Please fork this repository, and make a pull request for the changes you'd like to see to the project.
 
