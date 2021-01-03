@@ -37,5 +37,12 @@ After you have added your Steam API key, and your bot's token you must add the `
 
 ![image](https://user-images.githubusercontent.com/24533882/103163337-14008680-47ba-11eb-86eb-94c8f66d49ff.png)
 
+# Invite Your Bot
+After all configuration steps have been taken, we must start the bot and invite them into our discord. The bot needs no special permissions due to it's responsibility being to update it's status. In order to invite your discord bot, you must replace `{clientID}` with your bots client ID in the URL below, this means you must also remove the curly braces too. If you do not know where to obtain your bot's client ID, navigate to `General Information` tab on the Discord Developer Portal the bot you wish, and copy your Client ID from there.
+
+```
+https://discord.com/oauth2/authorize?client_id={clientID}&scope=bot
+```
+
 After all of the data has been added to the Config.json, and you have saved the file you may run the application. All logging is tied behind _isDebug variable in the Config.json. Please report any issues to [Issues tab](https://github.com/GravityWolfNotAmused/PlayerCountDiscordBot/issues).
 
