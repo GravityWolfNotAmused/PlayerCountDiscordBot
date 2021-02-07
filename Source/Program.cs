@@ -1,5 +1,6 @@
 ﻿using Discord.WebSocket;
 using Newtonsoft.Json;
+using PlayerCountBot;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,183 +12,6 @@ using System.Timers;
 
 namespace PlayerCountBots
 {
-    class BotConfig
-    {
-        [JsonProperty]
-        public int _updateTime { get; set; }
-
-        [JsonProperty]
-        public string _steamAPIKey { get; set; }
-
-
-        [JsonProperty]
-        public bool _isDebug { get; set; }
-
-        [JsonProperty]
-        public List<DayZServerBot> _serverInformation;
-
-        public BotConfig()
-        {
-            _serverInformation = new List<DayZServerBot>();
-        }
-
-        public void CreateDefaults()
-        {
-            _serverInformation.Add(new DayZServerBot("VPPTestBot", "127.0.0.1:2532", "DiscordTokenHere"));
-            _updateTime = 30;
-            _steamAPIKey = "SteamAPIKeyHere";
-        }
-        public List<string> GetAddresses()
-        {
-            List<string> addresses = new List<string>();
-
-            foreach (DayZServerBot bot in _serverInformation)
-            {
-                string ipAddress = bot.botAddress.Split(":")[0];
-
-                if (!addresses.Contains(ipAddress))
-                {
-                    addresses.Add(ipAddress);
-                }
-            }
-            return addresses;
-        }
-    }
-
-    class DayZServerBot
-    {
-        [JsonProperty]
-        public string botName { get; set; }
-
-        [JsonProperty]
-        public string botAddress { get; set; }
-
-        [JsonProperty]
-        public string discordBotToken { get; set; }
-
-        public DayZServerBot(string name, string address, string discordKey)
-        {
-            botName = name;
-            botAddress = address;
-            discordBotToken = discordKey;
-        }
-    }
-
-    class SteamServerListResponse
-    {
-        [JsonProperty]
-        public SteamServerListSubClass response { get; }
-
-        public SteamServerListResponse()
-        {
-            response = new SteamServerListSubClass();
-        }
-
-        public SteamApiResponseData GetServerDataByPort(string port)
-        {
-            return response.GetAddressDataByPort(port);
-        }
-    }
-
-    class SteamServerListSubClass
-    {
-        [JsonProperty]
-        public List<SteamApiResponseData> servers { get; }
-
-        public SteamServerListSubClass()
-        {
-            servers = new List<SteamApiResponseData>();
-        }
-
-        public SteamApiResponseData GetAddressDataByPort(string port)
-        {
-            foreach (SteamApiResponseData data in servers)
-            {
-                if (data.addr.Split(":")[1] == port)
-                {
-                    return data;
-                }
-            }
-
-            return null;
-        }
-    }
-
-    class SteamApiResponseData
-    {
-        [JsonProperty]
-        public string addr { get; set; }
-
-        [JsonProperty]
-        public int gameport { get; set; }
-
-        [JsonProperty]
-        public string steamid { get; set; }
-
-        [JsonProperty]
-        public string name { get; set; }
-
-        [JsonProperty]
-        public int appid { get; set; }
-
-        [JsonProperty]
-        public string gamedir { get; set; }
-
-        [JsonProperty]
-        public string version { get; set; }
-
-        [JsonProperty]
-        public string product { get; set; }
-
-        [JsonProperty]
-        public int region { get; set; }
-
-        [JsonProperty]
-        public int players { get; set; }
-
-        [JsonProperty]
-        public int max_players { get; set; }
-
-        [JsonProperty]
-        public int bot { get; set; }
-
-        [JsonProperty]
-        public string map { get; set; }
-
-        [JsonProperty]
-        public bool secure { get; set; }
-
-        [JsonProperty]
-        public bool dedicated { get; set; }
-
-        [JsonProperty]
-        public string os { get; set; }
-
-        [JsonProperty]
-        public string gametype { get; set; }
-
-
-        public string GetQueueCount()
-        {
-            string[] splitData = gametype.Split(",");
-
-            if (splitData.Length > 0)
-            {
-                foreach (string str in splitData)
-                {
-                    if (str.Contains("lqs"))
-                    {
-                        string queueCount = str.Replace("lqs", "");
-
-                        return queueCount;
-                    }
-                }
-            }
-
-            return "";
-        }
-    }
-
     class PlayerCountBots
     {
         BotConfig config;
@@ -293,7 +117,6 @@ namespace PlayerCountBots
             if(config._isDebug)
             {
                 Console.WriteLine("Response Data Size: " + responseData.Count);
-                responseData.ToList().ForEach(i => Console.WriteLine("Key: " + i.Key + ", Value: " + i.Value));
             }
 
             foreach (KeyValuePair<string, DiscordSocketClient> entry in serverBots)
@@ -343,15 +166,43 @@ namespace PlayerCountBots
 
         private async void OnTimerExecute(Object source, ElapsedEventArgs e)
         {
-            //Console.WriteLine("Timer executed! Updating");
+            try
+            {
+                await UpdatePlayerCounts();
+            }catch(Exception ex)
+            {
+                using (StreamWriter writer = File.CreateText($"./crash_{DateTime.Now}.txt"))
+                {
+                    await writer.WriteLineAsync(ex.StackTrace);
+                    await writer.WriteLineAsync(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                    Console.WriteLine(ex.Message);
+                    writer.Close();
+                }
 
-            await UpdatePlayerCounts();
+                Console.Error.WriteLine("Restarting due to error, Please send crash log to GravityWolf#6981 on Discord.");
+                responseData.Clear();
+                serverBots.Clear();
+                config = null;
+
+                await LoadConfig();
+                await Start();  
+            }
         }
 
         public async Task MainAsync()
         {
             await LoadConfig();
+            await Start();
 
+            for (; ; )
+            {
+                Thread.Sleep(100);
+            }
+        }
+
+        private async Task Start()
+        {
             //Console.WriteLine("Starting Bot Timer.");
             timer = new System.Timers.Timer(config._updateTime * 1000);
             timer.Elapsed += OnTimerExecute;
@@ -359,11 +210,6 @@ namespace PlayerCountBots
             timer.Enabled = true;
             Console.WriteLine($"Timer set to go off every: {config._updateTime} second(s)");
             timer.Start();
-
-            for (; ; )
-            {
-                Thread.Sleep(100);
-            }
         }
 
         private async void OnProcessExit(object sender, EventArgs e)
