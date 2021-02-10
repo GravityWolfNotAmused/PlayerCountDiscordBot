@@ -171,12 +171,13 @@ namespace PlayerCountBots
                 await UpdatePlayerCounts();
             }catch(Exception ex)
             {
-                using (StreamWriter writer = File.CreateText($"./crash_{DateTime.Now}.txt"))
+                using (StreamWriter writer = File.CreateText($"crash_{DateTime.Now.ToLongDateString()}.txt"))
                 {
-                    await writer.WriteLineAsync(ex.StackTrace);
-                    await writer.WriteLineAsync(ex.Message);
                     Console.WriteLine(ex.StackTrace);
                     Console.WriteLine(ex.Message);
+
+                    await writer.WriteLineAsync(ex.StackTrace);
+                    await writer.WriteLineAsync(ex.Message);
                     writer.Close();
                 }
 
