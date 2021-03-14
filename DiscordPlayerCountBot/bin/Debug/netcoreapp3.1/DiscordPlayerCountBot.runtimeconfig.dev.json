@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "D:\\Users\\Gravi\\.dotnet\\store\\|arch|\\|tfm|",
+      "D:\\Users\\Gravi\\.nuget\\packages"
+    ]
+  }
+}

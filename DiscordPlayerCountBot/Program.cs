@@ -27,6 +27,7 @@ namespace PlayerCountBots
             config = new BotConfig();
             serverBots = new Dictionary<string, DiscordSocketClient>();
             responseData = new Dictionary<string, SteamServerListResponse>();
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         async Task LoadConfig()
@@ -79,22 +80,37 @@ namespace PlayerCountBots
 
             foreach (string address in addresses)
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://api.steampowered.com/IGameServersService/GetServerList/v1/?key={config._steamAPIKey}&filter=\\addr\\{address}&limit=10");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://api.steampowered.com/IGameServersService/GetServerList/v1/?key={config._steamAPIKey}&filter=\\addr\\{address}");
 
                 if (config._isDebug)
                     Console.WriteLine("Response Received");
 
                 string responseDataStr = string.Empty;
 
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                try
                 {
-                    using (Stream stream = response.GetResponseStream())
+                    using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
                     {
-                        using (StreamReader reader = new StreamReader(stream))
+                        using (Stream stream = response.GetResponseStream())
                         {
-                            responseDataStr = reader.ReadToEnd();
+                            using (StreamReader reader = new StreamReader(stream))
+                            {
+                                responseDataStr = await reader.ReadToEndAsync();
+                            }
                         }
                     }
+                }catch(WebException ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"[WebException]:: {ex.Message}");
+                    Console.WriteLine($"[WebException]:: {ex.Status.ToString()}");
+                    Console.WriteLine($"[WebException]:: {ex.Response.ToString()}");
+                    Console.WriteLine($"[Discord-PlayerCount-Bot]:: Update failed, steam could not be reached. Waiting 30 seconds before continuing.");
+                    Console.ForegroundColor = ConsoleColor.White;
+
+
+                    await Task.Delay(TimeSpan.FromSeconds(30));
+                    return;
                 }
 
                 if (responseDataStr != string.Empty)
