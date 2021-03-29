@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using PlayerCountBot;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -17,6 +18,7 @@ namespace PlayerCountBots
         BotConfig config;
         Dictionary<string, SteamServerListResponse> responseData;
         Dictionary<string, DiscordSocketClient> serverBots;
+        Dictionary<string, DayZServerBot> configs;
 
         System.Timers.Timer timer;
 
@@ -27,6 +29,7 @@ namespace PlayerCountBots
             config = new BotConfig();
             serverBots = new Dictionary<string, DiscordSocketClient>();
             responseData = new Dictionary<string, SteamServerListResponse>();
+            configs = new Dictionary<string, DayZServerBot>();
             Console.ForegroundColor = ConsoleColor.White;
         }
 
@@ -53,6 +56,7 @@ namespace PlayerCountBots
                     await discordBot.LoginAsync(Discord.TokenType.Bot, bot.discordBotToken);
                     await discordBot.SetGameAsync("Starting Bot watching: " + bot.botAddress);
                     await discordBot.StartAsync();
+                    configs.Add(bot.botAddress, bot);
                     serverBots.Add(bot.botAddress, discordBot);
                 }
 
@@ -103,8 +107,6 @@ namespace PlayerCountBots
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"[WebException]:: {ex.Message}");
-                    Console.WriteLine($"[WebException]:: {ex.Status.ToString()}");
-                    Console.WriteLine($"[WebException]:: {ex.Response.ToString()}");
                     Console.WriteLine($"[Discord-PlayerCount-Bot]:: Update failed, steam could not be reached. Waiting 30 seconds before continuing.");
                     Console.ForegroundColor = ConsoleColor.White;
 
@@ -160,11 +162,26 @@ namespace PlayerCountBots
 
                             if (client != null)
                             {
-                                string gameStatus = $"{data.players}/{data.max_players}";
+                                string gameStatus = "";
+
+                                if (config._userConfigNameAsLabel)
+                                {
+                                    if (configs.ContainsKey(entry.Key))
+                                    {
+                                        DayZServerBot botConfig = configs[entry.Key];
+
+                                        if (botConfig != null)
+                                        {
+                                            gameStatus += $"{botConfig.botName} ";
+                                        }
+                                    }
+                                }
+
+                                gameStatus += $"{data.players}/{data.max_players} ";
                                 string queueCount = data.GetQueueCount();
                                 if (queueCount != string.Empty && queueCount != "0")
                                 {
-                                    gameStatus += $" - {queueCount} In Queue";
+                                    gameStatus += $"Q: {queueCount}";
                                 }
 
 
@@ -187,6 +204,7 @@ namespace PlayerCountBots
                 await UpdatePlayerCounts();
             }catch(Exception ex)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 using (StreamWriter writer = File.CreateText($"crash_{DateTime.Now.ToLongDateString()}.txt"))
                 {
                     Console.WriteLine(ex.StackTrace);
@@ -198,12 +216,11 @@ namespace PlayerCountBots
                 }
 
                 Console.Error.WriteLine("Restarting due to error, Please send crash log to GravityWolf#6981 on Discord.");
-                responseData.Clear();
-                serverBots.Clear();
-                config = null;
 
-                await LoadConfig();
-                await Start();  
+                Console.ForegroundColor = ConsoleColor.White;
+
+                Process.Start(AppDomain.CurrentDomain.FriendlyName);
+                Environment.Exit(0);
             }
         }
 

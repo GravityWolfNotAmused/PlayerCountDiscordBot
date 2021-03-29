@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using PlayerCountBots;
 using System.Collections.Generic;
 
 namespace PlayerCountBot
@@ -19,6 +18,9 @@ namespace PlayerCountBot
         [JsonProperty]
         public List<DayZServerBot> _serverInformation;
 
+        [JsonProperty]
+        public bool _userConfigNameAsLabel { get; set; }
+
         public BotConfig()
         {
             _serverInformation = new List<DayZServerBot>();
@@ -26,9 +28,10 @@ namespace PlayerCountBot
 
         public void CreateDefaults()
         {
-            _serverInformation.Add(new DayZServerBot("VPPTestBot", "127.0.0.1:2532", "DiscordTokenHere"));
+            _serverInformation.Add(new DayZServerBot("VPPTestBot", "127.0.0.1:27014", "DiscordTokenHere"));
             _updateTime = 30;
             _steamAPIKey = "SteamAPIKeyHere";
+            _userConfigNameAsLabel = false;
         }
         public List<string> GetAddresses()
         {
