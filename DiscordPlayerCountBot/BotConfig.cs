@@ -64,21 +64,32 @@ namespace PlayerCountBot
         }
         private async Task<string> GetPublicIpAddress()
         {
-            var request = (HttpWebRequest)WebRequest.Create("http://ifconfig.me");
+            string publicIPAddress = string.Empty;
 
-            request.UserAgent = "curl"; // this will tell the server to return the information as if the request was made by the linux "curl" command
-
-            string publicIPAddress;
-
-            request.Method = "GET";
-            using (WebResponse response = await request.GetResponseAsync())
+            try
             {
-                using (var reader = new StreamReader(response.GetResponseStream()))
+                var request = (HttpWebRequest)WebRequest.Create("http://ifconfig.me");
+
+                request.UserAgent = "curl"; // this will tell the server to return the information as if the request was made by the linux "curl" command
+
+                request.Method = "GET";
+
+                using (WebResponse response = await request.GetResponseAsync())
                 {
-                    publicIPAddress = await reader.ReadToEndAsync();
+                    using (var reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        publicIPAddress = await reader.ReadToEndAsync();
+                    }
                 }
             }
-
+            catch (WebException ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Error Reaching ifconfig.me");
+                Console.ForegroundColor = ConsoleColor.White;
+                return publicIPAddress;
+            }
+            
             return publicIPAddress.Replace("\n", "");
         }
     }
