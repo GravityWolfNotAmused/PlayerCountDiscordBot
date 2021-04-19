@@ -34,7 +34,6 @@ L:\Github\PlayerCountDiscordBot\DiscordPlayerCountBot\bin\Debug\netcoreapp3.1\Di
 L:\Github\PlayerCountDiscordBot\DiscordPlayerCountBot\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
 L:\Github\PlayerCountDiscordBot\DiscordPlayerCountBot\bin\Debug\netcoreapp3.1\System.Interactive.Async.dll
 L:\Github\PlayerCountDiscordBot\DiscordPlayerCountBot\bin\Debug\netcoreapp3.1\System.Linq.Async.dll
-L:\Github\PlayerCountDiscordBot\DiscordPlayerCountBot\obj\Debug\netcoreapp3.1\DiscordPlayerCountBot.csprojAssemblyReference.cache
 L:\Github\PlayerCountDiscordBot\DiscordPlayerCountBot\obj\Debug\netcoreapp3.1\DiscordPlayerCountBot.AssemblyInfoInputs.cache
 L:\Github\PlayerCountDiscordBot\DiscordPlayerCountBot\obj\Debug\netcoreapp3.1\DiscordPlayerCountBot.AssemblyInfo.cs
 L:\Github\PlayerCountDiscordBot\DiscordPlayerCountBot\obj\Debug\netcoreapp3.1\DiscordPlayerCountBot.csproj.CoreCompileInputs.cache

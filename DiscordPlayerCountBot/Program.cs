@@ -67,7 +67,8 @@ namespace PlayerCountBots
 
         public async Task UpdatePlayerCounts()
         {
-            List<string> addresses = config.GetAddresses();
+            List<string> addresses = await config.GetAddresses();
+
             if (addresses.Count == 0)
             {
                 if (config._isDebug)

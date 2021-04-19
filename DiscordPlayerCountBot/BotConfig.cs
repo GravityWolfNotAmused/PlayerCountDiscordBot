@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace PlayerCountBot
 {
@@ -33,7 +36,7 @@ namespace PlayerCountBot
             _steamAPIKey = "SteamAPIKeyHere";
             _userConfigNameAsLabel = false;
         }
-        public List<string> GetAddresses()
+        public async Task<List<string>> GetAddresses()
         {
             List<string> addresses = new List<string>();
 
@@ -41,12 +44,34 @@ namespace PlayerCountBot
             {
                 string ipAddress = bot.botAddress.Split(":")[0];
 
+                if (ipAddress.ToLower() == "hostname")
+                    ipAddress = await GetPublicIpAddress();
+
                 if (!addresses.Contains(ipAddress))
                 {
                     addresses.Add(ipAddress);
                 }
             }
             return addresses;
+        }
+        private async Task<string> GetPublicIpAddress()
+        {
+            var request = (HttpWebRequest)WebRequest.Create("http://ifconfig.me");
+
+            request.UserAgent = "curl"; // this will tell the server to return the information as if the request was made by the linux "curl" command
+
+            string publicIPAddress;
+
+            request.Method = "GET";
+            using (WebResponse response = await request.GetResponseAsync())
+            {
+                using (var reader = new StreamReader(response.GetResponseStream()))
+                {
+                    publicIPAddress = await reader.ReadToEndAsync();
+                }
+            }
+
+            return publicIPAddress.Replace("\n", "");
         }
     }
 }
