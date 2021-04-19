@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -45,7 +46,14 @@ namespace PlayerCountBot
                 string ipAddress = bot.botAddress.Split(":")[0];
 
                 if (ipAddress.ToLower() == "hostname")
+                {
                     ipAddress = await GetPublicIpAddress();
+
+                    if (ipAddress == string.Empty)
+                    {
+                        Console.WriteLine("IP Address could not be resolved. Please contact Gravity Wolf on discord. GravityWolf#6981");
+                    }
+                }
 
                 if (!addresses.Contains(ipAddress))
                 {
