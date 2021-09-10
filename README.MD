@@ -1,5 +1,9 @@
 ### **Run the bot once for Config.json**
  
+# Discord Server
+
+![Discord Shield](https://discordapp.com/api/guilds/824404335105933382/widget.png?style=banner4)
+
 ### Requirements:
 [.Net Core 3.1](https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-desktop-3.1.13-windows-x64-installer)
 
@@ -12,7 +16,6 @@ In order to get a steam API key, you will need a domain to link it to. Trying lo
 ![image](https://user-images.githubusercontent.com/24533882/103162963-c9304000-47b4-11eb-814e-c6156649b908.png)
 
 ![image](https://user-images.githubusercontent.com/24533882/103163310-cd129100-47b9-11eb-955a-d7a334159e19.png)
-
 
 # Creating a bot(s)
 **You must repeat this step for each server you wish to track.**
