@@ -41,3 +41,4 @@ L:\Github\PlayerCountDiscordBot\DiscordPlayerCountBot\obj\Debug\netcoreapp3.1\Di
 L:\Github\PlayerCountDiscordBot\DiscordPlayerCountBot\obj\Debug\netcoreapp3.1\DiscordPlayerCountBot.dll
 L:\Github\PlayerCountDiscordBot\DiscordPlayerCountBot\obj\Debug\netcoreapp3.1\DiscordPlayerCountBot.pdb
 L:\Github\PlayerCountDiscordBot\DiscordPlayerCountBot\obj\Debug\netcoreapp3.1\DiscordPlayerCountBot.genruntimeconfig.cache
+L:\Github\PlayerCountDiscordBot\DiscordPlayerCountBot\obj\Debug\netcoreapp3.1\DiscordPlayerCountBot.csprojAssemblyReference.cache

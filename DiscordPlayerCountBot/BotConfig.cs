@@ -44,6 +44,7 @@ namespace PlayerCountBot
             foreach (DayZServerBot bot in _serverInformation)
             {
                 string ipAddress = bot.botAddress.Split(":")[0];
+                Console.WriteLine($"IPAddress: {ipAddress}");
 
                 if (ipAddress.ToLower() == "hostname")
                 {
@@ -54,6 +55,7 @@ namespace PlayerCountBot
                         Console.WriteLine("IP Address could not be resolved. Please contact Gravity Wolf on discord. GravityWolf#6981");
                     }
                 }
+                Console.WriteLine($"IPAddress after: {ipAddress}");
 
                 if (!addresses.Contains(ipAddress))
                 {
@@ -89,7 +91,7 @@ namespace PlayerCountBot
                 Console.ForegroundColor = ConsoleColor.White;
                 return publicIPAddress;
             }
-            
+            Console.WriteLine($"IP Found: {publicIPAddress}");
             return publicIPAddress.Replace("\n", "");
         }
     }

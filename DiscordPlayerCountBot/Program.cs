@@ -56,8 +56,18 @@ namespace PlayerCountBots
                     await discordBot.LoginAsync(Discord.TokenType.Bot, bot.discordBotToken);
                     await discordBot.SetGameAsync("Starting Bot watching: " + bot.botAddress);
                     await discordBot.StartAsync();
-                    configs.Add(bot.botAddress, bot);
-                    serverBots.Add(bot.botAddress, discordBot);
+
+                    if (bot.botAddress.ToLower() == "hostname")
+                    {
+                        configs.Add(await bot.GetHostAddress(), bot);
+                        serverBots.Add(await bot.GetHostAddress(), discordBot);
+                    }
+
+                    if(bot.botAddress.ToLower() != "hostname")
+                    {
+                        configs.Add(bot.botAddress, bot);
+                        serverBots.Add(bot.botAddress, discordBot);
+                    }
                 }
 
                 Console.WriteLine("Calling first update");

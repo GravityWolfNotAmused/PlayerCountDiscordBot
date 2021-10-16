@@ -2,12 +2,12 @@
   "_serverInformation": [
     {
       "botName": "VPPTestBot",
-      "botAddress": "127.0.0.1:27014",
-      "discordBotToken": "DiscordTokenHere"
+      "botAddress": "hostname:27014",
+      "discordBotToken": "NjM4NjY2OTExNjY3NzE2MTA2.XbgC6Q.sJqtOt9c8PYsaenVqnP_3Om5_J0"
     }
   ],
   "_updateTime": 30,
-  "_steamAPIKey": "SteamAPIKeyHere",
+  "_steamAPIKey": "756269B4DBB244D63FCDF1F6FEE5C825",
   "_isDebug": false,
   "_userConfigNameAsLabel": false
 }
