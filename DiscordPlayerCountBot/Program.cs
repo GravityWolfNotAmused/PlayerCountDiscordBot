@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using Newtonsoft.Json;
 using PlayerCountBot;
 using System;
@@ -53,7 +54,7 @@ namespace PlayerCountBots
                 foreach (DayZServerBot bot in config._serverInformation)
                 {
                     DiscordSocketClient discordBot = new DiscordSocketClient();
-                    await discordBot.LoginAsync(Discord.TokenType.Bot, bot.discordBotToken);
+                    await discordBot.LoginAsync(TokenType.Bot, bot.discordBotToken);
                     await discordBot.SetGameAsync("Starting Bot watching: " + bot.botAddress);
                     await discordBot.StartAsync();
 
@@ -199,7 +200,9 @@ namespace PlayerCountBots
                                 if (config._isDebug)
                                     Console.WriteLine("Changed Status of : " + serverAddress + ", Status: " + gameStatus);
 
-                                await client.SetGameAsync(gameStatus);
+                                var activityType = (ActivityType)(config._activityStatus <= 3 && config._activityStatus > 0 ? config._activityStatus : 0);
+
+                                await client.SetGameAsync(gameStatus, null, activityType);
                             }
                         }
                     }

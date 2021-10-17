@@ -25,6 +25,9 @@ namespace PlayerCountBot
         [JsonProperty]
         public bool _userConfigNameAsLabel { get; set; }
 
+        [JsonProperty]
+        public int _activityStatus { get; set; }
+
         public BotConfig()
         {
             _serverInformation = new List<DayZServerBot>();
@@ -36,6 +39,7 @@ namespace PlayerCountBot
             _updateTime = 30;
             _steamAPIKey = "SteamAPIKeyHere";
             _userConfigNameAsLabel = false;
+            _activityStatus = 1;
         }
         public async Task<List<string>> GetAddresses()
         {
@@ -44,7 +48,9 @@ namespace PlayerCountBot
             foreach (DayZServerBot bot in _serverInformation)
             {
                 string ipAddress = bot.botAddress.Split(":")[0];
-                Console.WriteLine($"IPAddress: {ipAddress}");
+
+                if(_isDebug)
+                    Console.WriteLine($"IPAddress: {ipAddress}");
 
                 if (ipAddress.ToLower() == "hostname")
                 {
@@ -55,7 +61,9 @@ namespace PlayerCountBot
                         Console.WriteLine("IP Address could not be resolved. Please contact Gravity Wolf on discord. GravityWolf#6981");
                     }
                 }
-                Console.WriteLine($"IPAddress after: {ipAddress}");
+
+                if(_isDebug)
+                    Console.WriteLine($"IPAddress after: {ipAddress}");
 
                 if (!addresses.Contains(ipAddress))
                 {
