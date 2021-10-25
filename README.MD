@@ -2,7 +2,7 @@
  
 # Join My Discord Server
 
-[![Discord Shield](https://discordapp.com/api/guilds/824404335105933382/widget.png?style=shield)](https://discord.gg/fdU6Unbg2M)
+[![Discord Shield](https://discordapp.com/api/guilds/824404335105933382/widget.png?style=shield)](https://discord.gg/meBtwthmmD)
 
 ### Requirements:
 [.Net Core 3.1](https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-desktop-3.1.13-windows-x64-installer)
