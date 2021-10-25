@@ -1,6 +1,6 @@
 ### **Run the bot once for Config.json**
  
-# Discord Server
+# Join My Discord Server
 
 [![Discord Shield](https://discordapp.com/api/guilds/824404335105933382/widget.png?style=shield)](https://discord.gg/fdU6Unbg2M)
 
