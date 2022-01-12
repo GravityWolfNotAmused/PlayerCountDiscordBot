@@ -40,7 +40,7 @@ namespace PlayerCountBot
             _updateTime = Int32.Parse(Environment.GetEnvironmentVariable("BOT_UPDATE_TIME"));
             _steamAPIKey = Environment.GetEnvironmentVariable("STEAM_API_KEY");
             _userConfigNameAsLabel = false;
-            _activityStatus = 1;
+            _activityStatus = Int32.Parse(Environment.GetEnvironmentVariable("BOT_STATUS"));
         }
         public async Task<List<string>> GetAddresses()
         {

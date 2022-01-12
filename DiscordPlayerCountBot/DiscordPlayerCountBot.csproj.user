@@ -2,5 +2,6 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ActiveDebugProfile>Docker</ActiveDebugProfile>
+    <_LastSelectedProfileId>C:\Users\speck\source\repos\PlayerCountDiscordBot\DiscordPlayerCountBot\Properties\PublishProfiles\specker.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
 </Project>

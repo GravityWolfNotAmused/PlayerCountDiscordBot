@@ -21,6 +21,7 @@ ENV BOT_PORT 27014
 ENV BOT_DISCORD_TOKEN DiscordTokenHere
 ENV BOT_UPDATE_TIME 30
 ENV STEAM_API_KEY SteamAPIKeyHere
+ENV BOT_STATUS 3
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "DiscordPlayerCountBot.dll"]
