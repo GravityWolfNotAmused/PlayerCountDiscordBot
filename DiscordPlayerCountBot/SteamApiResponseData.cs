@@ -58,21 +58,23 @@ namespace PlayerCountBot
 
         public string GetQueueCount()
         {
-            string[] splitData = gametype.Split(",");
-
-            if (splitData.Length > 0)
+            if (gametype != null)
             {
-                foreach (string str in splitData)
-                {
-                    if (str.Contains("lqs"))
-                    {
-                        string queueCount = str.Replace("lqs", "");
+                string[] splitData = gametype.Split(",");
 
-                        return queueCount;
+                if (splitData.Length > 0)
+                {
+                    foreach (string str in splitData)
+                    {
+                        if (str.Contains("lqs"))
+                        {
+                            string queueCount = str.Replace("lqs", "");
+
+                            return queueCount;
+                        }
                     }
                 }
             }
-
             return "";
         }
     }

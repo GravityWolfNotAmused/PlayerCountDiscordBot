@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "L:\\Github\\PlayerCountDiscordBot\\DiscordPlayerCountBot\\DiscordPlayerCountBot.csproj": {}
+    "C:\\Users\\speck\\Source\\Repos\\PlayerCountDiscordBot\\DiscordPlayerCountBot\\DiscordPlayerCountBot.csproj": {}
   },
   "projects": {
-    "L:\\Github\\PlayerCountDiscordBot\\DiscordPlayerCountBot\\DiscordPlayerCountBot.csproj": {
+    "C:\\Users\\speck\\Source\\Repos\\PlayerCountDiscordBot\\DiscordPlayerCountBot\\DiscordPlayerCountBot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "L:\\Github\\PlayerCountDiscordBot\\DiscordPlayerCountBot\\DiscordPlayerCountBot.csproj",
+        "projectUniqueName": "C:\\Users\\speck\\Source\\Repos\\PlayerCountDiscordBot\\DiscordPlayerCountBot\\DiscordPlayerCountBot.csproj",
         "projectName": "DiscordPlayerCountBot",
-        "projectPath": "L:\\Github\\PlayerCountDiscordBot\\DiscordPlayerCountBot\\DiscordPlayerCountBot.csproj",
-        "packagesPath": "D:\\Users\\Gravi\\.nuget\\packages\\",
-        "outputPath": "L:\\Github\\PlayerCountDiscordBot\\DiscordPlayerCountBot\\obj\\",
+        "projectPath": "C:\\Users\\speck\\Source\\Repos\\PlayerCountDiscordBot\\DiscordPlayerCountBot\\DiscordPlayerCountBot.csproj",
+        "packagesPath": "C:\\Users\\speck\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\speck\\Source\\Repos\\PlayerCountDiscordBot\\DiscordPlayerCountBot\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "D:\\Users\\Gravi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\speck\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -48,6 +48,10 @@
               "target": "Package",
               "version": "[2.3.1, )"
             },
+            "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
+              "target": "Package",
+              "version": "[1.11.1, )"
+            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[12.0.3, )"
@@ -68,7 +72,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.208\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.403\\RuntimeIdentifierGraph.json"
         }
       }
     }

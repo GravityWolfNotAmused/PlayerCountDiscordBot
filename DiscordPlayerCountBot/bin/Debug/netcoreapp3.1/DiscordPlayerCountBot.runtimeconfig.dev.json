@@ -1,9 +1,9 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
-      "D:\\Users\\Gravi\\.dotnet\\store\\|arch|\\|tfm|",
-      "D:\\Users\\Gravi\\.nuget\\packages",
-      "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      "C:\\Users\\speck\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\speck\\.nuget\\packages",
+      "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
     ]
   }
 }

@@ -36,44 +36,40 @@ namespace PlayerCountBots
 
         async Task LoadConfig()
         {
-            if (!File.Exists("./Config.json"))
-            {
-                Console.WriteLine("Creating new config file. Please configure the Config.json file, and restart the program.");
-                config.CreateDefaults();
-                File.WriteAllText("./Config.json", JsonConvert.SerializeObject(config, Formatting.Indented));
-                Console.ReadLine();
-                Environment.Exit(-1);
-            }
 
-            if (File.Exists("./Config.json"))
+            Console.WriteLine("Creating new config file. Please configure the Config.json file, and restart the program.");
+            config.CreateDefaults();
+            File.Delete("./Config.json");
+            File.WriteAllText("./Config.json", JsonConvert.SerializeObject(config, Formatting.Indented));
+
+            Console.WriteLine("Loading config file.");
+            string fileContents = File.ReadAllText("./Config.json");
+            config = JsonConvert.DeserializeObject<BotConfig>(fileContents);
+            Console.WriteLine($"Config.json loaded: {fileContents}");
+            foreach (DayZServerBot bot in config._serverInformation)
             {
-                Console.WriteLine("Loading config file.");
-                string fileContents = File.ReadAllText("./Config.json");
-                config = JsonConvert.DeserializeObject<BotConfig>(fileContents);
-                Console.WriteLine($"Config.json loaded: {fileContents}");
-                foreach (DayZServerBot bot in config._serverInformation)
+                DiscordSocketClient discordBot = new DiscordSocketClient();
+                await discordBot.LoginAsync(TokenType.Bot, bot.discordBotToken);
+                await discordBot.SetGameAsync("Starting Bot watching: " + bot.botAddress);
+                await discordBot.StartAsync();
+
+                if (bot.botAddress.ToLower() == "hostname")
                 {
-                    DiscordSocketClient discordBot = new DiscordSocketClient();
-                    await discordBot.LoginAsync(TokenType.Bot, bot.discordBotToken);
-                    await discordBot.SetGameAsync("Starting Bot watching: " + bot.botAddress);
-                    await discordBot.StartAsync();
-
-                    if (bot.botAddress.ToLower() == "hostname")
-                    {
-                        configs.Add(await bot.GetHostAddress(), bot);
-                        serverBots.Add(await bot.GetHostAddress(), discordBot);
-                    }
-
-                    if(bot.botAddress.ToLower() != "hostname")
-                    {
-                        configs.Add(bot.botAddress, bot);
-                        serverBots.Add(bot.botAddress, discordBot);
-                    }
+                    configs.Add(await bot.GetHostAddress(), bot);
+                    serverBots.Add(await bot.GetHostAddress(), discordBot);
                 }
 
-                Console.WriteLine("Calling first update");
-                await UpdatePlayerCounts();
+                if (bot.botAddress.ToLower() != "hostname")
+                {
+                    configs.Add(bot.botAddress, bot);
+                    serverBots.Add(bot.botAddress, discordBot);
+                }
             }
+
+            Console.WriteLine("Calling first update");
+            await UpdatePlayerCounts();
+
+
         }
 
         public async Task UpdatePlayerCounts()
@@ -115,7 +111,8 @@ namespace PlayerCountBots
                             }
                         }
                     }
-                }catch(WebException ex)
+                }
+                catch (WebException ex)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"[WebException]:: {ex.Message}");
@@ -144,7 +141,7 @@ namespace PlayerCountBots
                 }
             }
 
-            if(config._isDebug)
+            if (config._isDebug)
             {
                 Console.WriteLine("Response Data Size: " + responseData.Count);
             }
@@ -216,7 +213,8 @@ namespace PlayerCountBots
             try
             {
                 await UpdatePlayerCounts();
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 using (StreamWriter writer = File.CreateText($"crash_{DateTime.Now.ToLongDateString()}.txt"))
