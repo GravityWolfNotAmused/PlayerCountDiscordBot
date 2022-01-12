@@ -36,39 +36,66 @@ namespace PlayerCountBots
 
         async Task LoadConfig()
         {
-
-            Console.WriteLine("Creating new config file. Please configure the Config.json file, and restart the program.");
-            config.CreateDefaults();
-            File.Delete("./Config.json");
-            File.WriteAllText("./Config.json", JsonConvert.SerializeObject(config, Formatting.Indented));
-
-            Console.WriteLine("Loading config file.");
-            string fileContents = File.ReadAllText("./Config.json");
-            config = JsonConvert.DeserializeObject<BotConfig>(fileContents);
-            Console.WriteLine($"Config.json loaded: {fileContents}");
-            foreach (DayZServerBot bot in config._serverInformation)
+            if (Environment.GetEnvironmentVariable("ISDOCKER") == "true")
             {
+                Console.WriteLine("Loading config.");
+                
+                DayZServerBot bot = new DayZServerBot(Environment.GetEnvironmentVariable("BOT_NAME"), Environment.GetEnvironmentVariable("BOT_PUBADDRESS")+":"+ Environment.GetEnvironmentVariable("BOT_PORT"), Environment.GetEnvironmentVariable("BOT_DISCORD_TOKEN"));
+                Console.WriteLine("Loaded "+bot.botName);
+
                 DiscordSocketClient discordBot = new DiscordSocketClient();
                 await discordBot.LoginAsync(TokenType.Bot, bot.discordBotToken);
                 await discordBot.SetGameAsync("Starting Bot watching: " + bot.botAddress);
                 await discordBot.StartAsync();
 
-                if (bot.botAddress.ToLower() == "hostname")
+                configs.Add(bot.botAddress, bot);
+                serverBots.Add(bot.botAddress, discordBot);
+
+
+                Console.WriteLine("Calling first update");
+                await UpdatePlayerCounts();
+            }
+            else
+            {
+                if (!File.Exists("./Config.json"))
                 {
-                    configs.Add(await bot.GetHostAddress(), bot);
-                    serverBots.Add(await bot.GetHostAddress(), discordBot);
+                    Console.WriteLine("Creating new config file. Please configure the Config.json file, and restart the program.");
+                    config.CreateDefaults();
+                    File.WriteAllText("./Config.json", JsonConvert.SerializeObject(config, Formatting.Indented));
+                    Console.ReadLine();
+                    Environment.Exit(-1);
                 }
 
-                if (bot.botAddress.ToLower() != "hostname")
+                if (File.Exists("./Config.json"))
                 {
-                    configs.Add(bot.botAddress, bot);
-                    serverBots.Add(bot.botAddress, discordBot);
+                    Console.WriteLine("Loading config file.");
+                    string fileContents = File.ReadAllText("./Config.json");
+                    config = JsonConvert.DeserializeObject<BotConfig>(fileContents);
+                    Console.WriteLine($"Config.json loaded: {fileContents}");
+                    foreach (DayZServerBot bot in config._serverInformation)
+                    {
+                        DiscordSocketClient discordBot = new DiscordSocketClient();
+                        await discordBot.LoginAsync(TokenType.Bot, bot.discordBotToken);
+                        await discordBot.SetGameAsync("Starting Bot watching: " + bot.botAddress);
+                        await discordBot.StartAsync();
+
+                        if (bot.botAddress.ToLower() == "hostname")
+                        {
+                            configs.Add(await bot.GetHostAddress(), bot);
+                            serverBots.Add(await bot.GetHostAddress(), discordBot);
+                        }
+
+                        if (bot.botAddress.ToLower() != "hostname")
+                        {
+                            configs.Add(bot.botAddress, bot);
+                            serverBots.Add(bot.botAddress, discordBot);
+                        }
+                    }
+
+                    Console.WriteLine("Calling first update");
+                    await UpdatePlayerCounts();
                 }
             }
-
-            Console.WriteLine("Calling first update");
-            await UpdatePlayerCounts();
-
 
         }
 
@@ -92,7 +119,17 @@ namespace PlayerCountBots
 
             foreach (string address in addresses)
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://api.steampowered.com/IGameServersService/GetServerList/v1/?key={config._steamAPIKey}&filter=\\addr\\{address}");
+                HttpWebRequest request;
+                if (Environment.GetEnvironmentVariable("ISDOCKER") == "true") 
+                {
+                    string SteamApi = Environment.GetEnvironmentVariable("STEAM_API_KEY");
+                    request = (HttpWebRequest)WebRequest.Create($"https://api.steampowered.com/IGameServersService/GetServerList/v1/?key={SteamApi}&filter=\\addr\\{address}");
+                }
+                else
+                {
+                    request = (HttpWebRequest)WebRequest.Create($"https://api.steampowered.com/IGameServersService/GetServerList/v1/?key={config._steamAPIKey}&filter=\\addr\\{address}");
+                }
+                    
 
                 if (config._isDebug)
                     Console.WriteLine("Response Received");
@@ -197,7 +234,15 @@ namespace PlayerCountBots
                                 if (config._isDebug)
                                     Console.WriteLine("Changed Status of : " + serverAddress + ", Status: " + gameStatus);
 
-                                var activityType = (ActivityType)(config._activityStatus <= 3 && config._activityStatus > 0 ? config._activityStatus : 0);
+                                var activityType = (ActivityType)0;
+                                if (Environment.GetEnvironmentVariable("ISDOCKER") == "true")
+                                {
+                                    activityType = (ActivityType)(Int32.Parse(Environment.GetEnvironmentVariable("BOT_STATUS")) <= 3 && Int32.Parse(Environment.GetEnvironmentVariable("BOT_STATUS")) > 0 ? Int32.Parse(Environment.GetEnvironmentVariable("BOT_STATUS")) : 0);
+                                }
+                                else
+                                {
+                                    activityType = (ActivityType)(config._activityStatus <= 3 && config._activityStatus > 0 ? config._activityStatus : 0);
+                                }
 
                                 await client.SetGameAsync(gameStatus, null, activityType);
                             }
@@ -250,11 +295,26 @@ namespace PlayerCountBots
         private async Task Start()
         {
             //Console.WriteLine("Starting Bot Timer.");
-            timer = new System.Timers.Timer(config._updateTime * 1000);
+
+            if (Environment.GetEnvironmentVariable("ISDOCKER") == "true")
+            {
+                timer = new System.Timers.Timer(Int32.Parse(Environment.GetEnvironmentVariable("BOT_UPDATE_TIME")) * 1000);
+            }
+            else
+            {
+                timer = new System.Timers.Timer(config._updateTime * 1000);
+            }
             timer.Elapsed += OnTimerExecute;
             timer.AutoReset = true;
             timer.Enabled = true;
-            Console.WriteLine($"Timer set to go off every: {config._updateTime} second(s)");
+            if (Environment.GetEnvironmentVariable("ISDOCKER") == "true")
+            {
+                Console.WriteLine($"Timer set to go off every: {Environment.GetEnvironmentVariable("BOT_UPDATE_TIME")} second(s)");
+            }
+            else
+            {
+                Console.WriteLine($"Timer set to go off every: {config._updateTime} second(s)");
+            }
             timer.Start();
         }
 

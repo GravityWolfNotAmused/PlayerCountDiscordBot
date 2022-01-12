@@ -36,21 +36,23 @@ namespace PlayerCountBot
         public void CreateDefaults()
         {
 
-            _serverInformation.Add(new DayZServerBot(Environment.GetEnvironmentVariable("BOT_Name"), Environment.GetEnvironmentVariable("BOT_PUBADDRESS") +":"+ Environment.GetEnvironmentVariable("BOT_PORT"), Environment.GetEnvironmentVariable("BOT_DISCORD_TOKEN")));
-            _updateTime = Int32.Parse(Environment.GetEnvironmentVariable("BOT_UPDATE_TIME"));
-            _steamAPIKey = Environment.GetEnvironmentVariable("STEAM_API_KEY");
+            _serverInformation.Add(new DayZServerBot("VPPTestBot", "127.0.0.1:27014", "DiscordTokenHere"));
+            _updateTime = 30;
+            _steamAPIKey = "SteamAPIKeyHere";
             _userConfigNameAsLabel = false;
-            _activityStatus = Int32.Parse(Environment.GetEnvironmentVariable("BOT_STATUS"));
+            _activityStatus = 1;
         }
         public async Task<List<string>> GetAddresses()
         {
             List<string> addresses = new List<string>();
 
-            foreach (DayZServerBot bot in _serverInformation)
+            if (Environment.GetEnvironmentVariable("ISDOCKER") == "true")
             {
+                DayZServerBot bot = new DayZServerBot(Environment.GetEnvironmentVariable("BOT_NAME"), Environment.GetEnvironmentVariable("BOT_PUBADDRESS") + ":" + Environment.GetEnvironmentVariable("BOT_PORT"), Environment.GetEnvironmentVariable("BOT_DISCORD_TOKEN"));
+
                 string ipAddress = bot.botAddress.Split(":")[0];
 
-                if(_isDebug)
+                if (_isDebug)
                     Console.WriteLine($"IPAddress: {ipAddress}");
 
                 if (ipAddress.ToLower() == "hostname")
@@ -63,12 +65,40 @@ namespace PlayerCountBot
                     }
                 }
 
-                if(_isDebug)
+                if (_isDebug)
                     Console.WriteLine($"IPAddress after: {ipAddress}");
 
                 if (!addresses.Contains(ipAddress))
                 {
                     addresses.Add(ipAddress);
+                }
+            }
+            else
+            {
+                foreach (DayZServerBot bot in _serverInformation)
+                {
+                    string ipAddress = bot.botAddress.Split(":")[0];
+
+                    if (_isDebug)
+                        Console.WriteLine($"IPAddress: {ipAddress}");
+
+                    if (ipAddress.ToLower() == "hostname")
+                    {
+                        ipAddress = await GetPublicIpAddress();
+
+                        if (ipAddress == string.Empty)
+                        {
+                            Console.WriteLine("IP Address could not be resolved. Please contact Gravity Wolf on discord. GravityWolf#6981");
+                        }
+                    }
+
+                    if (_isDebug)
+                        Console.WriteLine($"IPAddress after: {ipAddress}");
+
+                    if (!addresses.Contains(ipAddress))
+                    {
+                        addresses.Add(ipAddress);
+                    }
                 }
             }
             return addresses;

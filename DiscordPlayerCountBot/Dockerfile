@@ -15,13 +15,14 @@ FROM build AS publish
 RUN dotnet publish "DiscordPlayerCountBot.csproj" -c Release -o /app/publish
 
 FROM base AS final
-ENV BOT_Name VPPTestBot
+ENV ISDOCKER true
+ENV BOT_Name Bot
 ENV BOT_PUBADDRESS 127.0.0.1
 ENV BOT_PORT 27014
-ENV BOT_DISCORD_TOKEN DiscordTokenHere
+ENV BOT_DISCORD_TOKEN DockerToken
 ENV BOT_UPDATE_TIME 30
-ENV STEAM_API_KEY SteamAPIKeyHere
-ENV BOT_STATUS 3
+ENV STEAM_API_KEY SteamApiKey
+ENV BOT_STATUS 0
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "DiscordPlayerCountBot.dll"]
