@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -48,29 +49,38 @@ namespace PlayerCountBot
 
             if (Environment.GetEnvironmentVariable("ISDOCKER") == "true")
             {
-                DayZServerBot bot = new DayZServerBot(Environment.GetEnvironmentVariable("BOT_NAME"), Environment.GetEnvironmentVariable("BOT_PUBADDRESS") + ":" + Environment.GetEnvironmentVariable("BOT_PORT"), Environment.GetEnvironmentVariable("BOT_DISCORD_TOKEN"));
+                List<string> botNames = Environment.GetEnvironmentVariable("BOT_NAMES").Split(";").ToList();
+                List<string> botAddresses = Environment.GetEnvironmentVariable("BOT_PUBADDRESSES").Split(";").ToList();
+                List<string> botPorts = Environment.GetEnvironmentVariable("BOT_PORTS").Split(";").ToList();
+                List<string> botTokens = Environment.GetEnvironmentVariable("BOT_DISCORD_TOKENS").Split(";").ToList();
 
-                string ipAddress = bot.botAddress.Split(":")[0];
-
-                if (_isDebug)
-                    Console.WriteLine($"IPAddress: {ipAddress}");
-
-                if (ipAddress.ToLower() == "hostname")
+                for (int i = 0; i < botNames.Count; i++)
                 {
-                    ipAddress = await GetPublicIpAddress();
+                    DayZServerBot bot = new DayZServerBot(botNames[i], botAddresses[i] + ":" + botPorts[i], botTokens[i]);
 
-                    if (ipAddress == string.Empty)
+
+                    string ipAddress = bot.botAddress.Split(":")[0];
+
+                    if (_isDebug)
+                        Console.WriteLine($"IPAddress: {ipAddress}");
+
+                    if (ipAddress.ToLower() == "hostname")
                     {
-                        Console.WriteLine("IP Address could not be resolved. Please contact Gravity Wolf on discord. GravityWolf#6981");
+                        ipAddress = await GetPublicIpAddress();
+
+                        if (ipAddress == string.Empty)
+                        {
+                            Console.WriteLine("IP Address could not be resolved. Please contact Gravity Wolf on discord. GravityWolf#6981");
+                        }
                     }
-                }
 
-                if (_isDebug)
-                    Console.WriteLine($"IPAddress after: {ipAddress}");
+                    if (_isDebug)
+                        Console.WriteLine($"IPAddress after: {ipAddress}");
 
-                if (!addresses.Contains(ipAddress))
-                {
-                    addresses.Add(ipAddress);
+                    if (!addresses.Contains(ipAddress))
+                    {
+                        addresses.Add(ipAddress);
+                    }
                 }
             }
             else

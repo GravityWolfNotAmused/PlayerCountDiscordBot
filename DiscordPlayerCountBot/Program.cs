@@ -38,22 +38,31 @@ namespace PlayerCountBots
         {
             if (Environment.GetEnvironmentVariable("ISDOCKER") == "true")
             {
+                List<string> botNames = Environment.GetEnvironmentVariable("BOT_NAMES").Split(";").ToList();
+                List<string> botAddresses = Environment.GetEnvironmentVariable("BOT_PUBADDRESSES").Split(";").ToList();
+                List<string> botPorts = Environment.GetEnvironmentVariable("BOT_PORTS").Split(";").ToList();
+                List<string> botTokens = Environment.GetEnvironmentVariable("BOT_DISCORD_TOKENS").Split(";").ToList();
+
                 Console.WriteLine("Loading config.");
-                
-                DayZServerBot bot = new DayZServerBot(Environment.GetEnvironmentVariable("BOT_NAME"), Environment.GetEnvironmentVariable("BOT_PUBADDRESS")+":"+ Environment.GetEnvironmentVariable("BOT_PORT"), Environment.GetEnvironmentVariable("BOT_DISCORD_TOKEN"));
-                Console.WriteLine("Loaded "+bot.botName);
+                for(int i = 0; i < botNames.Count; i++)
+                {
+                    DayZServerBot bot = new DayZServerBot(botNames[i], botAddresses[i] + ":" + botPorts[i], botTokens[i]);
+                    
+                    Console.WriteLine("Loaded " + bot.botName);
 
-                DiscordSocketClient discordBot = new DiscordSocketClient();
-                await discordBot.LoginAsync(TokenType.Bot, bot.discordBotToken);
-                await discordBot.SetGameAsync("Starting Bot watching: " + bot.botAddress);
-                await discordBot.StartAsync();
+                    DiscordSocketClient discordBot = new DiscordSocketClient();
+                    await discordBot.LoginAsync(TokenType.Bot, bot.discordBotToken);
+                    await discordBot.SetGameAsync("Starting Bot watching: " + bot.botAddress);
+                    await discordBot.StartAsync();
 
-                configs.Add(bot.botAddress, bot);
-                serverBots.Add(bot.botAddress, discordBot);
+                    configs.Add(bot.botAddress, bot);
+                    serverBots.Add(bot.botAddress, discordBot);
 
 
-                Console.WriteLine("Calling first update");
-                await UpdatePlayerCounts();
+                    Console.WriteLine("Calling first update");
+                    await UpdatePlayerCounts();
+                }
+
             }
             else
             {
