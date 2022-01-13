@@ -93,7 +93,7 @@ namespace PlayerCountBot
             {
                 Logger.Error(ex.StackTrace);
                 Logger.Error(ex.Message);
-                Logger.Error("[PlayerCountBot]:: Restarting due to error, Please send crash log to https://discord.gg/FPXdPjcX27.");
+                Logger.Error($"[PlayerCountBot]:: Restarting due to error, Please send crash log to https://discord.gg/FPXdPjcX27.");
 
                 Process.Start(AppDomain.CurrentDomain.FriendlyName);
                 Environment.Exit(0);

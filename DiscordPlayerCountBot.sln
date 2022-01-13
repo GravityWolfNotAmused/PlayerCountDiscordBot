@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordPlayerCountBot", "DiscordPlayerCountBot\DiscordPlayerCountBot.csproj", "{BBBF5976-1AE8-4592-A67B-E5FF35A916FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigConvertForBuild", "ConfigConvertForBuild\ConfigConvertForBuild.csproj", "{4681EEA0-A3B3-438D-828C-811BD1F37EC4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{BBBF5976-1AE8-4592-A67B-E5FF35A916FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBBF5976-1AE8-4592-A67B-E5FF35A916FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBBF5976-1AE8-4592-A67B-E5FF35A916FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4681EEA0-A3B3-438D-828C-811BD1F37EC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4681EEA0-A3B3-438D-828C-811BD1F37EC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4681EEA0-A3B3-438D-828C-811BD1F37EC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4681EEA0-A3B3-438D-828C-811BD1F37EC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
