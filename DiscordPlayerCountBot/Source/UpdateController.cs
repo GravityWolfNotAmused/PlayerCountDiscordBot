@@ -30,17 +30,35 @@ namespace PlayerCountBot
         {
             if (IsDocker)
             {
+                Logger.Info("[PlayerCountBot]:: Loading Docker Config.");
+
                 var botNames = Environment.GetEnvironmentVariable("BOT_NAMES").Split(";");
                 var botAddresses = Environment.GetEnvironmentVariable("BOT_PUBADDRESSES").Split(";");
                 var botPorts = Environment.GetEnvironmentVariable("BOT_PORTS").Split(";");
                 var botTokens = Environment.GetEnvironmentVariable("BOT_DISCORD_TOKENS").Split(";");
                 var botStatuses = Environment.GetEnvironmentVariable("BOT_STATUSES").Split(";");
                 var botTags = Environment.GetEnvironmentVariable("BOT_USENAMETAGS").Split(";");
-                Logger.Debug("[PlayerCountBot]:: Loading config.");
 
                 for(int i = 0; i < botNames.Length; i++)
                 {
-                    var info = new BotInformation(botNames[i], botAddresses[i] + ":" + botPorts[i], botTokens[i], Int32.Parse(botStatuses[i]), bool.Parse(botTags[i]));
+                    var activity = 0;
+                    var useNameAsLabel = false;
+
+                    try
+                    {
+                        activity = int.Parse(botStatuses[i]);
+                        useNameAsLabel = bool.Parse(botTags[i]);
+                    }catch(Exception e)
+                    {
+                        if(e is FormatException || e is ArgumentNullException || e is IndexOutOfRangeException)
+                        {
+                            Logger.Error(e);
+                            activity = 0;
+                            useNameAsLabel = false;
+                        }
+                    }
+
+                    var info = new BotInformation(botNames[i], botAddresses[i] + ":" + botPorts[i], botTokens[i], activity, useNameAsLabel);
                     var bot = new Bot(info, Environment.GetEnvironmentVariable("STEAM_API_KEY"), IsDocker);
                     await bot.StartAsync();
                     Bots.Add(bot.Information.Address, bot);
@@ -50,7 +68,7 @@ namespace PlayerCountBot
             {
                 if (!File.Exists("./Config.json"))
                 {
-                    Logger.Error("[PlayerCountBot]:: Creating new config file. Please configure the Config.json file, and restart the program.");
+                    Logger.Warn("[PlayerCountBot]:: Creating new config file. Please configure the Config.json file, and restart the program.");
                     Config.CreateDefaults();
                     File.WriteAllText("./Config.json", JsonConvert.SerializeObject(Config, Formatting.Indented));
                     Console.ReadLine();
@@ -59,10 +77,10 @@ namespace PlayerCountBot
 
                 if (File.Exists("./Config.json"))
                 {
-                    Logger.Info("[PlayerCountBot]:: Loading config file.");
+                    Logger.Info("[PlayerCountBot]:: Loading Config.json.");
                     string fileContents = await File.ReadAllTextAsync("./Config.json");
                     Config = JsonConvert.DeserializeObject<BotConfig>(fileContents);
-                    Logger.Debug($"[PlayerCountBot]:: Config.json loaded: {fileContents}");
+                    Logger.Debug($"[PlayerCountBot]:: Config.json loaded:\n{fileContents}");
 
                     foreach (var info in Config.ServerInformation)
                     {
