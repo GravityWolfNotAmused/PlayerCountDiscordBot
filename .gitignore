@@ -1,24 +1,9 @@
 DiscordPlayerCountBot/bin/Debug/netcoreapp3.1/Config.json
-*.swp
-*.*~
-*.csproj
-
-project.lock.json
-.DS_Store
-.vs
-*.pyc
-
-# Visual Studio Code
-.vscode
-
-# User-specific files
+DiscordPlayerCountBot/obj/*
 *.suo
 *.user
-*.userosscache
-*.sln.docstates
-
-# Build results
-./DiscordPlayerCountBot/bin
-./DiscordPlayerCountBot/obj
-
-./DiscordPlayerCountBot/Properties
+_ReSharper.*
+bin
+obj
+packages
+.vs
