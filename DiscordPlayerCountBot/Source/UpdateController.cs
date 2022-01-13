@@ -34,12 +34,13 @@ namespace PlayerCountBot
                 var botAddresses = Environment.GetEnvironmentVariable("BOT_PUBADDRESSES").Split(";");
                 var botPorts = Environment.GetEnvironmentVariable("BOT_PORTS").Split(";");
                 var botTokens = Environment.GetEnvironmentVariable("BOT_DISCORD_TOKENS").Split(";");
-
+                var botStatuses = Environment.GetEnvironmentVariable("BOT_STATUSES").Split(";");
+                var botTags = Environment.GetEnvironmentVariable("BOT_USENAMETAGS").Split(";");
                 Logger.Debug("[PlayerCountBot]:: Loading config.");
 
                 for(int i = 0; i < botNames.Length; i++)
                 {
-                    var info = new BotInformation(botNames[i], botAddresses[i] + ":" + botPorts[i], botTokens[i]);
+                    var info = new BotInformation(botNames[i], botAddresses[i] + ":" + botPorts[i], botTokens[i], Int32.Parse(botStatuses[i]), bool.Parse(botTags[i]));
                     var bot = new Bot(info, Environment.GetEnvironmentVariable("STEAM_API_KEY"), IsDocker);
                     await bot.StartAsync();
                     Bots.Add(bot.Information.Address, bot);
