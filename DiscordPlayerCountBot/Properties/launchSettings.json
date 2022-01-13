@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DiscordPlayerCountBot": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
