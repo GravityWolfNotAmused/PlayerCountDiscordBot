@@ -7,3 +7,5 @@ bin
 obj
 packages
 .vs
+build/Release/netcoreapp3.1/Config.json
+build
