@@ -1,0 +1,12 @@
+﻿version: "3.9"  # optional since v1.27.0
+services:
+  discordcounter:
+    build: .
+    environment:
+       BOT_Name: "ProjectZomboidBot"
+       BOT_PUBADDRESS: "127.0.0.1"
+       BOT_PORT: "16261"
+       BOT_DISCORD_TOKEN: "DiscordTokenHere"
+       BOT_UPDATE_TIME: "30"
+       BOT_STATUS: "3"
+       STEAM_API_KEY: "SteamAPIKeyHere"

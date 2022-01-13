@@ -1,9 +1,0 @@
-{
-  "runtimeOptions": {
-    "additionalProbingPaths": [
-      "D:\\Users\\Gravi\\.dotnet\\store\\|arch|\\|tfm|",
-      "D:\\Users\\Gravi\\.nuget\\packages",
-      "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-    ]
-  }
-}

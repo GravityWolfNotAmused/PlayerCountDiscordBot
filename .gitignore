@@ -1,3 +1,11 @@
-
 DiscordPlayerCountBot/bin/Debug/netcoreapp3.1/Config.json
-*.json
+DiscordPlayerCountBot/obj/*
+*.suo
+*.user
+_ReSharper.*
+bin
+obj
+packages
+.vs
+build/Release/netcoreapp3.1/Config.json
+build
