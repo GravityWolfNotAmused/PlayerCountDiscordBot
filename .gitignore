@@ -1,5 +1,5 @@
 
-DiscordPlayerCountBot/bin/Debug/netcoreapp3.1/Config.json
+DiscordPlayerCountBot/bin/*
 *.swp
 *.*~
 project.lock.json
