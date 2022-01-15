@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Security;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -21,14 +22,24 @@ namespace PlayerCountBot
 
         public UpdateController()
         {
-            if (Environment.GetEnvironmentVariable("ISDOCKER")!=null)
+            try
             {
-                IsDocker = bool.Parse(Environment.GetEnvironmentVariable("ISDOCKER"));
-            }
-            else
+                IsDocker = Environment.GetEnvironmentVariable("ISDOCKER") != null && bool.Parse(Environment.GetEnvironmentVariable("ISDOCKER"));
+            }catch(Exception e)
             {
+                if (e is ArgumentException || e is FormatException)
+                {
+                    Logger.Error("Error while parsing ISDOCKER variable. Please check your docker file, and fix your changes.", e);
+                }
+                
+                if (e is SecurityException)
+                {
+                    Logger.Error("A security error has happened when trying to fet ISDOCKER variable.", e);
+                }
+
                 IsDocker = false;
             }
+
             Config = new BotConfig(IsDocker);
             Bots = new Dictionary<string, Bot>();
         }
@@ -72,7 +83,8 @@ namespace PlayerCountBot
                     Bots.Add(bot.Information.Address, bot);
                 }
             }
-            else
+            
+            if (!IsDocker)
             {
                 if (!File.Exists("./Config.json"))
                 {
