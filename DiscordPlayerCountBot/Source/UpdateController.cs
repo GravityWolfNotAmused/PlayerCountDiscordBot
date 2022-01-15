@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Security;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -21,7 +22,24 @@ namespace PlayerCountBot
 
         public UpdateController()
         {
-            IsDocker = Environment.GetEnvironmentVariable("ISDOCKER") == "true";
+            try
+            {
+                IsDocker = Environment.GetEnvironmentVariable("ISDOCKER") != null && bool.Parse(Environment.GetEnvironmentVariable("ISDOCKER"));
+            }catch(Exception e)
+            {
+                if (e is ArgumentException || e is FormatException)
+                {
+                    Logger.Error("Error while parsing ISDOCKER variable. Please check your docker file, and fix your changes.", e);
+                }
+                
+                if (e is SecurityException)
+                {
+                    Logger.Error("A security error has happened when trying to fet ISDOCKER variable.", e);
+                }
+
+                IsDocker = false;
+            }
+
             Config = new BotConfig(IsDocker);
             Bots = new Dictionary<string, Bot>();
         }
@@ -39,7 +57,7 @@ namespace PlayerCountBot
                 var botStatuses = Environment.GetEnvironmentVariable("BOT_STATUSES").Split(";");
                 var botTags = Environment.GetEnvironmentVariable("BOT_USENAMETAGS").Split(";");
 
-                for(int i = 0; i < botNames.Length; i++)
+                for (int i = 0; i < botNames.Length; i++)
                 {
                     var activity = 0;
                     var useNameAsLabel = false;
@@ -48,9 +66,10 @@ namespace PlayerCountBot
                     {
                         activity = int.Parse(botStatuses[i]);
                         useNameAsLabel = bool.Parse(botTags[i]);
-                    }catch(Exception e)
+                    }
+                    catch (Exception e)
                     {
-                        if(e is FormatException || e is ArgumentNullException || e is IndexOutOfRangeException)
+                        if (e is FormatException || e is ArgumentNullException || e is IndexOutOfRangeException)
                         {
                             Logger.Error(e);
                             activity = 0;
@@ -64,7 +83,8 @@ namespace PlayerCountBot
                     Bots.Add(bot.Information.Address, bot);
                 }
             }
-            else
+            
+            if (!IsDocker)
             {
                 if (!File.Exists("./Config.json"))
                 {
@@ -96,7 +116,7 @@ namespace PlayerCountBot
 
         public async Task UpdatePlayerCounts()
         {
-            foreach(var bot in Bots.Values)
+            foreach (var bot in Bots.Values)
             {
                 await bot.UpdateAsync();
             }
@@ -166,7 +186,7 @@ namespace PlayerCountBot
             timer.Enabled = true;
             timer.Start();
             Logger.Info($"[PlayerCountBot]:: Update timer started");
-            Logger.Info($"[PlayerCountBot]:: Timer set to go off every: {time/1000} second(s)");
+            Logger.Info($"[PlayerCountBot]:: Timer set to go off every: {time / 1000} second(s)");
         }
 
         public async void OnProcessExit(object sender, EventArgs e)
