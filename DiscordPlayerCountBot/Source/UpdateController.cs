@@ -21,7 +21,14 @@ namespace PlayerCountBot
 
         public UpdateController()
         {
-            IsDocker = Environment.GetEnvironmentVariable("ISDOCKER") == "true";
+            if (Environment.GetEnvironmentVariable("ISDOCKER")!=null)
+            {
+                IsDocker = bool.Parse(Environment.GetEnvironmentVariable("ISDOCKER"));
+            }
+            else
+            {
+                IsDocker = false;
+            }
             Config = new BotConfig(IsDocker);
             Bots = new Dictionary<string, Bot>();
         }
@@ -39,7 +46,7 @@ namespace PlayerCountBot
                 var botStatuses = Environment.GetEnvironmentVariable("BOT_STATUSES").Split(";");
                 var botTags = Environment.GetEnvironmentVariable("BOT_USENAMETAGS").Split(";");
 
-                for(int i = 0; i < botNames.Length; i++)
+                for (int i = 0; i < botNames.Length; i++)
                 {
                     var activity = 0;
                     var useNameAsLabel = false;
@@ -48,9 +55,10 @@ namespace PlayerCountBot
                     {
                         activity = int.Parse(botStatuses[i]);
                         useNameAsLabel = bool.Parse(botTags[i]);
-                    }catch(Exception e)
+                    }
+                    catch (Exception e)
                     {
-                        if(e is FormatException || e is ArgumentNullException || e is IndexOutOfRangeException)
+                        if (e is FormatException || e is ArgumentNullException || e is IndexOutOfRangeException)
                         {
                             Logger.Error(e);
                             activity = 0;
@@ -96,7 +104,7 @@ namespace PlayerCountBot
 
         public async Task UpdatePlayerCounts()
         {
-            foreach(var bot in Bots.Values)
+            foreach (var bot in Bots.Values)
             {
                 await bot.UpdateAsync();
             }
@@ -166,7 +174,7 @@ namespace PlayerCountBot
             timer.Enabled = true;
             timer.Start();
             Logger.Info($"[PlayerCountBot]:: Update timer started");
-            Logger.Info($"[PlayerCountBot]:: Timer set to go off every: {time/1000} second(s)");
+            Logger.Info($"[PlayerCountBot]:: Timer set to go off every: {time / 1000} second(s)");
         }
 
         public async void OnProcessExit(object sender, EventArgs e)
