@@ -125,23 +125,29 @@ namespace PlayerCountBot
 
                     if(Information.ChannelID.HasValue)
                     {
-                        if (!(DiscordClient.GetChannel(Information.ChannelID.Value) is SocketGuildChannel channel))
+                        IDiscordClient socket = DiscordClient;
+                        IGuildChannel channel = (IGuildChannel)await socket.GetChannelAsync(Information.ChannelID.Value);
+
+                        if (channel is null)
                         {
                             var exception = new ArgumentException();
                             Logger.Error($"Invalid Channel Id: {Information.ChannelID}, Channel was not found.", exception);
                             throw exception;
                         }
 
-                        if(channel is SocketTextChannel)
+                        if (channel != null)
                         {
-                            gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
-                        }
+                            if (channel is ITextChannel)
+                            {
+                                gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
+                            }
 
-                        //Keep in mind there is a massive rate limit on this call that is specific to discord, and not Discord.Net
-                        //2x per 10 minutes
-                        //https://discord.com/developers/docs/topics/rate-limits
-                        //https://www.reddit.com/r/Discord_Bots/comments/qzrl5h/channel_name_edit_rate_limit/
-                        await channel.ModifyAsync(prop => prop.Name = gameStatus);
+                            //Keep in mind there is a massive rate limit on this call that is specific to discord, and not Discord.Net
+                            //2x per 10 minutes
+                            //https://discord.com/developers/docs/topics/rate-limits
+                            //https://www.reddit.com/r/Discord_Bots/comments/qzrl5h/channel_name_edit_rate_limit/
+                            await channel.ModifyAsync(prop => prop.Name = gameStatus);
+                        }
                     }
                 }
             }
