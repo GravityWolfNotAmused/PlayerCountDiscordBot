@@ -59,9 +59,9 @@ namespace PlayerCountBot
 
                 var channelIDs = new List<ulong?>();
 
-                if(Environment.GetEnvironmentVariables().Contains("CHANNELIDS"))
+                if(Environment.GetEnvironmentVariables().Contains("BOT_CHANNELIDS"))
                 {
-                    var channelIDStrings = Environment.GetEnvironmentVariable("CHANNELIDS").Split(";");
+                    var channelIDStrings = Environment.GetEnvironmentVariable("BOT_CHANNELIDS").Split(";");
 
                     foreach (var channelIDString in channelIDStrings)
                     {
