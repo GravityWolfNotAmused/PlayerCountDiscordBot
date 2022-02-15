@@ -5,16 +5,18 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>.\build\Release\</OutputPath>
+    <OutputPath></OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.3.1" />
     <PackageReference Include="log4net" Version="2.0.14" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="SteamQueryNet" Version="1.0.6" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="..\.dockerignore" />
+    <None Remove="README.MD" />
 	<None Update="log4net.config">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>

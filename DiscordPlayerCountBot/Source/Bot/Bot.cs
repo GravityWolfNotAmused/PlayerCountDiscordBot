@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace PlayerCountBot
@@ -15,7 +16,9 @@ namespace PlayerCountBot
         public BotInformation Information { get; set; }
         public string Token { get; set; }
         public DiscordSocketClient DiscordClient { get; set; }
+
         public bool IsDocker { get; set; }
+
         public ILog Logger = LogManager.GetLogger(typeof(Bot));
 
         public Bot(BotInformation info, string steamAPIToken, bool isDocker = false)
@@ -56,7 +59,6 @@ namespace PlayerCountBot
 
         public async Task UpdateAsync()
         {
-
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://api.steampowered.com/IGameServersService/GetServerList/v1/?key={Token}&filter=\\addr\\{Information.Address}");
             string responseDataStr = string.Empty;
 
@@ -81,22 +83,11 @@ namespace PlayerCountBot
             if (responseDataStr != string.Empty)
             {
                 SteamServerListResponse responseObject = JsonConvert.DeserializeObject<SteamServerListResponse>(responseDataStr);
-                string serverPort = Information.Address.Split(":")[1];
+                var serverPortAndAddress = GetAddressAndPort();
 
-                try
-                {
-                    int.Parse(serverPort);
-                }catch(ArgumentException e)
-                {
-                    Logger.Error(e);
-                }catch(FormatException fe)
-                {
-                    Logger.Error(fe);
-                }
+                SteamApiResponseData data = responseObject.GetServerDataByPort(serverPortAndAddress.Item2.ToString());
 
-                SteamApiResponseData data = responseObject.GetServerDataByPort(serverPort);
-
-                if(data == null)
+                if (data == null)
                 {
                     Logger.Warn($"[PlayerCountBot]:: No data for address: {Information.Address}");
                     return;
@@ -127,10 +118,31 @@ namespace PlayerCountBot
                     {
                         Logger.Warn($"[PlayerCountBot]:: Config for bot at address: {Information.Address} has an invalid activity type: {Information.Status}");
                     }
-                    
+
                     var activityType = (ActivityType)(activityInteger);
                     await DiscordClient.SetGameAsync(gameStatus, null, activityType);
                     Logger.Debug($"[PlayerCountBot]:: Changed Status of: {Information.Address}, Status: {gameStatus}, Activity: {activityInteger}");
+
+                    if(Information.ChannelID.HasValue)
+                    {
+                        if (!(DiscordClient.GetChannel(Information.ChannelID.Value) is SocketGuildChannel channel))
+                        {
+                            var exception = new ArgumentException();
+                            Logger.Error($"Invalid Channel Id: {Information.ChannelID}, Channel was not found.", exception);
+                            throw exception;
+                        }
+
+                        if(channel is SocketTextChannel)
+                        {
+                            gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
+                        }
+
+                        //Keep in mind there is a massive rate limit on this call that is specific to discord, and not Discord.Net
+                        //2x per 10 minutes
+                        //https://discord.com/developers/docs/topics/rate-limits
+                        //https://www.reddit.com/r/Discord_Bots/comments/qzrl5h/channel_name_edit_rate_limit/
+                        await channel.ModifyAsync(prop => prop.Name = gameStatus);
+                    }
                 }
             }
 
@@ -158,6 +170,27 @@ namespace PlayerCountBot
             }
 
             return publicIPAddress.Replace("\n", "");
+        }
+
+        public Tuple<string, ushort> GetAddressAndPort()
+        {
+            string[] splitData = Information.Address.Split(":");
+            try
+            {
+                ushort port = ushort.Parse(splitData[1]);
+                return new Tuple<string, ushort>(splitData[0], port);
+            }
+            catch(Exception e)
+            {
+                if(e is ArgumentNullException || e is FormatException || e is OverflowException)
+                {
+                    var exception = new ArgumentException();
+                    Logger.Error($"[PlayerCountBot]:: Port {splitData[1]} is invalid for a port value.", exception);
+                    throw exception;
+                }
+            }
+
+            return null;
         }
     }
 }
