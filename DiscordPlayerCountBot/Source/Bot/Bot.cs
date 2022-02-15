@@ -32,7 +32,10 @@ namespace PlayerCountBot
             IsDocker = isDocker;
             Token = steamAPIToken;
 
-            DiscordClient = new DiscordSocketClient();
+            DiscordClient = new DiscordSocketClient(new DiscordSocketConfig()
+            {
+                HandlerTimeout = null
+            });
         }
 
         public async Task StartAsync()
@@ -171,7 +174,7 @@ namespace PlayerCountBot
             catch (WebException ex)
             {
                 Logger.Error(ex);
-                Logger.Error("[PlayerCountBot]:: Error Reaching ifconfig.me");
+                Logger.Error($"[PlayerCountBot]:: Error Reaching ifconfig.me: {ex.Status}");
                 return publicIPAddress;
             }
 
