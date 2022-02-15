@@ -41,18 +41,35 @@ After you have added your Steam API key, and your bot's token you must add the `
 
 ![image](https://user-images.githubusercontent.com/24533882/149276263-edc7a259-9751-4125-84c9-e949cad7324a.png)
 
-### Please note:
-
-You may use `localhost` or `hostname` as your server address for the application to automatically resolve the hosts IP.
-![image](https://user-images.githubusercontent.com/24533882/149276420-04551e2b-7516-437b-960c-f2493463325d.png)
-
-
 # Invite Your Bot
 After all configuration steps have been taken, we must start the bot and invite them into our discord. The bot needs no special permissions due to it's responsibility being to update it's status. In order to invite your discord bot, you must replace `{clientID}` with your bots client ID in the URL below, this means you must also remove the curly braces too. If you do not know where to obtain your bot's client ID, navigate to `General Information` tab on the Discord Developer Portal the bot you wish, and copy your Client ID from there.
 
 ```
 https://discord.com/oauth2/authorize?client_id={clientID}&scope=bot
 ```
+
+### Additional Features:
+
+- You may use `localhost` or `hostname` as your server address for the application to automatically resolve the hosts IP.
+![image](https://user-images.githubusercontent.com/24533882/149276420-04551e2b-7516-437b-960c-f2493463325d.png)
+
+- You may add the ChannelID variable to any bot to have the bot update the name of a text channel, or voice channel.
+  - ChanelID does not need to be specified in either Docker, or Executable instances. (If you don't want it don't include it in configuration files.)
+  - **Note:** Channel updates are rate limited to 2 requests per 10 mins. No matter how often your bot updates it's activity it will never update the channel as often.
+  - This rate limit is enforced by Discord, and not the library used Discord.Net
+
+![image](https://user-images.githubusercontent.com/24533882/153981476-4b258809-1860-4ec3-8454-bf826538bca7.png)
+
+**Voice Channel Format:**
+
+![image](https://user-images.githubusercontent.com/24533882/153981685-d84541e4-aa21-4731-a27d-448bb9a0332e.png)
+
+**Text Channel Format:**
+
+*Note: Text Channel names are limited to [a-z0-9-_]{2,100}*
+
+![image](https://user-images.githubusercontent.com/24533882/153981690-130a1ca1-02ba-4d95-a5a0-4e98cd192443.png)
+
 # Docker Support
 ### TBD
 
@@ -61,4 +78,3 @@ All logging is tied behind _isDebug variable in the Config.json. Please report a
 
 # Changes
 Please fork this repository, and make a pull request for the changes you'd like to see to the project.
-
