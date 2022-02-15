@@ -67,7 +67,7 @@ namespace PlayerCountBot
                     {
                         try
                         {
-                            channelIDs.Add(ulong.Parse(channelIDString));
+                            channelIDs.Add(Convert.ToUInt64(channelIDString));
                         }
                         catch (Exception e)
                         {
@@ -128,7 +128,6 @@ namespace PlayerCountBot
                     Config.CreateDefaults();
                     File.WriteAllText("./Config.json", JsonConvert.SerializeObject(Config, Formatting.Indented));
                     Console.ReadLine();
-                    Environment.Exit(-1);
                 }
 
                 if (File.Exists("./Config.json"))
@@ -172,10 +171,7 @@ namespace PlayerCountBot
             {
                 Logger.Error(ex.StackTrace);
                 Logger.Error(ex.Message);
-                Logger.Error($"[PlayerCountBot]:: Restarting due to error, Please send crash log to https://discord.gg/FPXdPjcX27.");
-
-                Process.Start(AppDomain.CurrentDomain.FriendlyName);
-                Environment.Exit(0);
+                Logger.Error($"[PlayerCountBot]:: Please send crash log to https://discord.gg/FPXdPjcX27.");
             }
         }
 
@@ -200,7 +196,7 @@ namespace PlayerCountBot
 
                 if (IsDocker)
                 {
-                    time = Int32.Parse(timeValue) * 1000;
+                    time = int.Parse(timeValue) * 1000;
                 }
             }
             catch (Exception ex)
