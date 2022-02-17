@@ -26,7 +26,13 @@ namespace PlayerCountBot
         public void CreateDefaults()
         {
 
-            ServerInformation.Add(new BotInformation("VPPTestBot", "127.0.0.1:27014", "DiscordTokenHere"));
+            ServerInformation.Add(new BotInformation() { 
+                Name = "VPPTestBot",
+                Address = "127.0.0.1:27014",
+                Token = "DiscordTokenHere",
+                Status = 0,
+                UseNameAsLabel = false
+            });
             UpdateTime = 30;
             SteamAPIKey = "SteamAPIKeyHere";
         }

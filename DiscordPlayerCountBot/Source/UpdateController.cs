@@ -57,6 +57,28 @@ namespace PlayerCountBot
                 var botStatuses = Environment.GetEnvironmentVariable("BOT_STATUSES").Split(";");
                 var botTags = Environment.GetEnvironmentVariable("BOT_USENAMETAGS").Split(";");
 
+                var channelIDs = new List<ulong?>();
+
+                if(Environment.GetEnvironmentVariables().Contains("BOT_CHANNELIDS"))
+                {
+                    var channelIDStrings = Environment.GetEnvironmentVariable("BOT_CHANNELIDS").Split(";");
+
+                    foreach (var channelIDString in channelIDStrings)
+                    {
+                        try
+                        {
+                            channelIDs.Add(Convert.ToUInt64(channelIDString));
+                        }
+                        catch (Exception e)
+                        {
+                            if (e is FormatException || e is OverflowException)
+                            {
+                                Logger.Error($"Could not parse Channel ID: {channelIDString}", e);
+                            }
+                        }
+                    }
+                }
+
                 for (int i = 0; i < botNames.Length; i++)
                 {
                     var activity = 0;
@@ -77,7 +99,21 @@ namespace PlayerCountBot
                         }
                     }
 
-                    var info = new BotInformation(botNames[i], botAddresses[i] + ":" + botPorts[i], botTokens[i], activity, useNameAsLabel);
+                    ulong? channelID = null;
+
+                    if (i < channelIDs.Count)
+                        channelID = channelIDs[i];
+
+                    var info = new BotInformation()
+                    {
+                        Name = botNames[i],
+                        Address = botAddresses[i] + ":" + botPorts[i],
+                        Token = botTokens[i],
+                        Status = activity,
+                        UseNameAsLabel = useNameAsLabel,
+                        ChannelID = channelID ?? null
+                    };
+
                     var bot = new Bot(info, Environment.GetEnvironmentVariable("STEAM_API_KEY"), IsDocker);
                     await bot.StartAsync();
                     Bots.Add(bot.Information.Address, bot);
@@ -92,14 +128,17 @@ namespace PlayerCountBot
                     Config.CreateDefaults();
                     File.WriteAllText("./Config.json", JsonConvert.SerializeObject(Config, Formatting.Indented));
                     Console.ReadLine();
-                    Environment.Exit(-1);
                 }
 
                 if (File.Exists("./Config.json"))
                 {
                     Logger.Info("[PlayerCountBot]:: Loading Config.json.");
                     string fileContents = await File.ReadAllTextAsync("./Config.json");
-                    Config = JsonConvert.DeserializeObject<BotConfig>(fileContents);
+                    Config = JsonConvert.DeserializeObject<BotConfig>(fileContents, new JsonSerializerSettings()
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
                     Logger.Debug($"[PlayerCountBot]:: Config.json loaded:\n{fileContents}");
 
                     foreach (var info in Config.ServerInformation)
@@ -132,10 +171,7 @@ namespace PlayerCountBot
             {
                 Logger.Error(ex.StackTrace);
                 Logger.Error(ex.Message);
-                Logger.Error($"[PlayerCountBot]:: Restarting due to error, Please send crash log to https://discord.gg/FPXdPjcX27.");
-
-                Process.Start(AppDomain.CurrentDomain.FriendlyName);
-                Environment.Exit(0);
+                Logger.Error($"[PlayerCountBot]:: Please send crash log to https://discord.gg/FPXdPjcX27.");
             }
         }
 
@@ -160,7 +196,7 @@ namespace PlayerCountBot
 
                 if (IsDocker)
                 {
-                    time = Int32.Parse(timeValue) * 1000;
+                    time = int.Parse(timeValue) * 1000;
                 }
             }
             catch (Exception ex)

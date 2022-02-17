@@ -9,4 +9,5 @@ services:
        BOT_DISCORD_TOKEN: "DiscordTokenHere"
        BOT_UPDATE_TIME: "30"
        BOT_STATUS: "3"
+       BOT_CHANNELIDS: "824409821985636452;824409821985636453" #If you do not wish to update a text/voice channels name you may remove this line.
        STEAM_API_KEY: "SteamAPIKeyHere"

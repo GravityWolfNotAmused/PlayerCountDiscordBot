@@ -19,18 +19,7 @@ namespace PlayerCountBot
         [JsonProperty]
         public bool UseNameAsLabel { get; set; }
 
-        public BotInformation()
-        {
-
-        }
-
-        public BotInformation(string name, string address, string token, int status = 1, bool useNameAsLabel = false)
-        {
-            Name = name;
-            Address = address;
-            Token = token;
-            Status = status;
-            UseNameAsLabel = UseNameAsLabel;
-        }
+        [JsonProperty]
+        public ulong? ChannelID { get; set; }
     }
 }
