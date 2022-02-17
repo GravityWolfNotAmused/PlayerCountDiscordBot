@@ -41,24 +41,119 @@ After you have added your Steam API key, and your bot's token you must add the `
 
 ![image](https://user-images.githubusercontent.com/24533882/149276263-edc7a259-9751-4125-84c9-e949cad7324a.png)
 
-### Please note:
-
-You may use `localhost` or `hostname` as your server address for the application to automatically resolve the hosts IP.
-![image](https://user-images.githubusercontent.com/24533882/149276420-04551e2b-7516-437b-960c-f2493463325d.png)
-
-
 # Invite Your Bot
 After all configuration steps have been taken, we must start the bot and invite them into our discord. The bot needs no special permissions due to it's responsibility being to update it's status. In order to invite your discord bot, you must replace `{clientID}` with your bots client ID in the URL below, this means you must also remove the curly braces too. If you do not know where to obtain your bot's client ID, navigate to `General Information` tab on the Discord Developer Portal the bot you wish, and copy your Client ID from there.
 
 ```
 https://discord.com/oauth2/authorize?client_id={clientID}&scope=bot
 ```
+
+### Additional Features:
+
+- You may use `localhost` or `hostname` as your server address for the application to automatically resolve the hosts IP.
+![image](https://user-images.githubusercontent.com/24533882/149276420-04551e2b-7516-437b-960c-f2493463325d.png)
+
+- You may add the ChannelID variable to any bot to have the bot update the name of a text channel, or voice channel.
+  - ChanelID does not need to be specified in either Docker, or Executable instances. (If you don't want it don't include it in configuration files.)
+  - **Note:** Channel updates are rate limited to 2 requests per 10 mins. No matter how often your bot updates it's activity it will never update the channel as often.
+  - This rate limit is enforced by Discord, and not the library used Discord.Net
+
+![image](https://user-images.githubusercontent.com/24533882/153981476-4b258809-1860-4ec3-8454-bf826538bca7.png)
+
+**Voice Channel Format:**
+
+![image](https://user-images.githubusercontent.com/24533882/153981685-d84541e4-aa21-4731-a27d-448bb9a0332e.png)
+
+**Text Channel Format:**
+
+*Note: Text Channel names are limited to [a-z0-9-_]{2,100}*
+
+![image](https://user-images.githubusercontent.com/24533882/153981690-130a1ca1-02ba-4d95-a5a0-4e98cd192443.png)
+
 # Docker Support
-### TBD
+[Get Docker](https://docs.docker.com/get-docker/)
+
+## Version Tags
+
+| Tag | Description |
+| :----: | --- |
+| latest | Latest stable releases |
+| Beta | May be unstable and contain unfinished features |
+
+## Usage
+
+There are two ways to deploy bots with Docker.
+
+### docker-compose (recommended)
+
+ 1. Create `docker-compose.yml` file 
+ 2. Copy into the file
+  ```yaml
+  version: "3.7"
+
+  services:
+    discord-bot:
+       image: specker/discordplayercountbot
+       environment:
+         BOT_NAMES: "Bot1;Bot2"
+         BOT_PUBADDRESSES: "127.0.0.1;127.0.0.1"
+         BOT_PORTS: "16261;16262"
+         BOT_DISCORD_TOKENS: "DiscordToken1;DiscordToken2"
+         BOT_UPDATE_TIME: "30"
+         BOT_STATUSES: "1;2"
+         BOT_USENAMETAGS: "false;false"
+         STEAM_API_KEY: "your steam api key"
+  ```
+ 3. Edit variables and save the File
+ 4. Open terminal in a location of `docker-compose.yml` file and type `docker-compose up`
+ 5. Press Enter
+
+### docker commandline
+
+ 1. Open Terminal
+ 2. Type:
+  ```bash
+  docker run \
+    --name=PlayerCounterDiscordBot \
+    -e BOT_NAMES='Bot1;Bot2' \
+    -e BOT_PUBADDRESSES='127.0.0.1;127.0.0.1' \
+    -e BOT_PORTS='16261;16262' \
+    -e BOT_DISCORD_TOKENS='DiscordToken1;DiscordToken2' \
+    -e BOT_UPDATE_TIME='30' \
+    -e BOT_STATUSES='1;2' \
+    -e BOT_USENAMETAGS='false;false' \
+    -e STEAM_API_KEY='your steam api key' \
+    specker/discordplayercountbot
+  ```
+ 3. Edit values in single quotes and press enter
+
+## Enviroment Variables
+
+Container images are configured with help of those variables.
+
+| Variable | Function |
+| :----: | --- |
+| `BOT_NAMES` | Names of bots |
+| `BOT_PUBADDRESSES` | Addresses of gameservers |
+| `BOT_PORTS` | Query ports of gameservers |
+| `BOT_DISCORD_TOKENS` | Discord Bots tokens |
+| `BOT_STATUSES` | Discord Bots statuses |
+| `BOT_USENAMETAGS` | "TBD" |
+| `STEAM_API_KEY` | Steam Api Key |
+| `BOT_UPDATE_TIME` | How often bot should refresh |
+
+To declare Multiple bots in docker separate values in `BOT_NAMES`, `BOT_PUBADDRESSES`, `BOT_PORTS`, `BOT_DISCORD_TOKENS`, `BOT_STATUSES` and `BOT_USENAMETAGS` with `;` 
+ 
+ Example:
+  
+  One bot:
+   `BOT_NAMES='Bot1'`
+  
+  Two bots:
+   `BOT_NAMES='Bot1;Bot2'`
 
 # Issues
 All logging is tied behind _isDebug variable in the Config.json. Please report any issues to [Issues tab](https://github.com/GravityWolfNotAmused/PlayerCountDiscordBot/issues).
 
 # Changes
 Please fork this repository, and make a pull request for the changes you'd like to see to the project.
-
