@@ -56,7 +56,7 @@ namespace PlayerCountBot
         public string gametype { get; set; }
 
 
-        public string GetQueueCount()
+        public int GetQueueCount()
         {
             if (gametype != null)
             {
@@ -70,12 +70,12 @@ namespace PlayerCountBot
                         {
                             string queueCount = str.Replace("lqs", "");
 
-                            return queueCount;
+                            return int.Parse(queueCount);
                         }
                     }
                 }
             }
-            return "";
+            return 0;
         }
     }
 }

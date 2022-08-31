@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Security;
 using System.Threading.Tasks;
 using System.Timers;
-
 using log4net;
 using Newtonsoft.Json;
+using PlayerCountBot;
 
-namespace PlayerCountBot
+namespace DiscordPlayerCountBot
 {
     public class UpdateController
     {
@@ -25,13 +24,14 @@ namespace PlayerCountBot
             try
             {
                 IsDocker = Environment.GetEnvironmentVariable("ISDOCKER") != null && bool.Parse(Environment.GetEnvironmentVariable("ISDOCKER"));
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 if (e is ArgumentException || e is FormatException)
                 {
                     Logger.Error("Error while parsing ISDOCKER variable. Please check your docker file, and fix your changes.", e);
                 }
-                
+
                 if (e is SecurityException)
                 {
                     Logger.Error("A security error has happened when trying to fet ISDOCKER variable.", e);
@@ -59,7 +59,7 @@ namespace PlayerCountBot
 
                 var channelIDs = new List<ulong?>();
 
-                if(Environment.GetEnvironmentVariables().Contains("BOT_CHANNELIDS"))
+                if (Environment.GetEnvironmentVariables().Contains("BOT_CHANNELIDS"))
                 {
                     var channelIDStrings = Environment.GetEnvironmentVariable("BOT_CHANNELIDS").Split(";");
 
@@ -111,7 +111,8 @@ namespace PlayerCountBot
                         Token = botTokens[i],
                         Status = activity,
                         UseNameAsLabel = useNameAsLabel,
-                        ChannelID = channelID ?? null
+                        ChannelID = channelID ?? null,
+                        SteamAPIToken = Environment.GetEnvironmentVariable("STEAM_API_KEY") ?? "",
                     };
 
                     var bot = new Bot(info, Environment.GetEnvironmentVariable("STEAM_API_KEY"), IsDocker);
@@ -119,7 +120,7 @@ namespace PlayerCountBot
                     Bots.Add(bot.Information.Address, bot);
                 }
             }
-            
+
             if (!IsDocker)
             {
                 if (!File.Exists("./Config.json"))
@@ -143,6 +144,7 @@ namespace PlayerCountBot
 
                     foreach (var info in Config.ServerInformation)
                     {
+                        info.SteamAPIToken = Config.SteamAPIKey;
                         var bot = new Bot(info, Config.SteamAPIKey);
                         await bot.StartAsync();
                         Bots.Add(bot.Information.Address, bot);
@@ -161,16 +163,14 @@ namespace PlayerCountBot
             }
         }
 
-        private async void OnTimerExecute(Object source, ElapsedEventArgs e)
+        private async void OnTimerExecute(object source, ElapsedEventArgs e)
         {
             try
             {
                 await UpdatePlayerCounts();
             }
-            catch (Exception ex)
+            catch
             {
-                Logger.Error(ex.StackTrace);
-                Logger.Error(ex.Message);
                 Logger.Error($"[PlayerCountBot]:: Please send crash log to https://discord.gg/FPXdPjcX27.");
             }
         }

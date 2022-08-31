@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace PlayerCountBot
+namespace DiscordPlayerCountBot
 {
     public class Program
     {
@@ -23,6 +23,8 @@ namespace PlayerCountBot
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(controller.OnProcessExit);
 
             controller.MainAsync().GetAwaiter().GetResult();
+
+
         }
     }
 }
