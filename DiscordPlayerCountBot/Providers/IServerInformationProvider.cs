@@ -5,6 +5,6 @@ namespace DiscordPlayerCountBot.Providers
 {
     public interface IServerInformationProvider
     {
-        Task<GenericServerInformation> GetServerInformation(BotInformation information);
+        Task<GenericServerInformation?> GetServerInformation(BotInformation information);
     }
 }
