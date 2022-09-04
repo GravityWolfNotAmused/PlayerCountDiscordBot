@@ -27,7 +27,7 @@ namespace PlayerCountBot
         {
 
             ServerInformation.Add(new BotInformation() { 
-                Name = "VPPTestBot",
+                Name = "TestBot",
                 Address = "127.0.0.1:27014",
                 Token = "DiscordTokenHere",
                 Status = 0,

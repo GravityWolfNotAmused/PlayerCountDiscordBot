@@ -90,7 +90,7 @@ namespace PlayerCountBot
             }
 
             var gameStatus = serverInformation.GetStatusString(Information.Name, Information.UseNameAsLabel);
-            var activityInteger = Information.Status <= 3 && Information.Status > 0 ? Information.Status : 0;
+            var activityInteger = Enum.IsDefined(typeof(ActivityType), Information.Status) ? Information.Status : (int)ActivityType.CustomStatus;
 
             if (Information.Status != activityInteger)
             {
@@ -99,7 +99,6 @@ namespace PlayerCountBot
 
             var activityType = (ActivityType)(activityInteger);
             await DiscordClient.SetGameAsync(gameStatus, null, activityType);
-            Logger.Debug($"[PlayerCountBot]:: Changed Status of: {Information.Address}, Status: {gameStatus}, Activity: {activityInteger}");
 
             if (Information.ChannelID.HasValue)
             {
