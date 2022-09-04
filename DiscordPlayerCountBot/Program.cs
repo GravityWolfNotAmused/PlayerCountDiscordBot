@@ -1,30 +1,18 @@
-﻿using log4net;
+﻿using DiscordPlayerCountBot;
 using log4net.Config;
-using System;
+using log4net;
 using System.IO;
 using System.Reflection;
+using System;
 
-namespace DiscordPlayerCountBot
-{
-    public class Program
-    {
-        static UpdateController controller;
+var repository = LogManager.GetRepository(Assembly.GetCallingAssembly());
+var fileInfo = new FileInfo(@"log4net.config");
+XmlConfigurator.Configure(repository, fileInfo);
 
-        static void Main(string[] args)
-        {
-            var repository = LogManager.GetRepository(Assembly.GetCallingAssembly());
-            var fileInfo = new FileInfo(@"log4net.config");
-            XmlConfigurator.Configure(repository, fileInfo);
+var tempLogger = LogManager.GetLogger(typeof(Program));
+tempLogger.Info("[PlayerCountBot]:: Starting Bot Controller.");
 
-            var tempLogger = LogManager.GetLogger(typeof(Program));
-            tempLogger.Info("[PlayerCountBot]:: Starting Bot Controller.");
+var controller = new UpdateController();
+AppDomain.CurrentDomain.ProcessExit += new EventHandler(controller.OnProcessExit!);
 
-            controller = new UpdateController();
-            AppDomain.CurrentDomain.ProcessExit += new EventHandler(controller.OnProcessExit);
-
-            controller.MainAsync().GetAwaiter().GetResult();
-
-
-        }
-    }
-}
+controller.MainAsync().GetAwaiter().GetResult();

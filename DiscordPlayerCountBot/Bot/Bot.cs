@@ -1,6 +1,8 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using DiscordPlayerCountBot.Enum;
 using DiscordPlayerCountBot.Providers;
+using DiscordPlayerCountBot.Providers.Base;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -44,6 +46,8 @@ namespace PlayerCountBot
         {
             DataProviders.Add((int)DataProvider.STEAM, new SteamProvider());
             DataProviders.Add((int)DataProvider.CFX, new CFXProvider());
+            DataProviders.Add((int)DataProvider.SCUM, new ScumProvider());
+            DataProviders.Add((int)DataProvider.MINECRAFT, new MinecraftProvider());
         }
 
         public async Task StartAsync()
@@ -59,7 +63,7 @@ namespace PlayerCountBot
             Logger.Info($"[PlayerCountBot]:: Loaded {Information.Name} at address and port: {Information.Address}, {Information.ProviderType}");
 
             await DiscordClient.LoginAsync(TokenType.Bot, Information.Token);
-            await DiscordClient.SetGameAsync($"[PlayerCountBot]:: Starting Bot watching: {Information.Address}");
+            await DiscordClient.SetGameAsync($"Starting Bot: {Information.Address}");
             await DiscordClient.StartAsync();
         }
 

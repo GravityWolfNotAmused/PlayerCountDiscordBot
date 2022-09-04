@@ -4,6 +4,7 @@ using System.IO;
 using System.Security;
 using System.Threading.Tasks;
 using System.Timers;
+using DiscordPlayerCountBot.Json;
 using log4net;
 using Newtonsoft.Json;
 using PlayerCountBot;
@@ -12,12 +13,12 @@ namespace DiscordPlayerCountBot
 {
     public class UpdateController
     {
-        readonly ILog Logger = LogManager.GetLogger(typeof(UpdateController));
-        readonly Dictionary<string, Bot> Bots;
-        readonly bool IsDocker;
+        private ILog Logger = LogManager.GetLogger(typeof(UpdateController));
+        private Dictionary<string, Bot> Bots = new();
+        private bool IsDocker;
 
-        BotConfig Config;
-        Timer timer;
+        private BotConfig Config;
+        private Timer timer;
 
         public UpdateController()
         {
@@ -41,7 +42,6 @@ namespace DiscordPlayerCountBot
             }
 
             Config = new BotConfig(IsDocker);
-            Bots = new Dictionary<string, Bot>();
         }
 
         async Task LoadConfig()
@@ -135,10 +135,7 @@ namespace DiscordPlayerCountBot
                 {
                     Logger.Info("[PlayerCountBot]:: Loading Config.json.");
                     string fileContents = await File.ReadAllTextAsync("./Config.json");
-                    Config = JsonConvert.DeserializeObject<BotConfig>(fileContents, new JsonSerializerSettings()
-                    {
-                        NullValueHandling = NullValueHandling.Ignore
-                    });
+                    Config = JsonHelper.DeserializeObject<BotConfig>(fileContents);
 
                     Logger.Debug($"[PlayerCountBot]:: Config.json loaded:\n{fileContents}");
 
@@ -169,9 +166,9 @@ namespace DiscordPlayerCountBot
             {
                 await UpdatePlayerCounts();
             }
-            catch
+            catch(Exception ex)
             {
-                Logger.Error($"[PlayerCountBot]:: Please send crash log to https://discord.gg/FPXdPjcX27.");
+                Logger.Error($"[PlayerCountBot]:: Please send crash log to https://discord.gg/FPXdPjcX27.", ex);
             }
         }
 

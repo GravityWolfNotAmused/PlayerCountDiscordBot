@@ -1,36 +1,23 @@
-﻿using DiscordPlayerCountBot.Source.CFX;
-using Newtonsoft.Json;
+﻿using DiscordPlayerCountBot.Http;
+using DiscordPlayerCountBot.Source.CFX;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace DiscordPlayerCountBot.Services
 {
     public class CFXService : ICFXService
     {
-        public async Task<List<CFXPlayerInformation>> GetPlayerInformationAsync(string address)
+        public async Task<List<CFXPlayerInformation>?> GetPlayerInformationAsync(string address)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"http://{address}/Players.json");
-
-            using HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync();
-            using Stream stream = response.GetResponseStream();
-            using StreamReader reader = new StreamReader(stream);
-            var responseDataStr = await reader.ReadToEndAsync();
-            var responseObject = JsonConvert.DeserializeObject<List<CFXPlayerInformation>>(responseDataStr);
-            return responseObject;
+            using var httpClient = new HttpExecuter(new HttpClient());
+            return await httpClient.GET<object, List<CFXPlayerInformation>>($"http://{address}/Players.json");
         }
 
-        public async Task<CFXServer> GetServerInformationAsync(string address)
+        public async Task<CFXServer?> GetServerInformationAsync(string address)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"http://{address}/Info.json");
-
-            using HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync();
-            using Stream stream = response.GetResponseStream();
-            using StreamReader reader = new StreamReader(stream);
-            var responseDataStr = await reader.ReadToEndAsync();
-            var responseObject = JsonConvert.DeserializeObject<CFXServer>(responseDataStr);
-            return responseObject;
+            using var httpClient = new HttpExecuter(new HttpClient());
+            return await httpClient.GET<object, CFXServer>($"http://{address}/Info.json");
         }
     }
 }

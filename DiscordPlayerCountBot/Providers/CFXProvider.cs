@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using DiscordPlayerCountBot.Providers.Base;
 using DiscordPlayerCountBot.Services;
 using log4net;
 using PlayerCountBot;
 
 namespace DiscordPlayerCountBot.Providers
 {
-    public class CFXProvider : IServerInformationProvider
+    public class CFXProvider : ServerInformationProvider
     {
-        public ILog Logger = LogManager.GetLogger(typeof(SteamProvider));
+        private ILog Logger = LogManager.GetLogger(typeof(SteamProvider));
 
-        public async Task<GenericServerInformation?> GetServerInformation(BotInformation information)
+        public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information)
         {
             var service = new CFXService();
 
@@ -27,6 +29,12 @@ namespace DiscordPlayerCountBot.Providers
                 if (serverInfo == null)
                     throw new ApplicationException("Server Information cannot be null. Is your server offline?");
 
+                if(WasLastExecutionAFailure)
+                {
+                    Logger.Info($"[CFXProvider] - Bot for Address: {information.Address} successfully fetched data after failure.");
+                    WasLastExecutionAFailure = false;
+                }
+
                 return new GenericServerInformation()
                 {
                     Address = addressAndPort.Item1,
@@ -37,11 +45,23 @@ namespace DiscordPlayerCountBot.Providers
             }
             catch(Exception e)
             {
-                if(e is WebException webException)
+                if (e.Message == LastException?.Message)
+                    return null;
+
+                WasLastExecutionAFailure = true;
+                LastException = e;
+
+                if(e is HttpRequestException requestException)
+                {
+                    Logger.Error($"[CFXProvider] - The CFX host has failed to respond.");
+                    return null;
+                }
+
+                if (e is WebException webException)
                 {
                     if (webException.Status == WebExceptionStatus.Timeout)
                     {
-                        Logger.Error($"[CFXProvider] - Speaking with CFX has timed out.", e);
+                        Logger.Error($"[CFXProvider] - Speaking with CFX has timed out.");
                         return null;
                     }
                     else if (webException.Status == WebExceptionStatus.ConnectFailure)
