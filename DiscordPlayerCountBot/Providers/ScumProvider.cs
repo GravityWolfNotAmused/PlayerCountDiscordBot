@@ -29,15 +29,16 @@ namespace DiscordPlayerCountBot.Providers
                 if (apiResponse.Servers == 0)
                     throw new ApplicationException("Response contained no valid servers.");
 
+                var server = apiResponse.GetScumServerData(addressAndPort.Item2);
+
+                if (server == null) throw new ApplicationException("Could not find Server in Scum Provider.");
+
                 if (WasLastExecutionAFailure)
                 {
                     Logger.Info($"[ScumProvider] - Bot for Address: {information.Address} successfully fetched data after failure.");
+                    LastException = null;
                     WasLastExecutionAFailure = false;
                 }
-
-                var server = apiResponse.GetScumServerDataByQueryPort(addressAndPort.Item2);
-
-                if (server == null) return null;
 
                 return new()
                 {

@@ -31,7 +31,7 @@ namespace DiscordPlayerCountBot.Providers
 
                 if (WasLastExecutionAFailure)
                 {
-                    Logger.Info($"[MinecraftProvider] - Bot for Address: {information.Address} successfully fetched data after failure.");
+                    Logger.Info($"[MinecraftProvider] - Bot for Address: {information.Address} successfully fetched data after failure."); LastException = null;
                     WasLastExecutionAFailure = false;
                 }
 

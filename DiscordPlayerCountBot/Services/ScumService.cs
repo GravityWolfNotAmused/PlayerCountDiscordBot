@@ -13,19 +13,10 @@ namespace DiscordPlayerCountBot.Services
             using var httpClient = new HttpExecuter(new HttpClient());
             var response = await httpClient.GET<object, ScumProviderResponse>($"https://api.hellbz.de/scum/api.php", new ScumGetServerInformationQueryParams()
             {
-                Address = address,
-                Port = port
-            });
-
-            if(response?.Success ?? false)
-            {
-                return response;
-            }
-
-            return await httpClient.GET<object, ScumProviderResponse>($"https://api.hellbz.de/scum/api.php", new ScumGetServerInformationQueryParams()
-            {
                 Address = address
             });
+            
+            return response;
         }
     }
 }

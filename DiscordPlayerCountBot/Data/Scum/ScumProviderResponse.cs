@@ -10,9 +10,9 @@ namespace DiscordPlayerCountBot.Data.Scum
         public int Servers { get; set; }
         public List<ScumServerData> Data { get; set; } = new();
 
-        public ScumServerData? GetScumServerDataByQueryPort(int queryPort)
+        public ScumServerData? GetScumServerData(int port)
         {
-            return Data.Where(data => data.QueryPort == queryPort).FirstOrDefault();
+            return Data.Where(data => data.QueryPort == port || data.Port == port).FirstOrDefault();
         }
     }
 }
