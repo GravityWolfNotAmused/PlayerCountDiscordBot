@@ -24,7 +24,7 @@ namespace DiscordPlayerCountBot.Providers
                 if (response == null)
                     throw new ApplicationException("Response cannot be null.");
 
-                if(!response.Online)
+                if (!response.Online)
                 {
                     Logger.Warn($"[MinecraftProvider] - The minecraft provider states the server is offline. Server counts may not be correct.");
                 }
@@ -45,7 +45,7 @@ namespace DiscordPlayerCountBot.Providers
                     PlayersInQueue = 0
                 };
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 if (e.Message == LastException?.Message)
                     return null;

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 namespace DiscordPlayerCountBot.Data.Minecraft
-{ 
+{
     public class MinecraftPlayerInfo
     {
         [JsonProperty("online")]

@@ -77,7 +77,7 @@ namespace DiscordPlayerCountBot
             {
                 await UpdatePlayerCounts();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Error($"[Bot Updater] - Please send crash log to https://discord.gg/FPXdPjcX27.", ex);
             }

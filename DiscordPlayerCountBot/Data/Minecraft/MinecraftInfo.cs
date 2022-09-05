@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace DiscordPlayerCountBot.Data.Minecraft
-{ 
+{
     public class MinecraftInfo
     {
         [JsonProperty("raw")]
