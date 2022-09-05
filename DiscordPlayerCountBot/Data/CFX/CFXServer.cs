@@ -18,14 +18,14 @@ namespace DiscordPlayerCountBot.Source.CFX
         public string Server { get; set; }
 
         [JsonProperty("vars")]
-        public CFXVars Vars { get; set; }
+        public CFXVars? Vars { get; set; }
 
         [JsonProperty("version")]
         public int Version { get; set; }
 
         public int GetMaxPlayers()
         {
-            return int.Parse(Vars.SvMaxClients);
+            return int.Parse(Vars?.SvMaxClients ?? "0");
         }
     }
 
@@ -59,34 +59,34 @@ namespace DiscordPlayerCountBot.Source.CFX
         public string OnesyncEnabled { get; set; }
 
         [JsonProperty("sv_enforceGameBuild")]
-        public string SvEnforceGameBuild { get; set; }
+        public string? SvEnforceGameBuild { get; set; }
 
         [JsonProperty("sv_enhancedHostSupport")]
-        public string SvEnhancedHostSupport { get; set; }
+        public string? SvEnhancedHostSupport { get; set; }
 
         [JsonProperty("sv_lan")]
-        public string SvLan { get; set; }
+        public string? SvLan { get; set; }
 
         [JsonProperty("sv_licenseKeyToken")]
-        public string SvLicenseKeyToken { get; set; }
+        public string? SvLicenseKeyToken { get; set; }
 
         [JsonProperty("sv_maxClients")]
-        public string SvMaxClients { get; set; }
+        public string? SvMaxClients { get; set; }
 
         [JsonProperty("sv_projectDesc")]
-        public string SvProjectDesc { get; set; }
+        public string? SvProjectDesc { get; set; }
 
         [JsonProperty("sv_projectName")]
-        public string SvProjectName { get; set; }
+        public string? SvProjectName { get; set; }
 
         [JsonProperty("sv_scriptHookAllowed")]
-        public string SvScriptHookAllowed { get; set; }
+        public string? SvScriptHookAllowed { get; set; }
 
         [JsonProperty("tags")]
-        public string Tags { get; set; }
+        public string? Tags { get; set; }
 
         [JsonProperty("txAdmin-version")]
-        public string TxAdminVersion { get; set; }
+        public string? TxAdminVersion { get; set; }
     }
 
 

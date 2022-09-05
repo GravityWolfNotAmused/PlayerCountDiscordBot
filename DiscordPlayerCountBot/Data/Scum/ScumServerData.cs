@@ -12,8 +12,8 @@ namespace DiscordPlayerCountBot.Data.Scum
         public int Players { get; set; }
         [JsonProperty("players_max")]
         public int MaxPlayers { get; set; }
-        public string Version { get; set; }
-        public string Time { get; set; }
+        public string? Version { get; set; }
+        public string? Time { get; set; }
         public bool Password { get; set; }
     }
 }

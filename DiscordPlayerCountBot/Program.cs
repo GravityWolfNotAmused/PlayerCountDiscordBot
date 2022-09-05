@@ -10,7 +10,7 @@ var fileInfo = new FileInfo(@"log4net.config");
 XmlConfigurator.Configure(repository, fileInfo);
 
 var tempLogger = LogManager.GetLogger(typeof(Program));
-tempLogger.Info("[PlayerCountBot]:: Starting Bot Controller.");
+tempLogger.Info("[Application]:: Starting Controller.");
 
 var controller = new UpdateController();
 AppDomain.CurrentDomain.ProcessExit += new EventHandler(controller.OnProcessExit!);

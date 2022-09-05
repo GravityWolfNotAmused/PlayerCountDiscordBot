@@ -20,7 +20,7 @@ namespace DiscordPlayerCountBot.Data.Minecraft
         public MinecraftPlayerInfo Players { get; set; }
 
         [JsonProperty("version")]
-        public string Version { get; set; }
+        public string? Version { get; set; }
 
         [JsonProperty("online")]
         public bool Online { get; set; }

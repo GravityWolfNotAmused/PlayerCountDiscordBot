@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Security;
 using System.Threading.Tasks;
 using System.Timers;
-using DiscordPlayerCountBot.Json;
+using DiscordPlayerCountBot.Configuration;
+using DiscordPlayerCountBot.Configuration.Base;
+using DiscordPlayerCountBot.Enum;
 using log4net;
-using Newtonsoft.Json;
 using PlayerCountBot;
 
 namespace DiscordPlayerCountBot
@@ -14,142 +14,53 @@ namespace DiscordPlayerCountBot
     public class UpdateController
     {
         private ILog Logger = LogManager.GetLogger(typeof(UpdateController));
-        private Dictionary<string, Bot> Bots = new();
-        private bool IsDocker;
+        private HostEnvironment HostEnvType = HostEnvironment.STANDARD;
 
-        private BotConfig Config;
-        private Timer timer;
+        private Dictionary<HostEnvironment, IConfigurable> HostingEnvironments { get; set; } = new();
+        private Dictionary<string, Bot> Bots = new();
+
+        private int Time = 30;
+        private Timer? Timer;
 
         public UpdateController()
         {
+            InitHostingConfigurations();
+
             try
             {
-                IsDocker = Environment.GetEnvironmentVariable("ISDOCKER") != null && bool.Parse(Environment.GetEnvironmentVariable("ISDOCKER"));
+                var IsDocker = Environment.GetEnvironmentVariable("ISDOCKER") != null && bool.Parse(Environment.GetEnvironmentVariable("ISDOCKER") ?? "false");
+                HostEnvType = IsDocker ? HostEnvironment.DOCKER : HostEnvironment.STANDARD;
             }
             catch (Exception e)
             {
                 if (e is ArgumentException || e is FormatException)
                 {
-                    Logger.Error("Error while parsing ISDOCKER variable. Please check your docker file, and fix your changes.", e);
+                    Logger.Error("[Bot Updater] - Error while parsing ISDOCKER variable. Please check your docker file, and fix your changes.", e);
                 }
 
                 if (e is SecurityException)
                 {
-                    Logger.Error("A security error has happened when trying to fet ISDOCKER variable.", e);
+                    Logger.Error("[Bot Updater] - A security error has happened when trying to fet ISDOCKER variable.", e);
                 }
 
-                IsDocker = false;
+                HostEnvType = HostEnvironment.STANDARD;
             }
-
-            Config = new BotConfig(IsDocker);
         }
 
-        async Task LoadConfig()
+        public void InitHostingConfigurations()
         {
-            if (IsDocker)
-            {
-                Logger.Info("[PlayerCountBot]:: Loading Docker Config.");
+            HostingEnvironments.Add(HostEnvironment.STANDARD, new StandardConfiguration());
+            HostingEnvironments.Add(HostEnvironment.DOCKER, new DockerConfiguration());
+        }
 
-                var botNames = Environment.GetEnvironmentVariable("BOT_NAMES").Split(";");
-                var botAddresses = Environment.GetEnvironmentVariable("BOT_PUBADDRESSES").Split(";");
-                var botPorts = Environment.GetEnvironmentVariable("BOT_PORTS").Split(";");
-                var botTokens = Environment.GetEnvironmentVariable("BOT_DISCORD_TOKENS").Split(";");
-                var botStatuses = Environment.GetEnvironmentVariable("BOT_STATUSES").Split(";");
-                var botTags = Environment.GetEnvironmentVariable("BOT_USENAMETAGS").Split(";");
+        public async Task LoadConfig()
+        {
+            var configurationType = HostingEnvironments[HostEnvType];
+            var config = await configurationType.Configure();
 
-                var channelIDs = new List<ulong?>();
-
-                if (Environment.GetEnvironmentVariables().Contains("BOT_CHANNELIDS"))
-                {
-                    var channelIDStrings = Environment.GetEnvironmentVariable("BOT_CHANNELIDS").Split(";");
-
-                    foreach (var channelIDString in channelIDStrings)
-                    {
-                        try
-                        {
-                            channelIDs.Add(Convert.ToUInt64(channelIDString));
-                        }
-                        catch (Exception e)
-                        {
-                            if (e is FormatException || e is OverflowException)
-                            {
-                                Logger.Error($"Could not parse Channel ID: {channelIDString}", e);
-                            }
-                        }
-                    }
-                }
-
-                for (int i = 0; i < botNames.Length; i++)
-                {
-                    var activity = 0;
-                    var useNameAsLabel = false;
-
-                    try
-                    {
-                        activity = int.Parse(botStatuses[i]);
-                        useNameAsLabel = bool.Parse(botTags[i]);
-                    }
-                    catch (Exception e)
-                    {
-                        if (e is FormatException || e is ArgumentNullException || e is IndexOutOfRangeException)
-                        {
-                            Logger.Error(e);
-                            activity = 0;
-                            useNameAsLabel = false;
-                        }
-                    }
-
-                    ulong? channelID = null;
-
-                    if (i < channelIDs.Count)
-                        channelID = channelIDs[i];
-
-                    var info = new BotInformation()
-                    {
-                        Name = botNames[i],
-                        Address = botAddresses[i] + ":" + botPorts[i],
-                        Token = botTokens[i],
-                        Status = activity,
-                        UseNameAsLabel = useNameAsLabel,
-                        ChannelID = channelID ?? null,
-                        SteamAPIToken = Environment.GetEnvironmentVariable("STEAM_API_KEY") ?? "",
-                    };
-
-                    var bot = new Bot(info, Environment.GetEnvironmentVariable("STEAM_API_KEY"), IsDocker);
-                    await bot.StartAsync();
-                    Bots.Add(bot.Information.Address, bot);
-                }
-            }
-
-            if (!IsDocker)
-            {
-                if (!File.Exists("./Config.json"))
-                {
-                    Logger.Warn("[PlayerCountBot]:: Creating new config file. Please configure the Config.json file, and restart the program.");
-                    Config.CreateDefaults();
-                    File.WriteAllText("./Config.json", JsonConvert.SerializeObject(Config, Formatting.Indented));
-                    Console.ReadLine();
-                }
-
-                if (File.Exists("./Config.json"))
-                {
-                    Logger.Info("[PlayerCountBot]:: Loading Config.json.");
-                    string fileContents = await File.ReadAllTextAsync("./Config.json");
-                    Config = JsonHelper.DeserializeObject<BotConfig>(fileContents);
-
-                    Logger.Debug($"[PlayerCountBot]:: Config.json loaded:\n{fileContents}");
-
-                    foreach (var info in Config.ServerInformation)
-                    {
-                        info.SteamAPIToken = Config.SteamAPIKey;
-                        var bot = new Bot(info, Config.SteamAPIKey);
-                        await bot.StartAsync();
-                        Bots.Add(bot.Information.Address, bot);
-                    }
-                }
-            }
-
-            Logger.Info($"[PlayerCountBot]:: Created: {Bots.Count} bot(s).");
+            Bots = config.Item1;
+            Time = config.Item2;
+            Logger.Info($"[Bot Updater] - Created: {Bots.Count} bot(s) that update every {Time} seconds.");
         }
 
         public async Task UpdatePlayerCounts()
@@ -160,7 +71,7 @@ namespace DiscordPlayerCountBot
             }
         }
 
-        private async void OnTimerExecute(object source, ElapsedEventArgs e)
+        private async void OnTimerExecute(object? source, ElapsedEventArgs e)
         {
             try
             {
@@ -168,7 +79,7 @@ namespace DiscordPlayerCountBot
             }
             catch(Exception ex)
             {
-                Logger.Error($"[PlayerCountBot]:: Please send crash log to https://discord.gg/FPXdPjcX27.", ex);
+                Logger.Error($"[Bot Updater] - Please send crash log to https://discord.gg/FPXdPjcX27.", ex);
             }
         }
 
@@ -185,48 +96,20 @@ namespace DiscordPlayerCountBot
 
         private void Start()
         {
-            int time = 30;
-
-            try
-            {
-                var timeValue = Environment.GetEnvironmentVariable("BOT_UPDATE_TIME");
-
-                if (IsDocker)
-                {
-                    time = int.Parse(timeValue) * 1000;
-                }
-            }
-            catch (Exception ex)
-            {
-                if (ex is FormatException || ex is OverflowException || ex is ArgumentNullException)
-                {
-                    Logger.Error($"[PlayerCountBot]:: The time specified is not valid or is missing from the configuration file. Using 30 seconds.");
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            if (!IsDocker)
-            {
-                time = Config.UpdateTime * 1000;
-            }
-
-            timer = new Timer(time);
-            timer.Elapsed += OnTimerExecute;
-            timer.AutoReset = true;
-            timer.Enabled = true;
-            timer.Start();
-            Logger.Info($"[PlayerCountBot]:: Update timer started");
-            Logger.Info($"[PlayerCountBot]:: Timer set to go off every: {time / 1000} second(s)");
+            Timer = new Timer(Time * 1000);
+            Timer.Elapsed += OnTimerExecute;
+            Timer.AutoReset = true;
+            Timer.Enabled = true;
+            Timer.Start();
+            Logger.Info($"[Bot Updater] - Update timer started");
+            Logger.Info($"[Bot Updater] - Timer set to go off every: {Time} second(s)");
         }
 
-        public async void OnProcessExit(object sender, EventArgs e)
+        public async void OnProcessExit(object? sender, EventArgs e)
         {
             foreach (KeyValuePair<string, Bot> entry in Bots)
             {
-                Logger.Warn($"[PlayerCountBot]:: Stoping bot: {entry.Key}");
+                Logger.Warn($"[Bot Updater] - Stoping bot: {entry.Key}");
                 await entry.Value.StopAsync();
             }
         }

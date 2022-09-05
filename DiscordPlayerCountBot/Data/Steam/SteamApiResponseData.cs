@@ -23,7 +23,7 @@ namespace PlayerCountBot
         public string gamedir { get; set; }
 
         [JsonProperty]
-        public string version { get; set; }
+        public string? version { get; set; }
 
         [JsonProperty]
         public string product { get; set; }

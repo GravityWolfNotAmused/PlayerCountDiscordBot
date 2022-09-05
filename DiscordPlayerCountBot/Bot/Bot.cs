@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using DiscordPlayerCountBot.Enum;
+using DiscordPlayerCountBot.Http;
 using DiscordPlayerCountBot.Providers;
 using DiscordPlayerCountBot.Providers.Base;
 using log4net;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace PlayerCountBot
@@ -15,15 +17,12 @@ namespace PlayerCountBot
     public class Bot
     {
         public BotInformation Information { get; set; }
-        public string Token { get; set; }
         public DiscordSocketClient DiscordClient { get; set; }
+        public Dictionary<int, IServerInformationProvider> DataProviders { get; set; } = new();
 
-        public bool IsDocker { get; set; }
+        private ILog Logger = LogManager.GetLogger(typeof(Bot));
 
-        public ILog Logger = LogManager.GetLogger(typeof(Bot));
-        public Dictionary<int, IServerInformationProvider> DataProviders { get; set; } = new Dictionary<int, IServerInformationProvider>();
-
-        public Bot(BotInformation info, string steamAPIToken, bool isDocker = false)
+        public Bot(BotInformation info)
         {
             if (info is null)
             {
@@ -31,8 +30,6 @@ namespace PlayerCountBot
             }
 
             Information = info;
-            IsDocker = isDocker;
-            Token = steamAPIToken;
 
             DiscordClient = new DiscordSocketClient(new DiscordSocketConfig()
             {
@@ -60,10 +57,10 @@ namespace PlayerCountBot
                 Information.Address = address + ":" + port;
             }
 
-            Logger.Info($"[PlayerCountBot]:: Loaded {Information.Name} at address and port: {Information.Address}, {Information.ProviderType}");
+            Logger.Info($"[Bot] - Loaded {Information.Name} at address and port: {Information.Address}, {Information.ProviderType}");
 
             await DiscordClient.LoginAsync(TokenType.Bot, Information.Token);
-            await DiscordClient.SetGameAsync($"Starting Bot: {Information.Address}");
+            await DiscordClient.SetGameAsync($"Starting: {Information.Address}");
             await DiscordClient.StartAsync();
         }
 
@@ -78,7 +75,7 @@ namespace PlayerCountBot
 
             if(dataProviderType != Information.ProviderType)
             {
-                Logger.Warn($"[PlayerCountBot]:: Config for bot at address: {Information.Address} has an invalid provider type: {Information.ProviderType}");
+                Logger.Warn($"[Bot] - Config for bot at address: {Information.Address} has an invalid provider type: {Information.ProviderType}");
             }
 
             var dataProvider = DataProviders[dataProviderType];
@@ -94,7 +91,7 @@ namespace PlayerCountBot
 
             if (Information.Status != activityInteger)
             {
-                Logger.Warn($"[PlayerCountBot]:: Config for bot at address: {Information.Address} has an invalid activity type: {Information.Status}");
+                Logger.Warn($"[Bot] - Config for bot at address: {Information.Address} has an invalid activity type: {Information.Status}");
             }
 
             var activityType = (ActivityType)(activityInteger);
@@ -108,7 +105,7 @@ namespace PlayerCountBot
                 if (channel is null)
                 {
                     var exception = new ArgumentException();
-                    Logger.Error($"Invalid Channel Id: {Information.ChannelID}, Channel was not found.", exception);
+                    Logger.Error($"[Bot] - Invalid Channel Id: {Information.ChannelID}, Channel was not found.", exception);
                     throw exception;
                 }
 
@@ -131,25 +128,23 @@ namespace PlayerCountBot
         public async Task<string> GetHostAddress()
         {
             string publicIPAddress = string.Empty;
+            var httpClient = new HttpExecuter(new HttpClient());
+
 
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create("http://ifconfig.me");
-                request.UserAgent = "curl";
-                request.Method = "GET";
+                var ipAddress = await httpClient.GET<object, string>("http://ifconfig.me");
 
-                using WebResponse response = await request.GetResponseAsync();
-                using var reader = new StreamReader(response.GetResponseStream());
-                publicIPAddress = await reader.ReadToEndAsync();
+                if (string.IsNullOrEmpty(ipAddress))
+                    throw new ApplicationException("IP Address cannot be null. Host failed to resolve address.");
+
+                return ipAddress;
             }
             catch (WebException ex)
             {
-                Logger.Error(ex);
-                Logger.Error($"[PlayerCountBot]:: Error Reaching ifconfig.me: {ex.Status}");
-                return publicIPAddress;
+                Logger.Error($"[Bot] - Error Reaching ifconfig.me: {ex.Status}", ex);
+                throw ex;
             }
-
-            return publicIPAddress.Replace("\n", "");
         }
     }
 }

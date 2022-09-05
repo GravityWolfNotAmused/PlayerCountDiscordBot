@@ -14,7 +14,7 @@ namespace PlayerCountBot
         public string Address { get; set; }
 
         [JsonProperty]
-        public string Token { get; set; }
+        public string? Token { get; set; }
 
         [JsonProperty]
         public int Status { get; set; }
@@ -41,7 +41,7 @@ namespace PlayerCountBot
             }
             catch (Exception e)
             {
-                throw e;
+                throw new Exception(e.Message);
             }
         }
     }

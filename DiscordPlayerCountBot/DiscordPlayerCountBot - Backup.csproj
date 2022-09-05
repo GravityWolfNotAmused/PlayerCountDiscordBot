@@ -17,7 +17,6 @@
   <ItemGroup>
     <None Remove="..\.dockerignore" />
     <None Remove="README.MD" />
-    <None Include="..\.editorconfig" Link=".editorconfig" />
 	<None Update="log4net.config">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>
