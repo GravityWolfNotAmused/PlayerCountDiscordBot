@@ -1,4 +1,4 @@
-name: .NET
+name: Build Artifact
 
 on:
   push:
@@ -30,4 +30,3 @@ jobs:
       with:
         name: ${{ steps.branch-name.outputs.current_branch }}
         path: ./DiscordPlayerCountBot/bin/Release/net6.0/win-x64/publish 
-
