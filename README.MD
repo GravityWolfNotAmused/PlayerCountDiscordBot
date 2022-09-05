@@ -1,21 +1,21 @@
-### **Run the bot once for Config.json** 
- 
-# Join My Discord Server
+#### Need help? Have suggestions? Join My Discord Server! 
 
 [![Discord Shield](https://discordapp.com/api/guilds/824404335105933382/widget.png?style=shield)](https://discord.gg/meBtwthmmD)
 
-### Requirements:
-[.Net Core 3.1](https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-desktop-3.1.13-windows-x64-installer)
+#### Want to Download? [Releases](https://github.com/GravityWolfNotAmused/PlayerCountDiscordBot/releases)
+#### Requirements: [.Net Core 6](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.8-windows-x64-installer)
 
-### Notes:
-**AntiVirus software may stop the executable from running.**
+# Generating a Config
+After installation of .Net Runtime 6, you need to run the application one time. The application will state to you that it has created a default config.json file. Exit the application, and configure the file.
+
+![image](https://user-images.githubusercontent.com/24533882/188336821-4d368b36-ecfb-44a5-88f1-b05909f20b05.png)
 
 # Getting a Steam API key
 In order to get a steam API key, you will need a domain to link it to. Trying looking into [Google's domain site](https://domains.google.com/registrar/). After you have gotten a domain navigate to [Steam'd Web API Key Register](https://steamcommunity.com/dev/apikey), and get your Steam API Key. Copy your `Key` and put it in your config file by replacing `SteamAPIKeyHere` with your Steam API Key.
 
 ![image](https://user-images.githubusercontent.com/24533882/103162963-c9304000-47b4-11eb-814e-c6156649b908.png)
 
-![image](https://user-images.githubusercontent.com/24533882/149275986-27063a6e-f1b0-4c52-87f3-cf0a5f9fa77d.png)
+![image](https://user-images.githubusercontent.com/24533882/188337476-aa1919f1-4fa5-41e6-869d-9bb8827aa2e1.png)
 
 
 # Creating a bot(s)
@@ -33,13 +33,13 @@ After you have created your bot and named it, you will need to copy the bots `To
 
 ![image](https://user-images.githubusercontent.com/24533882/103163390-9ab56380-47ba-11eb-9c44-ec7f83343078.png)
 
-![image](https://user-images.githubusercontent.com/24533882/149276159-a350543f-3091-4632-9597-7f24f362fce1.png)
+![image](https://user-images.githubusercontent.com/24533882/188337485-ad4ecd6c-6c77-4ecb-bfe3-e5e107409624.png)
 
 
 # Configuring Server's
 After you have added your Steam API key, and your bot's token you must add the `botAddress`, this address is your query address for the server. This is so we know what game server's player count to display in the status of each bot. In order to configure the bot to display the player count, you must add the IP, and the Port in the format `Address:Port` ex. `23.23.233.233:27015` where `127.0.0.1:2532` is located. This address is **NOT** the connection address.
 
-![image](https://user-images.githubusercontent.com/24533882/149276263-edc7a259-9751-4125-84c9-e949cad7324a.png)
+![image](https://user-images.githubusercontent.com/24533882/188337510-32d913b8-10a9-451c-9a90-18e26a10a054.png)
 
 # Invite Your Bot
 After all configuration steps have been taken, we must start the bot and invite them into our discord. The bot needs no special permissions due to it's responsibility being to update it's status. In order to invite your discord bot, you must replace `{clientID}` with your bots client ID in the URL below, this means you must also remove the curly braces too. If you do not know where to obtain your bot's client ID, navigate to `General Information` tab on the Discord Developer Portal the bot you wish, and copy your Client ID from there.
@@ -48,17 +48,46 @@ After all configuration steps have been taken, we must start the bot and invite 
 https://discord.com/oauth2/authorize?client_id={clientID}&scope=bot
 ```
 
-### Additional Features:
+# Additional Features:
 
-- You may use `localhost` or `hostname` as your server address for the application to automatically resolve the hosts IP.
-![image](https://user-images.githubusercontent.com/24533882/149276420-04551e2b-7516-437b-960c-f2493463325d.png)
+#### Activity
+Discord allows users to be under specific activities states. There is no guarentee that these activity type will display the same as a non-bot user performing that activity.
 
-- You may add the ChannelID variable to any bot to have the bot update the name of a text channel, or voice channel.
-  - ChanelID does not need to be specified in either Docker, or Executable instances. (If you don't want it don't include it in configuration files.)
-  - **Note:** Channel updates are rate limited to 2 requests per 10 mins. No matter how often your bot updates it's activity it will never update the channel as often.
-  - This rate limit is enforced by Discord, and not the library used Discord.Net
+The available states that I have are as follows:
+| Name | Config Value | Description |
+| :----: | --- | --- |
+| Playing | 0 | The user is playing a game. | 
+| Streaming | 1 | The user is streaming online |
+| Listening | 2 | The user is listening to a song. |
+| Watching | 3 | The user is watching some form of media. |
+| CustomStatus | 4 | The user has set a customer status. |
+| Competing | 5 | The user is competing in a game. |
 
-![image](https://user-images.githubusercontent.com/24533882/153981476-4b258809-1860-4ec3-8454-bf826538bca7.png)
+#### Data Providers
+This bot works with many different providers to display your game server's player counts. The available providers are listed below.
+
+
+| Name | Config Value |
+| :----: | --- |
+| Steam | 0 |
+| CFX | 1 |
+| Scum | 2 |
+| Minecraft | 3 |
+
+#### Address Resolution
+You may use `localhost` or `hostname` as your server address for the application to automatically resolve the hosts IP.
+
+![image](https://user-images.githubusercontent.com/24533882/188337540-6b57cd27-b307-476f-8bdf-e190d00ac2f5.png)
+
+#### Channel Player Counts
+You may add the ChannelID variable to any bot to have the bot update the name of a text channel, or voice channel.
+ChanelID does not need to be specified in either Docker, or Executable instances. (If you don't want it don't include it in configuration files or set it to null.)
+
+**Note:** Channel updates are rate limited to 2 requests per 10 mins. No matter how often your bot updates it's activity it will never update the channel as often.
+
+This rate limit is enforced by Discord, and not the library used Discord.Net
+
+![image](https://user-images.githubusercontent.com/24533882/188337578-ce80d5b3-1ff3-4cc4-aa38-86320f1a0459.png)
 
 **Voice Channel Format:**
 
@@ -102,6 +131,7 @@ There are two ways to deploy bots with Docker.
          BOT_UPDATE_TIME: "30"
          BOT_STATUSES: "1;2"
          BOT_USENAMETAGS: "false;false"
+         BOT_PROVIDERTYPES: "0;0"
          STEAM_API_KEY: "your steam api key"
   ```
  3. Edit variables and save the File
@@ -121,6 +151,7 @@ There are two ways to deploy bots with Docker.
     -e BOT_DISCORD_TOKENS='DiscordToken1;DiscordToken2' \
     -e BOT_UPDATE_TIME='30' \
     -e BOT_STATUSES='1;2' \
+    -e BOT_PROVIDERTYPES='0;0' \
     -e BOT_USENAMETAGS='false;false' \
     -e STEAM_API_KEY='your steam api key' \
     specker/discordplayercountbot
@@ -139,10 +170,11 @@ Container images are configured with help of those variables.
 | `BOT_DISCORD_TOKENS` | Discord Bots tokens |
 | `BOT_STATUSES` | Discord Bots statuses |
 | `BOT_USENAMETAGS` | "TBD" |
+| `BOT_PROVIDERTYPES` | Who provides the data for the bot. |
 | `STEAM_API_KEY` | Steam Api Key |
 | `BOT_UPDATE_TIME` | How often bot should refresh |
 
-To declare Multiple bots in docker separate values in `BOT_NAMES`, `BOT_PUBADDRESSES`, `BOT_PORTS`, `BOT_DISCORD_TOKENS`, `BOT_STATUSES` and `BOT_USENAMETAGS` with `;` 
+To declare Multiple bots in docker separate values in `BOT_NAMES`, `BOT_PUBADDRESSES`, `BOT_PORTS`, `BOT_DISCORD_TOKENS`, `BOT_STATUSES`, `BOT_PROVIDERTYPES`, and `BOT_USENAMETAGS` with `;` 
  
  Example:
   
@@ -153,7 +185,7 @@ To declare Multiple bots in docker separate values in `BOT_NAMES`, `BOT_PUBADDRE
    `BOT_NAMES='Bot1;Bot2'`
 
 # Issues
-All logging is tied behind _isDebug variable in the Config.json. Please report any issues to [Issues tab](https://github.com/GravityWolfNotAmused/PlayerCountDiscordBot/issues).
+Please report any issues to [Issues tab](https://github.com/GravityWolfNotAmused/PlayerCountDiscordBot/issues) or my discord.
 
 # Changes
 Please fork this repository, and make a pull request for the changes you'd like to see to the project.

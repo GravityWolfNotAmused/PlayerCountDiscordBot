@@ -12,22 +12,13 @@ namespace PlayerCountBot
         public string SteamAPIKey { get; set; }
 
         [JsonProperty]
-        public List<BotInformation> ServerInformation;
-
-        [JsonIgnore]
-        public bool IsDocker { get; set; }
-
-        public BotConfig(bool isDocker)
-        {
-            ServerInformation = new List<BotInformation>();
-            IsDocker = isDocker;
-        }
+        public List<BotInformation> ServerInformation { get; set; } = new();
 
         public void CreateDefaults()
         {
 
             ServerInformation.Add(new BotInformation() { 
-                Name = "VPPTestBot",
+                Name = "TestBot",
                 Address = "127.0.0.1:27014",
                 Token = "DiscordTokenHere",
                 Status = 0,

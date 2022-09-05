@@ -3,11 +3,17 @@ services:
   discordcounter:
     build: .
     environment:
-       BOT_Name: "ProjectZomboidBot"
-       BOT_PUBADDRESS: "127.0.0.1"
-       BOT_PORT: "16261"
-       BOT_DISCORD_TOKEN: "DiscordTokenHere"
+       #Bot Variables
+       #You can make more than one bot by seperating each value with a semi-colon
+       BOT_NAMES: "Bot" 
+       BOT_PUBADDRESSES: "127.0.0.1" # Two bots would look like: "127.0.0.1;127.0.0.1"
+       BOT_PORTS: "16261"
+       BOT_DISCORD_TOKENS: "DiscordTokenHere"
+       BOT_USENAMETAGS: "false"
+       BOT_STATUSES: "3"
+       BOT_PROVIDERTYPES: "0"
+       BOT_CHANNELIDS: "824409821985636452" #If you do not wish to update a text/voice channels name you may remove this line.
+       #Application Variables
+       #These setting apply to the whole application.
        BOT_UPDATE_TIME: "30"
-       BOT_STATUS: "3"
-       BOT_CHANNELIDS: "824409821985636452;824409821985636453" #If you do not wish to update a text/voice channels name you may remove this line.
        STEAM_API_KEY: "SteamAPIKeyHere"
