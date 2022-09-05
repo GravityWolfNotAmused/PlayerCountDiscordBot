@@ -11,16 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Extract branch name
-      shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-      id: extract_branch
+    - name: Get branch name
+      id: branch-name
+      uses: tj-actions/branch-names@v6
     - name: Login
       env:
         DOCKER_USER: ${{secrets.DOCKER_USER}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - name: Build the Docker image
-      run: docker build . -f ./DiscordPlayerCountBot/Dockerfile -t specker/discordplayercountbot:${{steps.extract_branch.outputs.branch}} 
+      run: docker build . -f ./DiscordPlayerCountBot/Dockerfile -t specker/discordplayercountbot:${{ steps.branch-name.outputs.current_branch }}
     - name: Push
-      run: docker push ${{secrets.DOCKER_USER}}/discordplayercountbot:${{ steps.extract_branch.outputs.branch }}
+      run: docker push ${{secrets.DOCKER_USER}}/discordplayercountbot:${{ steps.branch-name.outputs.current_branch }}
