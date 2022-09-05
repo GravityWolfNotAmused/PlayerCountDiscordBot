@@ -11,22 +11,25 @@ jobs:
 
     steps:
     - name: Checkout
-    - uses: actions/checkout@v3
-    
+      uses: actions/checkout@v3
     - name: Get branch name
       id: branch-name
-      uses: tj-actions/branch-names@v6
-      
+      uses: tj-actions/branch-names@v6 
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
-        
     - name: Restore dependencies
       run: dotnet restore
-      
     - name: Build
       run: dotnet build --no-restore
-      
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal      
+    - name: Publish
+      run: dotnet publish -p:PublishSingleFile=true -r win-x64 -c Release --self-contained true -p:PublishTrimmed=true      
+    - name: Create Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.branch-name.outputs.current_branch }}
+        path: ./DiscordPlayerCountBot/bin/Release/net6.0/win-x64/publish # or path/to/artifact
+
