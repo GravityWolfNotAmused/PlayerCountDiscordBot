@@ -131,6 +131,7 @@ There are two ways to deploy bots with Docker.
          BOT_UPDATE_TIME: "30"
          BOT_STATUSES: "1;2"
          BOT_USENAMETAGS: "false;false"
+         BOT_PROVIDERTYPES: "0;0"
          STEAM_API_KEY: "your steam api key"
   ```
  3. Edit variables and save the File
@@ -150,6 +151,7 @@ There are two ways to deploy bots with Docker.
     -e BOT_DISCORD_TOKENS='DiscordToken1;DiscordToken2' \
     -e BOT_UPDATE_TIME='30' \
     -e BOT_STATUSES='1;2' \
+    -e BOT_PROVIDERTYPES='0;0' \
     -e BOT_USENAMETAGS='false;false' \
     -e STEAM_API_KEY='your steam api key' \
     specker/discordplayercountbot
@@ -168,10 +170,11 @@ Container images are configured with help of those variables.
 | `BOT_DISCORD_TOKENS` | Discord Bots tokens |
 | `BOT_STATUSES` | Discord Bots statuses |
 | `BOT_USENAMETAGS` | "TBD" |
+| `BOT_PROVIDERTYPES` | Who provides the data for the bot. |
 | `STEAM_API_KEY` | Steam Api Key |
 | `BOT_UPDATE_TIME` | How often bot should refresh |
 
-To declare Multiple bots in docker separate values in `BOT_NAMES`, `BOT_PUBADDRESSES`, `BOT_PORTS`, `BOT_DISCORD_TOKENS`, `BOT_STATUSES` and `BOT_USENAMETAGS` with `;` 
+To declare Multiple bots in docker separate values in `BOT_NAMES`, `BOT_PUBADDRESSES`, `BOT_PORTS`, `BOT_DISCORD_TOKENS`, `BOT_STATUSES`, `BOT_PROVIDERTYPES`, and `BOT_USENAMETAGS` with `;` 
  
  Example:
   
