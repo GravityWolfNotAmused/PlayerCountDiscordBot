@@ -3,7 +3,9 @@ name: Docker Image CI
 on:
   pull_request:
     branches: [ "master" ]
-    
+    branches-ignore:
+      - 'Dev'
+
 jobs:
 
   build:
