@@ -15,7 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Login
-      run: docker login -u ${{secrets.DOCKER_USER}} -p {{secrets.DOCKER_PASSWORD}}
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - name: Build the Docker image
       run: docker build . --file ./DiscordPlayerCountBot/Dockerfile --tag release:$(date +%s)
     - name: Push
