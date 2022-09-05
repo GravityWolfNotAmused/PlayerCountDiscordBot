@@ -2,7 +2,9 @@ name: Docker Image CI
 
 on:
   pull_request:
-    branches: [ "master" ]
+    branches:
+    - "master"
+    - "dev"
 
 jobs:
   build:
@@ -19,6 +21,6 @@ jobs:
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - name: Build the Docker image
-      run: docker build . -f ./DiscordPlayerCountBot/Dockerfile -t specker/discordplayercountbot:latest 
+      run: docker build . -f ./DiscordPlayerCountBot/Dockerfile -t specker/discordplayercountbot:${{steps.extract_branch.outputs.branch}} 
     - name: Push
-      run: docker push ${{secrets.DOCKER_USER}}/discordplayercountbot:latest
+      run: docker push ${{secrets.DOCKER_USER}}/discordplayercountbot:${{ steps.extract_branch.outputs.branch }}
