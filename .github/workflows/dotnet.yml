@@ -30,6 +30,3 @@ jobs:
       
     - name: Test
       run: dotnet test --no-build --verbosity normal
-      
-    - name: Publish
-      run: dotnet publish -p:PublishSingleFile=true -r win-x64 -c Release --self-contained true -p:PublishTrimmed=true
