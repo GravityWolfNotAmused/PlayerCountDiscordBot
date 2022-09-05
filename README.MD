@@ -1,4 +1,4 @@
-#### Need help? Have suggestions? Join My Discord Server!
+#### Need help? Have suggestions? Join My Discord Server! 
 
 [![Discord Shield](https://discordapp.com/api/guilds/824404335105933382/widget.png?style=shield)](https://discord.gg/meBtwthmmD)
 
