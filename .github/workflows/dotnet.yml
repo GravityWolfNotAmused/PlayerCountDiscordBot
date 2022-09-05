@@ -10,6 +10,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Set current date as env variable
+      run: echo "NOW::$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
     - name: Get branch name
       id: branch-name
       uses: tj-actions/branch-names@v6 
@@ -28,5 +30,5 @@ jobs:
     - name: Create Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ steps.branch-name.outputs.current_branch }}
+        name: ${{ steps.branch-name.outputs.current_branch }}-$NOW
         path: ./DiscordPlayerCountBot/bin/Release/net6.0/win-x64/publish 
