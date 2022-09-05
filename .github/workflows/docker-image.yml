@@ -17,6 +17,9 @@ jobs:
     - name: Working Directory
       run:
        pwd
+    - name: Print Working Directory Files
+      run:
+       pwd
     - name: Login
       env:
         DOCKER_USER: ${{secrets.DOCKER_USER}}
