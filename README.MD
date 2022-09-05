@@ -1,4 +1,4 @@
-### **Run the bot once for Config.json**
+### **Run the bot once for Config.json** 
  
 # Join My Discord Server
 
