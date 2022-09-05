@@ -19,7 +19,7 @@ jobs:
        pwd
     - name: Print Working Directory Files
       run:
-       pwd
+       ls
     - name: Login
       env:
         DOCKER_USER: ${{secrets.DOCKER_USER}}
