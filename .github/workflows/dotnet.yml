@@ -33,9 +33,3 @@ jobs:
       
     - name: Publish
       run: dotnet publish -p:PublishSingleFile=true -r win-x64 -c Release --self-contained true -p:PublishTrimmed=true
-
-    - name: Create Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ steps.branch-name.outputs.current_branch }}
-        path: ./DiscordPlayerCountBot/bin/Release/net6.0/win-x64/publish # or path/to/artifact
