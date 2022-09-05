@@ -1,5 +1,7 @@
 #### Need help? Have suggestions? Join My Discord Server! 
 
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/GravityWolfNotAmused/PlayerCountDiscordBot)
+
 [![Discord Shield](https://discordapp.com/api/guilds/824404335105933382/widget.png?style=shield)](https://discord.gg/meBtwthmmD)
 
 #### Want to Download? [Releases](https://github.com/GravityWolfNotAmused/PlayerCountDiscordBot/releases)
