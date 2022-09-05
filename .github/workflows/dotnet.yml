@@ -3,12 +3,8 @@ name: .NET
 on:
   pull_request:
     branches:
-    - "origin/latest"
-    - "origin/dev"
-  push:
-    branches:
-    - "origin/latest"
-    - "origin/dev"
+    - "latest"
+    - "dev"
 
 jobs:
   build:
