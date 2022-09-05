@@ -1,25 +1,25 @@
 name: Docker Image CI
 
 on:
-  push:
-    branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "latest", "dev" ]
+  push:
+    branches: [ "latest", "dev" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
+    - name: Get branch name
+      id: branch-name
+      uses: tj-actions/branch-names@v6
     - name: Login
       env:
         DOCKER_USER: ${{secrets.DOCKER_USER}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - name: Build the Docker image
-      run: docker build . -f ./DiscordPlayerCountBot/Dockerfile -t gravitywolfnotamused/playercountbot:latest
+      run: docker build . -f ./DiscordPlayerCountBot/Dockerfile -t specker/discordplayercountbot:${{ steps.branch-name.outputs.current_branch }}
     - name: Push
-      run: docker push ${{secrets.DOCKER_USER}}/playercountbot:latest
+      run: docker push ${{secrets.DOCKER_USER}}/discordplayercountbot:${{ steps.branch-name.outputs.current_branch }}
