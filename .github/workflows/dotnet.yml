@@ -6,9 +6,7 @@ on:
 
 jobs:
   build:
-
     runs-on: windows-latest
-
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -24,12 +22,15 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal      
-    - name: Publish
-      run: dotnet publish -p:PublishSingleFile=true -r win-x64 -c Release --self-contained true -p:PublishTrimmed=true      
-    - name: Create Artifact
-      uses: actions/upload-artifact@v3
-      with:
+      run: dotnet test --no-build --verbosity normal  
+  publish:
+    runs-on: windows-latest
+    steps:
+     - name: Publish
+       run: dotnet publish -p:PublishSingleFile=true -r win-x64 -c Release --self-contained true -p:PublishTrimmed=true      
+     - name: Create Artifact
+       uses: actions/upload-artifact@v3
+       with:
         name: ${{ steps.branch-name.outputs.current_branch }}
         path: ./DiscordPlayerCountBot/bin/Release/net6.0/win-x64/publish # or path/to/artifact
 
