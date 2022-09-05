@@ -31,5 +31,5 @@ jobs:
     - name: Create Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ steps.branch-name.outputs.current_branch }}-${{steps.date.outputs.date}}
+        name: playercountbot-${{ steps.branch-name.outputs.current_branch }}-${{steps.date.outputs.date}}
         path: ./DiscordPlayerCountBot/bin/Release/net6.0/win-x64/publish 
