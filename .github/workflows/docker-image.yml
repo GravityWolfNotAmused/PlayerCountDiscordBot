@@ -1,0 +1,24 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secret.DOCKER_PASSWORD}}
+      run:
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD       
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag PlayerCountBot:$(date +%s)
