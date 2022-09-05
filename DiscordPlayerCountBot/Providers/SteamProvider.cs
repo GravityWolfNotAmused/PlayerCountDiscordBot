@@ -46,7 +46,6 @@ namespace DiscordPlayerCountBot.Providers
                 if (e.Message == LastException?.Message)
                     return null;
 
-
                 WasLastExecutionAFailure = true;
                 LastException = e;
 
