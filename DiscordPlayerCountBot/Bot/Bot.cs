@@ -71,7 +71,7 @@ namespace PlayerCountBot
 
         public async Task UpdateAsync()
         {
-            var dataProviderType = Enum.IsDefined(typeof(DataProvider), Information.ProviderType) ? Information.ProviderType : (int)DataProvider.STEAM;
+            var dataProviderType = EnumHelper.GetDataProvider(Information.ProviderType);
 
             if(dataProviderType != Information.ProviderType)
             {
@@ -87,7 +87,7 @@ namespace PlayerCountBot
             }
 
             var gameStatus = serverInformation.GetStatusString(Information.Name, Information.UseNameAsLabel);
-            var activityInteger = Enum.IsDefined(typeof(ActivityType), Information.Status) ? Information.Status : (int)ActivityType.CustomStatus;
+            var activityInteger = EnumHelper.GetActivityType(Information.Status);
 
             if (Information.Status != activityInteger)
             {
