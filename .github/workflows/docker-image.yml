@@ -3,12 +3,12 @@ name: Docker Image CI
 on:
   pull_request:
     branches:
-    - "origin/latest"
-    - "origin/dev"
+    - "latest"
+    - "dev"
   push:
     branches:
-    - "origin/latest"
-    - "origin/dev"
+    - "latest"
+    - "dev"
 
 jobs:
   build:
