@@ -5,6 +5,10 @@ on:
     branches:
     - "origin/latest"
     - "origin/dev"
+  push:
+    branches:
+    - "origin/latest"
+    - "origin/dev"
 
 jobs:
   build:
