@@ -19,8 +19,6 @@ jobs:
         DOCKER_USER: ${{secrets.DOCKER_USER}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-    - name: Create Tag
-      run: docker tag release gravitywolfnotamused/playercountbot
     - name: Build the Docker image
       run: docker build . --file ./DiscordPlayerCountBot/Dockerfile
     - name: Push
