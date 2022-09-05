@@ -14,12 +14,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Working Directory
-      run:
-       pwd
-    - name: Print Working Directory Files
-      run:
-       ls
     - name: Login
       env:
         DOCKER_USER: ${{secrets.DOCKER_USER}}
@@ -28,3 +22,5 @@ jobs:
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD       
     - name: Build the Docker image
       run: docker build -t playercountbot -f ./DiscordPlayerCountBot/Dockerfile .
+    - name: Docker Push
+      run: docker push ${{secrets.DOCKER_USER}}/playercountbot
