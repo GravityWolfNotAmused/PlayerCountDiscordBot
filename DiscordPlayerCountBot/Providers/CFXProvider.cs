@@ -29,9 +29,10 @@ namespace DiscordPlayerCountBot.Providers
                 if (serverInfo == null)
                     throw new ApplicationException("Server Information cannot be null. Is your server offline?");
 
-                if(WasLastExecutionAFailure)
+                if (WasLastExecutionAFailure)
                 {
                     Logger.Info($"[CFXProvider] - Bot for Address: {information.Address} successfully fetched data after failure.");
+                    LastException = null;
                     WasLastExecutionAFailure = false;
                 }
 
@@ -43,7 +44,7 @@ namespace DiscordPlayerCountBot.Providers
                     Port = addressAndPort.Item2,
                 };
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 if (e.Message == LastException?.Message)
                     return null;
@@ -51,7 +52,7 @@ namespace DiscordPlayerCountBot.Providers
                 WasLastExecutionAFailure = true;
                 LastException = e;
 
-                if(e is HttpRequestException requestException)
+                if (e is HttpRequestException requestException)
                 {
                     Logger.Error($"[CFXProvider] - The CFX host has failed to respond.");
                     return null;

@@ -17,7 +17,8 @@ namespace PlayerCountBot
         public void CreateDefaults()
         {
 
-            ServerInformation.Add(new BotInformation() { 
+            ServerInformation.Add(new BotInformation()
+            {
                 Name = "TestBot",
                 Address = "127.0.0.1:27014",
                 Token = "DiscordTokenHere",

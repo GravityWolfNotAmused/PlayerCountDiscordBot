@@ -41,11 +41,10 @@ namespace DiscordPlayerCountBot.Providers
                     PlayersInQueue = response.GetQueueCount()
                 };
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 if (e.Message == LastException?.Message)
                     return null;
-
 
                 WasLastExecutionAFailure = true;
                 LastException = e;
@@ -75,7 +74,7 @@ namespace DiscordPlayerCountBot.Providers
                     }
                 }
 
-                if(e is ApplicationException applicationException)
+                if (e is ApplicationException applicationException)
                 {
                     Logger.Error($"[SteamProvider] - {e.Message}");
                     return null;

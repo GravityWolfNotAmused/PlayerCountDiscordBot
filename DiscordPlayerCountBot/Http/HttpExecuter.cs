@@ -16,7 +16,7 @@ namespace DiscordPlayerCountBot.Http
         {
             HttpClient = httpClient;
         }
-        
+
         public void Dispose()
         {
             HttpClient?.Dispose();
