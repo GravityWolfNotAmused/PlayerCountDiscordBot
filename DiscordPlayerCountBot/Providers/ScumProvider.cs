@@ -23,7 +23,7 @@ namespace DiscordPlayerCountBot.Providers
             {
                 var apiResponse = await service.GetPlayerInformationAsync(addressAndPort.Item1, addressAndPort.Item2);
 
-                if (apiResponse == null) 
+                if (apiResponse == null)
                     throw new ApplicationException("Response cannot be null.");
 
                 if (apiResponse.Servers == 0)
@@ -49,7 +49,7 @@ namespace DiscordPlayerCountBot.Providers
                     PlayersInQueue = 0
                 };
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 if (e.Message == LastException?.Message)
                     return null;
@@ -90,7 +90,7 @@ namespace DiscordPlayerCountBot.Providers
 
                 Logger.Error($"[ScumProvider] - There was an error speaking with Scum.", e);
                 throw;
-            }            
+            }
         }
     }
 }

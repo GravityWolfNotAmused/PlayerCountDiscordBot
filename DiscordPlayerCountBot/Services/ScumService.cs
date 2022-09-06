@@ -15,7 +15,7 @@ namespace DiscordPlayerCountBot.Services
             {
                 Address = address
             });
-            
+
             return response;
         }
     }

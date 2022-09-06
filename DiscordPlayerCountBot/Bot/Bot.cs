@@ -72,8 +72,7 @@ namespace PlayerCountBot
         public async Task UpdateAsync()
         {
             var dataProviderType = EnumHelper.GetDataProvider(Information.ProviderType);
-
-            if(dataProviderType != Information.ProviderType)
+            if (dataProviderType != Information.ProviderType)
             {
                 Logger.Warn($"[Bot] - Config for bot at address: {Information.Address} has an invalid provider type: {Information.ProviderType}");
             }
@@ -81,7 +80,7 @@ namespace PlayerCountBot
             var dataProvider = DataProviders[dataProviderType];
             var serverInformation = await dataProvider.GetServerInformation(Information);
 
-            if(serverInformation == null)
+            if (serverInformation == null)
             {
                 return;
             }
