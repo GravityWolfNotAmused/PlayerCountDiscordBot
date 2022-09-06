@@ -27,8 +27,8 @@ namespace PlayerCountBot
             });
             UpdateTime = 30;
 
-            ApplicationTokens.Add("SteamAPIKey", "");
-            ApplicationTokens.Add("BattleMetricsKey", "");
+            ApplicationTokens.Add("SteamAPIKey", "Here");
+            ApplicationTokens.Add("BattleMetricsKey", "Here");
         }
     }
 }
