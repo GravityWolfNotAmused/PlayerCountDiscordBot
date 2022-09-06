@@ -80,9 +80,9 @@ This bot works with many different providers to display your game server's playe
 | :----: | --- | --- | ---- |
 | Steam | 0 | Limit 1 Milion requests per 24 hours | Steam Query Port |
 | CFX | 1 | N/A | Game Port |
-| Scum | 2 | Uses game | Game Port |
-| Minecraft | 3 | NA | Game Port |
-| BattleMetrics | 4 | Uses Battle Metrics ID. [ID is the number in this URL](https://www.battlemetrics.com/servers/minecraft/5873087) | Battle Metrics Server ID |
+| Scum | 2 | N/A | Game Port |
+| Minecraft | 3 | N/A | Game Port |
+| BattleMetrics | 4 | Uses Battle Metrics ID. [ID is the number in this URL](https://www.battlemetrics.com/servers/minecraft/5873087) | N/A |
 
 #### Address Resolution
 You may use `localhost` or `hostname` as your server address for the application to automatically resolve the hosts IP.
