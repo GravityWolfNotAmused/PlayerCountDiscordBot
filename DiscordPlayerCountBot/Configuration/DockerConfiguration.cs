@@ -23,7 +23,8 @@ namespace DiscordPlayerCountBot.Configuration
             var botTokens = Environment.GetEnvironmentVariable("BOT_DISCORD_TOKENS")?.Split(";");
             var botStatuses = Environment.GetEnvironmentVariable("BOT_STATUSES")?.Split(";");
             var botTags = Environment.GetEnvironmentVariable("BOT_USENAMETAGS")?.Split(";");
-            var providerTypes = Environment.GetEnvironmentVariable("BOT_PROVIDERTYPES")?.Split(";");
+            var providerTypes = Environment.GetEnvironmentVariable("BOT_PROVIDERTYPES")?.Split(";").ToList() ?? new();
+            Logger.Info($"Provider Type Count: {providerTypes.Count}");
 
             var applicationTokens = Environment.GetEnvironmentVariable("BOT_APPLICATION_VARIABLES")?.Split(";").ToDictionary(data => data.Split(",")[0]) ?? new();
             var channelIDs = new List<ulong?>();
@@ -81,7 +82,7 @@ namespace DiscordPlayerCountBot.Configuration
                     Status = activity,
                     UseNameAsLabel = useNameAsLabel,
                     ChannelID = channelID ?? null,
-                    ProviderType = (int)EnumHelper.GetDataProvider(int.Parse(providerTypes?[i] ?? "0"))
+                    ProviderType = EnumHelper.GetDataProvider(int.Parse(providerTypes?[i] ?? "0"))
                 };
 
                 var bot = new Bot(info, applicationTokens);
@@ -89,7 +90,7 @@ namespace DiscordPlayerCountBot.Configuration
                 bots.Add(bot.Information.Address, bot);
             }
             var list = providerTypes?.ToList() ?? new();
-            list.ForEach(item => Console.WriteLine(item));
+            list.ForEach(item => Logger.Info(item));
             return new Tuple<Dictionary<string, Bot>, int>(bots, int.Parse(Environment.GetEnvironmentVariable("BOT_UPDATE_TIME") ?? "30"));
         }
     }
