@@ -26,7 +26,18 @@ namespace DiscordPlayerCountBot.Configuration
             var providerTypes = Environment.GetEnvironmentVariable("BOT_PROVIDERTYPES")!.Split(";");
             Logger.Info($"Provider Type Count: {providerTypes.Length}");
 
-            var applicationTokens = Environment.GetEnvironmentVariable("BOT_APPLICATION_VARIABLES")?.Split(";").ToDictionary(data => data.Split(",")[0]) ?? new();
+            var applicationTokensPairs = Environment.GetEnvironmentVariable("BOT_APPLICATION_VARIABLES")!.Split(";").ToList();
+            var applicationTokens = new Dictionary<string, string>();
+
+            foreach(var token in applicationTokensPairs)
+            {
+                var keyValueSplit = token.Split(',');
+                var key = keyValueSplit[0];
+                var value = keyValueSplit[1];
+
+                applicationTokens.Add(key, value);
+            }
+
             var channelIDs = new List<ulong?>();
 
             if (Environment.GetEnvironmentVariables().Contains("BOT_CHANNELIDS"))
