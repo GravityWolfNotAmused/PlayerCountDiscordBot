@@ -10,6 +10,5 @@ namespace DiscordPlayerCountBot.Providers.Base
         bool WasLastExecutionAFailure { get; set; }
         Exception? LastException { get; set; }
         Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables);
-        void HandleLastException(BotInformation information);
     }
 }
