@@ -5,15 +5,12 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using DiscordPlayerCountBot.Providers.Base;
 using DiscordPlayerCountBot.Services;
-using log4net;
 using PlayerCountBot;
 
 namespace DiscordPlayerCountBot.Providers
 {
     public class BattleMetricsProvider : ServerInformationProvider
     {
-        private ILog Logger = LogManager.GetLogger(typeof(BattleMetricsProvider));
-
         public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new BattleMetricsService();
@@ -26,13 +23,7 @@ namespace DiscordPlayerCountBot.Providers
                 if (server == null)
                     throw new ApplicationException("Server cannot be null. Is your server offline?");
 
-
-                if (WasLastExecutionAFailure)
-                {
-                    Logger.Info($"[Battle Metrics Provider] - Bot for Address: {information.Address} successfully fetched data after failure.");
-                    LastException = null;
-                    WasLastExecutionAFailure = false;
-                }
+                HandleLastException(information);
 
                 return new GenericServerInformation()
                 {
@@ -53,13 +44,13 @@ namespace DiscordPlayerCountBot.Providers
 
                 if (e is KeyNotFoundException keyNotFoundException)
                 {
-                    Logger.Error($"[Battle Metrics Provider] - BattleMetricKey is missing from Application variable configuration.");
+                    Logger.Error($"[BattleMetricsProvider] - BattleMetricKey is missing from Application variable configuration.");
                     return null;
                 }
 
                 if (e is HttpRequestException requestException)
                 {
-                    Logger.Error($"[Battle Metrics Provider] - The BattleMetric host has failed to respond.");
+                    Logger.Error($"[BattleMetricsProvider] - The BattleMetric host has failed to respond.");
                     return null;
                 }
 
@@ -67,28 +58,28 @@ namespace DiscordPlayerCountBot.Providers
                 {
                     if (webException.Status == WebExceptionStatus.Timeout)
                     {
-                        Logger.Error($"[Battle Metrics Provider] - Speaking with BattleMetric has timed out.");
+                        Logger.Error($"[BattleMetricsProvider] - Speaking with BattleMetric has timed out.");
                         return null;
                     }
                     else if (webException.Status == WebExceptionStatus.ConnectFailure)
                     {
-                        Logger.Error($"[Battle Metrics Provider] - Could not connect to BattleMetric.");
+                        Logger.Error($"[BattleMetricsProvider] - Could not connect to BattleMetric.");
                         return null;
                     }
                     else
                     {
-                        Logger.Error($"[Battle Metrics Provider] - There was an error speaking with your BattleMetric server.", e);
+                        Logger.Error($"[BattleMetricsProvider] - There was an error speaking with your BattleMetric server.", e);
                         return null;
                     }
                 }
 
                 if (e is ApplicationException applicationException)
                 {
-                    Logger.Error($"[Battle Metrics Provider] - {e.Message}");
+                    Logger.Error($"[BattleMetricsProvider] - {applicationException.Message}");
                     return null;
                 }
 
-                Logger.Error($"[Battle Metrics Provider] - There was an error speaking with BattleMetric.", e);
+                Logger.Error($"[BattleMetricsProvider] - There was an error speaking with BattleMetric.", e);
                 throw;
             }
         }
