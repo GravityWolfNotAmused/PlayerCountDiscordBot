@@ -6,13 +6,14 @@ using System;
 using System.Net.Http;
 using System.Net;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace DiscordPlayerCountBot.Providers
 {
     public class MinecraftProvider : ServerInformationProvider
     {
         private ILog Logger = LogManager.GetLogger(typeof(MinecraftProvider));
-        public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information)
+        public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new MinecraftService();
             var addressAndPort = information.GetAddressAndPort();

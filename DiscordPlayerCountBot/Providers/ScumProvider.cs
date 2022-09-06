@@ -3,6 +3,7 @@ using DiscordPlayerCountBot.Services;
 using log4net;
 using PlayerCountBot;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -14,7 +15,7 @@ namespace DiscordPlayerCountBot.Providers
     {
         private ILog Logger = LogManager.GetLogger(typeof(ScumProvider));
 
-        public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information)
+        public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new ScumService();
             var addressAndPort = information.GetAddressAndPort();

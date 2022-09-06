@@ -5,6 +5,7 @@
         STEAM,
         CFX,
         SCUM,
-        MINECRAFT
+        MINECRAFT,
+        BATTLEMETRICS
     }
 }

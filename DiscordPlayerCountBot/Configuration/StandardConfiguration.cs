@@ -38,8 +38,7 @@ namespace DiscordPlayerCountBot.Configuration
 
                 foreach (var info in config.ServerInformation)
                 {
-                    info.SteamAPIToken = config.SteamAPIKey;
-                    var bot = new Bot(info);
+                    var bot = new Bot(info, config.ApplicationTokens);
                     await bot.StartAsync();
                     bots.Add(bot.Information.Address, bot);
                 }
