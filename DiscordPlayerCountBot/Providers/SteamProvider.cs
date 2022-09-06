@@ -1,6 +1,5 @@
 ﻿using DiscordPlayerCountBot.Providers.Base;
 using DiscordPlayerCountBot.Services;
-using log4net;
 using PlayerCountBot;
 using System;
 using System.Collections.Generic;
@@ -12,8 +11,6 @@ namespace DiscordPlayerCountBot.Providers
 {
     public class SteamProvider : ServerInformationProvider
     {
-        private ILog Logger = LogManager.GetLogger(typeof(SteamProvider));
-
         public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new SteamService();
@@ -26,12 +23,7 @@ namespace DiscordPlayerCountBot.Providers
                 if (response == null)
                     throw new ApplicationException($"Server Address: {information.Address} was not found in Steam's directory.");
 
-                if (WasLastExecutionAFailure)
-                {
-                    Logger.Info($"[CFXProvider] - Bot for Address: {information.Address} successfully fetched data after failure.");
-                    LastException = null;
-                    WasLastExecutionAFailure = false;
-                }
+                HandleLastException(information);
 
                 return new()
                 {
@@ -83,7 +75,7 @@ namespace DiscordPlayerCountBot.Providers
 
                 if (e is ApplicationException applicationException)
                 {
-                    Logger.Error($"[SteamProvider] - {e.Message}");
+                    Logger.Error($"[SteamProvider] - {applicationException.Message}");
                     return null;
                 }
 

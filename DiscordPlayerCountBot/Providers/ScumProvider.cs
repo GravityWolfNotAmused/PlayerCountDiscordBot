@@ -1,10 +1,8 @@
 ﻿using DiscordPlayerCountBot.Providers.Base;
 using DiscordPlayerCountBot.Services;
-using log4net;
 using PlayerCountBot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -13,8 +11,6 @@ namespace DiscordPlayerCountBot.Providers
 {
     public class ScumProvider : ServerInformationProvider
     {
-        private ILog Logger = LogManager.GetLogger(typeof(ScumProvider));
-
         public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new ScumService();
@@ -34,12 +30,7 @@ namespace DiscordPlayerCountBot.Providers
 
                 if (server == null) throw new ApplicationException("Could not find Server in Scum Provider.");
 
-                if (WasLastExecutionAFailure)
-                {
-                    Logger.Info($"[ScumProvider] - Bot for Address: {information.Address} successfully fetched data after failure.");
-                    LastException = null;
-                    WasLastExecutionAFailure = false;
-                }
+                HandleLastException(information);
 
                 return new()
                 {

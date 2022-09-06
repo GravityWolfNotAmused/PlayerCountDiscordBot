@@ -5,17 +5,12 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using DiscordPlayerCountBot.Providers.Base;
 using DiscordPlayerCountBot.Services;
-using log4net;
-using log4net.Repository.Hierarchy;
 using PlayerCountBot;
 
 namespace DiscordPlayerCountBot.Providers
 {
-
     public class CFXProvider : ServerInformationProvider
     {
-        private ILog Logger = LogManager.GetLogger(typeof(CFXProvider));
-
         public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new CFXService();
@@ -32,12 +27,7 @@ namespace DiscordPlayerCountBot.Providers
                 if (serverInfo == null)
                     throw new ApplicationException("Server Information cannot be null. Is your server offline?");
 
-                if (WasLastExecutionAFailure)
-                {
-                    Logger.Info($"[CFXProvider] - Bot for Address: {information.Address} successfully fetched data after failure.");
-                    LastException = null;
-                    WasLastExecutionAFailure = false;
-                }
+                HandleLastException(information);
 
                 return new GenericServerInformation()
                 {
@@ -82,7 +72,7 @@ namespace DiscordPlayerCountBot.Providers
 
                 if (e is ApplicationException applicationException)
                 {
-                    Logger.Error($"[CFXProvider] - {e.Message}");
+                    Logger.Error($"[CFXProvider] - {applicationException.Message}");
                     return null;
                 }
 

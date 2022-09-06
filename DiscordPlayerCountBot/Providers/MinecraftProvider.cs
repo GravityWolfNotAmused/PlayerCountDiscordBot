@@ -12,7 +12,6 @@ namespace DiscordPlayerCountBot.Providers
 {
     public class MinecraftProvider : ServerInformationProvider
     {
-        private ILog Logger = LogManager.GetLogger(typeof(MinecraftProvider));
         public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new MinecraftService();
@@ -30,12 +29,7 @@ namespace DiscordPlayerCountBot.Providers
                     Logger.Warn($"[MinecraftProvider] - The minecraft provider states the server is offline. Server counts may not be correct.");
                 }
 
-                if (WasLastExecutionAFailure)
-                {
-                    Logger.Info($"[MinecraftProvider] - Bot for Address: {information.Address} successfully fetched data after failure.");
-                    LastException = null;
-                    WasLastExecutionAFailure = false;
-                }
+                HandleLastException(information);
 
                 return new()
                 {
@@ -81,7 +75,7 @@ namespace DiscordPlayerCountBot.Providers
 
                 if (e is ApplicationException applicationException)
                 {
-                    Logger.Error($"[MinecraftProvider] - {e.Message}");
+                    Logger.Error($"[MinecraftProvider] - {applicationException.Message}");
                     return null;
                 }
 

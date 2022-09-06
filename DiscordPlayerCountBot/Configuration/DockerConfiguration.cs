@@ -89,8 +89,7 @@ namespace DiscordPlayerCountBot.Configuration
                 await bot.StartAsync();
                 bots.Add(bot.Information.Address, bot);
             }
-            var list = providerTypes?.ToList() ?? new();
-            list.ForEach(item => Logger.Info(item));
+
             return new Tuple<Dictionary<string, Bot>, int>(bots, int.Parse(Environment.GetEnvironmentVariable("BOT_UPDATE_TIME") ?? "30"));
         }
     }
