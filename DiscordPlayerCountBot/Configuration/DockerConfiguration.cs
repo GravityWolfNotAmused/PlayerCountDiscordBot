@@ -84,6 +84,9 @@ namespace DiscordPlayerCountBot.Configuration
                     ProviderType = (int)EnumHelper.GetDataProvider(int.Parse(providerTypes?[i] ?? "0"))
                 };
 
+                var list = providerTypes?.ToList() ?? new();
+                list.ForEach(item => Console.WriteLine(item));
+
                 var bot = new Bot(info, applicationTokens);
                 await bot.StartAsync();
                 bots.Add(bot.Information.Address, bot);
