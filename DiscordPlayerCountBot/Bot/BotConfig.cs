@@ -9,10 +9,10 @@ namespace PlayerCountBot
         public int UpdateTime { get; set; }
 
         [JsonProperty]
-        public string SteamAPIKey { get; set; }
+        public List<BotInformation> ServerInformation { get; set; } = new();
 
         [JsonProperty]
-        public List<BotInformation> ServerInformation { get; set; } = new();
+        public Dictionary<string, string> ApplicationTokens { get; set; } = new();
 
         public void CreateDefaults()
         {
@@ -26,7 +26,9 @@ namespace PlayerCountBot
                 UseNameAsLabel = false
             });
             UpdateTime = 30;
-            SteamAPIKey = "SteamAPIKeyHere";
+
+            ApplicationTokens.Add("SteamAPIKey", "");
+            ApplicationTokens.Add("BattleMetricsKey", "");
         }
     }
 }

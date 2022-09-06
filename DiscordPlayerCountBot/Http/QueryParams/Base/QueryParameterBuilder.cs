@@ -5,7 +5,7 @@ namespace DiscordPlayerCountBot.Http
 {
     public class QueryParameterBuilder : IQueryParameterBuilder
     {
-        public string CreateQueryParameterString()
+        public virtual string CreateQueryParameterString()
         {
             var type = GetType();
             var properties = type.GetProperties();

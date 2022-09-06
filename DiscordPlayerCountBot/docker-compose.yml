@@ -16,4 +16,4 @@ services:
        #Application Variables
        #These setting apply to the whole application.
        BOT_UPDATE_TIME: "30"
-       STEAM_API_KEY: "SteamAPIKeyHere"
+       BOT_APPLICATION_VARIABLES: "SteamAPIKey,KeyHere;BattleMetricsKey,KeyHere"

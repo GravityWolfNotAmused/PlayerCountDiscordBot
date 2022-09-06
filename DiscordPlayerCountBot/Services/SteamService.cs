@@ -11,19 +11,18 @@ namespace DiscordPlayerCountBot.Services
     {
         public ILog Logger = LogManager.GetLogger(typeof(SteamService));
 
-        public async Task<SteamApiResponseData?> GetSteamApiResponse(BotInformation information)
+        public async Task<SteamApiResponseData?> GetSteamApiResponse(string address, int port, string token)
         {
             using var httpClient = new HttpExecuter(new HttpClient());
             var response = await httpClient.GET<object, SteamServerListResponse>("https://api.steampowered.com/IGameServersService/GetServerList/v1/", new SteamGetServerListQueryParams()
             {
-                Key = information.SteamAPIToken,
-                Filter = $"\\addr\\{information.Address}"
+                Key = token,
+                Filter = $"\\addr\\{address}:{port}"
             });
 
             if (response == null) return null;
 
-            var serverPortAndAddress = information.GetAddressAndPort();
-            var data = response.GetServerDataByPort(serverPortAndAddress.Item2.ToString());
+            var data = response.GetServerDataByPort(port);
 
             if (data == null) return null;
 

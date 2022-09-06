@@ -19,16 +19,16 @@ namespace PlayerCountBot
         public BotInformation Information { get; set; }
         public DiscordSocketClient DiscordClient { get; set; }
         public Dictionary<int, IServerInformationProvider> DataProviders { get; set; } = new();
+        public Dictionary<string, string> ApplicationTokens { get; set; } = new();
 
         private ILog Logger = LogManager.GetLogger(typeof(Bot));
 
-        public Bot(BotInformation info)
+        public Bot(BotInformation info, Dictionary<string, string> applicationTokens)
         {
-            if (info is null)
-            {
-                throw new ArgumentNullException(nameof(info));
-            }
+            if (info is null) throw new ArgumentNullException(nameof(info));
+            if (applicationTokens is null) throw new ArgumentException(nameof(applicationTokens));
 
+            ApplicationTokens = applicationTokens;
             Information = info;
 
             DiscordClient = new DiscordSocketClient(new DiscordSocketConfig()
@@ -45,6 +45,7 @@ namespace PlayerCountBot
             DataProviders.Add((int)DataProvider.CFX, new CFXProvider());
             DataProviders.Add((int)DataProvider.SCUM, new ScumProvider());
             DataProviders.Add((int)DataProvider.MINECRAFT, new MinecraftProvider());
+            DataProviders.Add((int)DataProvider.BATTLEMETRICS, new BattleMetricsProvider());
         }
 
         public async Task StartAsync()
@@ -78,7 +79,7 @@ namespace PlayerCountBot
             }
 
             var dataProvider = DataProviders[dataProviderType];
-            var serverInformation = await dataProvider.GetServerInformation(Information);
+            var serverInformation = await dataProvider.GetServerInformation(Information, ApplicationTokens);
 
             if (serverInformation == null)
             {

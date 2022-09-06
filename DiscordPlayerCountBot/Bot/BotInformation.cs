@@ -28,14 +28,14 @@ namespace PlayerCountBot
         [JsonProperty]
         public ulong? ChannelID { get; set; }
 
-        [JsonIgnore]
-        public string SteamAPIToken { get; set; }
-
         public Tuple<string, ushort> GetAddressAndPort()
         {
             string[] splitData = Address.Split(":");
             try
             {
+                if (splitData.Length == 1)
+                    return new Tuple<string, ushort>(splitData[0], 0);
+
                 ushort port = ushort.Parse(splitData[1]);
                 return new Tuple<string, ushort>(splitData[0], port);
             }

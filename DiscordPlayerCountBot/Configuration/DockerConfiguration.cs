@@ -25,6 +25,7 @@ namespace DiscordPlayerCountBot.Configuration
             var botTags = Environment.GetEnvironmentVariable("BOT_USENAMETAGS")?.Split(";");
             var providerTypes = Environment.GetEnvironmentVariable("BOT_PROVIDERTYPES")?.Split(";");
 
+            var applicationTokens = Environment.GetEnvironmentVariable("BOT_APPLICATION_VARIABLES")?.Split(";").ToDictionary(data => data.Split(",")[0]) ?? new();
             var channelIDs = new List<ulong?>();
 
             if (Environment.GetEnvironmentVariables().Contains("BOT_CHANNELIDS"))
@@ -80,11 +81,10 @@ namespace DiscordPlayerCountBot.Configuration
                     Status = activity,
                     UseNameAsLabel = useNameAsLabel,
                     ChannelID = channelID ?? null,
-                    ProviderType = (int)EnumHelper.GetDataProvider(int.Parse(providerTypes?[i] ?? "0")),
-                    SteamAPIToken = Environment.GetEnvironmentVariable("STEAM_API_KEY") ?? "",
+                    ProviderType = (int)EnumHelper.GetDataProvider(int.Parse(providerTypes?[i] ?? "0"))
                 };
 
-                var bot = new Bot(info);
+                var bot = new Bot(info, applicationTokens);
                 await bot.StartAsync();
                 bots.Add(bot.Information.Address, bot);
             }
