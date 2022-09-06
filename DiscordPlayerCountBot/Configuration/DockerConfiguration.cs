@@ -24,12 +24,11 @@ namespace DiscordPlayerCountBot.Configuration
             var botStatuses = Environment.GetEnvironmentVariable("BOT_STATUSES")?.Split(";");
             var botTags = Environment.GetEnvironmentVariable("BOT_USENAMETAGS")?.Split(";");
             var providerTypes = Environment.GetEnvironmentVariable("BOT_PROVIDERTYPES")!.Split(";");
-            Logger.Info($"Provider Type Count: {providerTypes.Length}");
 
             var applicationTokensPairs = Environment.GetEnvironmentVariable("BOT_APPLICATION_VARIABLES")!.Split(";").ToList();
             var applicationTokens = new Dictionary<string, string>();
 
-            foreach(var token in applicationTokensPairs)
+            foreach (var token in applicationTokensPairs)
             {
                 var keyValueSplit = token.Split(',');
                 var key = keyValueSplit[0];
