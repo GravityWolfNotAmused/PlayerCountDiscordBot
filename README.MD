@@ -69,12 +69,13 @@ The available states that I have are as follows:
 This bot works with many different providers to display your game server's player counts. The available providers are listed below.
 
 
-| Name | Config Value |
-| :----: | --- |
-| Steam | 0 |
-| CFX | 1 |
-| Scum | 2 |
-| Minecraft | 3 |
+| Name | Config Value | Note |
+| :----: | --- | --- |
+| Steam | 0 | Limit 1 Milion requests per 24 hours |
+| CFX | 1 | N/A|
+| Scum | 2 | Uses game |
+| Minecraft | 3 | NA |
+| BattleMetrics | 4 | Uses Battle Metrics ID (Check the Battle Metrics URL on their website for your ID)| 
 
 #### Address Resolution
 You may use `localhost` or `hostname` as your server address for the application to automatically resolve the hosts IP.
