@@ -70,11 +70,3 @@ jobs:
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
-    - name: Get current date
-      id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-    - name: Create Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ steps.branch-name.outputs.current_branch }}-codeql-${{steps.date.outputs.date}}
-        path: ./PlayerCountDiscordBot/results/csharp.sarif
