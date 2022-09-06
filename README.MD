@@ -75,7 +75,7 @@ This bot works with many different providers to display your game server's playe
 | CFX | 1 | N/A|
 | Scum | 2 | Uses game |
 | Minecraft | 3 | NA |
-| BattleMetrics | 4 | Uses Battle Metrics ID (Check the Battle Metrics URL on their website for your ID)| 
+| BattleMetrics | 4 | Uses Battle Metrics ID (Check the Battle Metrics URL on their website for your ID) [Example](https://www.battlemetrics.com/servers/minecraft/5873087)| 
 
 #### Address Resolution
 You may use `localhost` or `hostname` as your server address for the application to automatically resolve the hosts IP.
