@@ -57,7 +57,7 @@ namespace DiscordPlayerCountBot.Providers
 
                 if (e is HttpRequestException requestException)
                 {
-                    Logger.Error($"[CFXProvider] - The CFX host has failed to respond.");
+                    Logger.Error($"[CFXProvider] - The CFX host has failed to respond. {requestException.StatusCode}");
                     return null;
                 }
 

@@ -58,7 +58,7 @@ namespace DiscordPlayerCountBot.Providers
 
                 if (e is HttpRequestException requestException)
                 {
-                    Logger.Error($"[SteamProvider] - The Steam has failed to respond.");
+                    Logger.Error($"[SteamProvider] - The Steam has failed to respond. {requestException.StatusCode}");
                     return null;
                 }
 
