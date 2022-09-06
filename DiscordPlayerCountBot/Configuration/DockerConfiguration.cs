@@ -23,8 +23,8 @@ namespace DiscordPlayerCountBot.Configuration
             var botTokens = Environment.GetEnvironmentVariable("BOT_DISCORD_TOKENS")?.Split(";");
             var botStatuses = Environment.GetEnvironmentVariable("BOT_STATUSES")?.Split(";");
             var botTags = Environment.GetEnvironmentVariable("BOT_USENAMETAGS")?.Split(";");
-            var providerTypes = Environment.GetEnvironmentVariable("BOT_PROVIDERTYPES")?.Split(";").ToList() ?? new();
-            Logger.Info($"Provider Type Count: {providerTypes.Count}");
+            var providerTypes = Environment.GetEnvironmentVariable("BOT_PROVIDERTYPES")!.Split(";");
+            Logger.Info($"Provider Type Count: {providerTypes.Length}");
 
             var applicationTokens = Environment.GetEnvironmentVariable("BOT_APPLICATION_VARIABLES")?.Split(";").ToDictionary(data => data.Split(",")[0]) ?? new();
             var channelIDs = new List<ulong?>();
@@ -82,7 +82,7 @@ namespace DiscordPlayerCountBot.Configuration
                     Status = activity,
                     UseNameAsLabel = useNameAsLabel,
                     ChannelID = channelID ?? null,
-                    ProviderType = EnumHelper.GetDataProvider(int.Parse(providerTypes?[i] ?? "0"))
+                    ProviderType = EnumHelper.GetDataProvider(int.Parse(providerTypes[i]))
                 };
 
                 var bot = new Bot(info, applicationTokens);
