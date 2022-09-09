@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using DiscordPlayerCountBot;
 using DiscordPlayerCountBot.Enum;
 using DiscordPlayerCountBot.Http;
 using DiscordPlayerCountBot.Providers;
@@ -51,17 +52,11 @@ namespace PlayerCountBot
         {
             if (Information.Address.Contains("hostname") || Information.Address.Contains("localhost"))
             {
-                string[] splitAddr = Information.Address.Split(":");
-                string address = await GetHostAddress();
-                string port = splitAddr[1].ToLower();
-                Information.Address = address + ":" + port;
+                Information.Address = await AddressHelper.ResolveAddress(Information.Address);
             }
 
             Logger.Info($"[Bot] - Loaded {Information.Name} at address and port: {Information.Address}, {Information.ProviderType}");
-
-            await DiscordClient.LoginAsync(TokenType.Bot, Information.Token);
-            await DiscordClient.SetGameAsync($"Starting: {Information.Address}");
-            await DiscordClient.StartAsync();
+            await DiscordClient.LoginAndStartAsync(Information.Token, Information.Address);
         }
 
         public async Task StopAsync()
@@ -121,28 +116,6 @@ namespace PlayerCountBot
                     //https://www.reddit.com/r/Discord_Bots/comments/qzrl5h/channel_name_edit_rate_limit/
                     await channel.ModifyAsync(prop => prop.Name = gameStatus);
                 }
-            }
-        }
-
-        public async Task<string> GetHostAddress()
-        {
-            string publicIPAddress = string.Empty;
-            var httpClient = new HttpExecuter(new HttpClient());
-
-
-            try
-            {
-                var ipAddress = await httpClient.GET<object, string>("http://ifconfig.me");
-
-                if (string.IsNullOrEmpty(ipAddress))
-                    throw new ApplicationException("IP Address cannot be null. Host failed to resolve address.");
-
-                return ipAddress;
-            }
-            catch (WebException ex)
-            {
-                Logger.Error($"[Bot] - Error Reaching ifconfig.me: {ex.Status}", ex);
-                throw ex;
             }
         }
     }
