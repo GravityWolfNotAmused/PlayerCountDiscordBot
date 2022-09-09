@@ -1,15 +1,14 @@
 ﻿using DiscordPlayerCountBot.Providers.Base;
 using DiscordPlayerCountBot.Services;
-using log4net;
 using PlayerCountBot;
 using System;
-using System.Net.Http;
-using System.Net;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using DiscordPlayerCountBot.Attributes;
 
 namespace DiscordPlayerCountBot.Providers
 {
+    [Name("Minecraft")]
     public class MinecraftProvider : ServerInformationProvider
     {
         public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
@@ -31,56 +30,24 @@ namespace DiscordPlayerCountBot.Providers
 
                 HandleLastException(information);
 
+                var playerInformation = response.Players;
+
+                if (playerInformation == null)
+                    throw new ApplicationException("Failed to fetch player information from provider.");
+
                 return new()
                 {
                     Address = addressAndPort.Item1,
                     Port = addressAndPort.Item2,
-                    CurrentPlayers = response.Players.Online,
-                    MaxPlayers = response.Players.Max,
+                    CurrentPlayers = response?.Players?.Online ?? 0,
+                    MaxPlayers = response?.Players?.Max ?? 0,
                     PlayersInQueue = 0
                 };
             }
             catch (Exception e)
             {
-                if (e.Message == LastException?.Message)
-                    return null;
-
-                WasLastExecutionAFailure = true;
-                LastException = e;
-
-                if (e is HttpRequestException requestException)
-                {
-                    Logger.Error($"[MinecraftProvider] - The Minecraft provider has failed to respond.");
-                    return null;
-                }
-
-                if (e is WebException webException)
-                {
-                    if (webException.Status == WebExceptionStatus.Timeout)
-                    {
-                        Logger.Error($"[MinecraftProvider] - Speaking with Minecraft has timed out.");
-                        return null;
-                    }
-                    else if (webException.Status == WebExceptionStatus.ConnectFailure)
-                    {
-                        Logger.Error($"[MinecraftProvider] - Could not connect to Minecraft.");
-                        return null;
-                    }
-                    else
-                    {
-                        Logger.Error($"[MinecraftProvider] - There was an error speaking with your Minecraft server.", e);
-                        return null;
-                    }
-                }
-
-                if (e is ApplicationException applicationException)
-                {
-                    Logger.Error($"[MinecraftProvider] - {applicationException.Message}");
-                    return null;
-                }
-
-                Logger.Error($"[MinecraftProvider] - There was an error speaking with Minecraft.", e);
-                throw;
+                HandleException(e);
+                return null;
             }
         }
     }

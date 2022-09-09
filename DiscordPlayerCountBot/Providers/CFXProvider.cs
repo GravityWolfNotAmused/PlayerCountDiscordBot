@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
+using DiscordPlayerCountBot.Attributes;
 using DiscordPlayerCountBot.Providers.Base;
 using DiscordPlayerCountBot.Services;
 using PlayerCountBot;
 
 namespace DiscordPlayerCountBot.Providers
 {
+    [Name("CFX")]
     public class CFXProvider : ServerInformationProvider
     {
         public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
@@ -39,45 +39,8 @@ namespace DiscordPlayerCountBot.Providers
             }
             catch (Exception e)
             {
-                if (e.Message == LastException?.Message)
-                    return null;
-
-                WasLastExecutionAFailure = true;
-                LastException = e;
-
-                if (e is HttpRequestException requestException)
-                {
-                    Logger.Error($"[CFXProvider] - The CFX host has failed to respond. {requestException.StatusCode}");
-                    return null;
-                }
-
-                if (e is WebException webException)
-                {
-                    if (webException.Status == WebExceptionStatus.Timeout)
-                    {
-                        Logger.Error($"[CFXProvider] - Speaking with CFX has timed out.");
-                        return null;
-                    }
-                    else if (webException.Status == WebExceptionStatus.ConnectFailure)
-                    {
-                        Logger.Error($"[CFXProvider] - Could not connect to CFX.");
-                        return null;
-                    }
-                    else
-                    {
-                        Logger.Error($"[CFXProvider] - There was an error speaking with your CFX server.", e);
-                        return null;
-                    }
-                }
-
-                if (e is ApplicationException applicationException)
-                {
-                    Logger.Error($"[CFXProvider] - {applicationException.Message}");
-                    return null;
-                }
-
-                Logger.Error($"[CFXProvider] - There was an error speaking with CFX.", e);
-                throw;
+                HandleException(e);
+                return null;
             }
         }
     }

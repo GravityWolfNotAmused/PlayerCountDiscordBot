@@ -2,7 +2,7 @@
 
 namespace DiscordPlayerCountBot.Attributes
 {
-    [AttributeUsage(AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
     public class NameAttribute : Attribute
     {
         public string Name { get; set; }
