@@ -13,7 +13,7 @@ namespace DiscordPlayerCountBot.Services
 
         public async Task<SteamApiResponseData?> GetSteamApiResponse(string address, int port, string token)
         {
-            using var httpClient = new HttpExecuter(new HttpClient());
+            using var httpClient = new HttpExecuter();
             var response = await httpClient.GET<object, SteamServerListResponse>("https://api.steampowered.com/IGameServersService/GetServerList/v1/", new SteamGetServerListQueryParams()
             {
                 Key = token,

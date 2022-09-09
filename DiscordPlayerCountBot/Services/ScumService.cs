@@ -10,7 +10,7 @@ namespace DiscordPlayerCountBot.Services
     {
         public async Task<ScumProviderResponse?> GetPlayerInformationAsync(string address, int port)
         {
-            using var httpClient = new HttpExecuter(new HttpClient());
+            using var httpClient = new HttpExecuter();
             var response = await httpClient.GET<object, ScumProviderResponse>($"https://api.hellbz.de/scum/api.php", new ScumGetServerInformationQueryParams()
             {
                 Address = address
