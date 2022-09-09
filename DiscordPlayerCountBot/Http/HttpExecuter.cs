@@ -12,9 +12,9 @@ namespace DiscordPlayerCountBot.Http
     {
         public readonly HttpClient HttpClient;
 
-        public HttpExecuter(HttpClient httpClient)
+        public HttpExecuter()
         {
-            HttpClient = httpClient;
+            HttpClient = new HttpClient();
         }
 
         public void Dispose()
