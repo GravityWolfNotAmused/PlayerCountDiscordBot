@@ -88,7 +88,7 @@ namespace DiscordPlayerCountBot.Configuration
                 {
                     Name = botNames[i],
                     Address = botAddresses?[i] + ":" + botPorts?[i],
-                    Token = botTokens?[i],
+                    Token = botTokens?[i] ?? throw new ApplicationException("Missing bot token."),
                     Status = activity,
                     UseNameAsLabel = useNameAsLabel,
                     ChannelID = channelID ?? null,
