@@ -17,7 +17,7 @@ namespace DiscordPlayerCountBot.Data.Minecraft
         public MinecraftMotd Motd { get; set; }
 
         [JsonProperty("players")]
-        public MinecraftPlayerInfo Players { get; set; }
+        public MinecraftPlayerInfo? Players { get; set; }
 
         [JsonProperty("version")]
         public string? Version { get; set; }

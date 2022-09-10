@@ -12,7 +12,7 @@ namespace PlayerCountBot
             response = new SteamServerListSubClass();
         }
 
-        public SteamApiResponseData? GetServerDataByPort(string port)
+        public SteamApiResponseData? GetServerDataByPort(int port)
         {
             return response.GetAddressDataByPort(port);
         }

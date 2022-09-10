@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using DiscordPlayerCountBot;
 using DiscordPlayerCountBot.Enum;
 using DiscordPlayerCountBot.Http;
 using DiscordPlayerCountBot.Providers;
@@ -7,7 +8,6 @@ using DiscordPlayerCountBot.Providers.Base;
 using log4net;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -19,16 +19,16 @@ namespace PlayerCountBot
         public BotInformation Information { get; set; }
         public DiscordSocketClient DiscordClient { get; set; }
         public Dictionary<int, IServerInformationProvider> DataProviders { get; set; } = new();
+        public Dictionary<string, string> ApplicationTokens { get; set; } = new();
 
         private ILog Logger = LogManager.GetLogger(typeof(Bot));
 
-        public Bot(BotInformation info)
+        public Bot(BotInformation info, Dictionary<string, string> applicationTokens)
         {
-            if (info is null)
-            {
-                throw new ArgumentNullException(nameof(info));
-            }
+            if (info is null) throw new ArgumentNullException(nameof(info));
+            if (applicationTokens is null) throw new ArgumentException(nameof(applicationTokens));
 
+            ApplicationTokens = applicationTokens;
             Information = info;
 
             DiscordClient = new DiscordSocketClient(new DiscordSocketConfig()
@@ -45,23 +45,18 @@ namespace PlayerCountBot
             DataProviders.Add((int)DataProvider.CFX, new CFXProvider());
             DataProviders.Add((int)DataProvider.SCUM, new ScumProvider());
             DataProviders.Add((int)DataProvider.MINECRAFT, new MinecraftProvider());
+            DataProviders.Add((int)DataProvider.BATTLEMETRICS, new BattleMetricsProvider());
         }
 
         public async Task StartAsync()
         {
             if (Information.Address.Contains("hostname") || Information.Address.Contains("localhost"))
             {
-                string[] splitAddr = Information.Address.Split(":");
-                string address = await GetHostAddress();
-                string port = splitAddr[1].ToLower();
-                Information.Address = address + ":" + port;
+                Information.Address = await AddressHelper.ResolveAddress(Information.Address);
             }
 
             Logger.Info($"[Bot] - Loaded {Information.Name} at address and port: {Information.Address}, {Information.ProviderType}");
-
-            await DiscordClient.LoginAsync(TokenType.Bot, Information.Token);
-            await DiscordClient.SetGameAsync($"Starting: {Information.Address}");
-            await DiscordClient.StartAsync();
+            await DiscordClient.LoginAndStartAsync(Information.Token, Information.Address);
         }
 
         public async Task StopAsync()
@@ -78,7 +73,7 @@ namespace PlayerCountBot
             }
 
             var dataProvider = DataProviders[dataProviderType];
-            var serverInformation = await dataProvider.GetServerInformation(Information);
+            var serverInformation = await dataProvider.GetServerInformation(Information, ApplicationTokens);
 
             if (serverInformation == null)
             {
@@ -121,28 +116,6 @@ namespace PlayerCountBot
                     //https://www.reddit.com/r/Discord_Bots/comments/qzrl5h/channel_name_edit_rate_limit/
                     await channel.ModifyAsync(prop => prop.Name = gameStatus);
                 }
-            }
-        }
-
-        public async Task<string> GetHostAddress()
-        {
-            string publicIPAddress = string.Empty;
-            var httpClient = new HttpExecuter(new HttpClient());
-
-
-            try
-            {
-                var ipAddress = await httpClient.GET<object, string>("http://ifconfig.me");
-
-                if (string.IsNullOrEmpty(ipAddress))
-                    throw new ApplicationException("IP Address cannot be null. Host failed to resolve address.");
-
-                return ipAddress;
-            }
-            catch (WebException ex)
-            {
-                Logger.Error($"[Bot] - Error Reaching ifconfig.me: {ex.Status}", ex);
-                throw ex;
             }
         }
     }

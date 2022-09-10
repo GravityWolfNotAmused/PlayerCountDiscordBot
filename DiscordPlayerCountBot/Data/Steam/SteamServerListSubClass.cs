@@ -13,11 +13,11 @@ namespace PlayerCountBot
             servers = new List<SteamApiResponseData>();
         }
 
-        public SteamApiResponseData? GetAddressDataByPort(string port)
+        public SteamApiResponseData? GetAddressDataByPort(int port)
         {
             foreach (SteamApiResponseData data in servers)
             {
-                if (data.addr.Split(":")[1] == port)
+                if (int.Parse(data.addr.Split(":")[1]) == port)
                 {
                     return data;
                 }

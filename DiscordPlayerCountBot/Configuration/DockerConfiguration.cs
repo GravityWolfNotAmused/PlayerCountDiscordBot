@@ -23,7 +23,19 @@ namespace DiscordPlayerCountBot.Configuration
             var botTokens = Environment.GetEnvironmentVariable("BOT_DISCORD_TOKENS")?.Split(";");
             var botStatuses = Environment.GetEnvironmentVariable("BOT_STATUSES")?.Split(";");
             var botTags = Environment.GetEnvironmentVariable("BOT_USENAMETAGS")?.Split(";");
-            var providerTypes = Environment.GetEnvironmentVariable("BOT_PROVIDERTYPES")?.Split(";");
+            var providerTypes = Environment.GetEnvironmentVariable("BOT_PROVIDERTYPES")!.Split(";");
+
+            var applicationTokensPairs = Environment.GetEnvironmentVariable("BOT_APPLICATION_VARIABLES")!.Split(";").ToList();
+            var applicationTokens = new Dictionary<string, string>();
+
+            foreach (var token in applicationTokensPairs)
+            {
+                var keyValueSplit = token.Split(',');
+                var key = keyValueSplit[0];
+                var value = keyValueSplit[1];
+
+                applicationTokens.Add(key, value);
+            }
 
             var channelIDs = new List<ulong?>();
 
@@ -76,18 +88,18 @@ namespace DiscordPlayerCountBot.Configuration
                 {
                     Name = botNames[i],
                     Address = botAddresses?[i] + ":" + botPorts?[i],
-                    Token = botTokens?[i],
+                    Token = botTokens?[i] ?? throw new ApplicationException("Missing bot token."),
                     Status = activity,
                     UseNameAsLabel = useNameAsLabel,
                     ChannelID = channelID ?? null,
-                    ProviderType = (int)EnumHelper.GetDataProvider(int.Parse(providerTypes?[i] ?? "0")),
-                    SteamAPIToken = Environment.GetEnvironmentVariable("STEAM_API_KEY") ?? "",
+                    ProviderType = EnumHelper.GetDataProvider(int.Parse(providerTypes[i]))
                 };
 
-                var bot = new Bot(info);
+                var bot = new Bot(info, applicationTokens);
                 await bot.StartAsync();
                 bots.Add(bot.Information.Address, bot);
             }
+
             return new Tuple<Dictionary<string, Bot>, int>(bots, int.Parse(Environment.GetEnvironmentVariable("BOT_UPDATE_TIME") ?? "30"));
         }
     }

@@ -9,7 +9,7 @@ namespace DiscordPlayerCountBot.Services
     {
         public async Task<MinecraftServer?> GetMinecraftServerInformationAsync(string address, int port)
         {
-            using var httpClient = new HttpExecuter(new HttpClient());
+            using var httpClient = new HttpExecuter();
             return await httpClient.GET<object, MinecraftServer>($"https://api.mcsrvstat.us/2/{address}:{port}");
         }
     }

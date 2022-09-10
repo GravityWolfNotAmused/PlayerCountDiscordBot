@@ -8,33 +8,30 @@ using PlayerCountBot;
 
 namespace DiscordPlayerCountBot.Providers
 {
-    [Name("CFX")]
-    public class CFXProvider : ServerInformationProvider
+    [Name("BattleMetrics")]
+    public class BattleMetricsProvider : ServerInformationProvider
     {
         public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
-            var service = new CFXService();
+            var service = new BattleMetricsService();
 
             try
             {
-                var playerInfo = await service.GetPlayerInformationAsync(information.Address);
-                var serverInfo = await service.GetServerInformationAsync(information.Address);
                 var addressAndPort = information.GetAddressAndPort();
+                var server = await service.GetPlayerInformationAsync(addressAndPort.Item1, applicationVariables["BattleMetricsKey"]);
 
-                if (playerInfo == null)
-                    throw new ApplicationException("Player Information cannot be null. Is your server offline?");
-
-                if (serverInfo == null)
-                    throw new ApplicationException("Server Information cannot be null. Is your server offline?");
+                if (server == null)
+                    throw new ApplicationException("Server cannot be null. Is your server offline?");
 
                 HandleLastException(information);
 
                 return new GenericServerInformation()
                 {
                     Address = addressAndPort.Item1,
-                    CurrentPlayers = playerInfo.Count,
-                    MaxPlayers = serverInfo.GetMaxPlayers(),
+                    CurrentPlayers = server.attributes?.players ?? 0,
+                    MaxPlayers = server.attributes?.maxPlayers ?? 0,
                     Port = addressAndPort.Item2,
+                    PlayersInQueue = 0
                 };
             }
             catch (Exception e)
