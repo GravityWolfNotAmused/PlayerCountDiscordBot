@@ -29,7 +29,7 @@ namespace DiscordPlayerCountBot.Configuration
 
                 var applicationTokens = new Dictionary<string, string>();
 
-                if(Environment.GetEnvironmentVariables().Contains("BOT_APPLICATION_VARIABLES"))
+                if (Environment.GetEnvironmentVariables().Contains("BOT_APPLICATION_VARIABLES"))
                 {
                     var applicationTokensPairs = Environment.GetEnvironmentVariable("BOT_APPLICATION_VARIABLES")!.Split(";").ToList();
 
@@ -108,7 +108,7 @@ namespace DiscordPlayerCountBot.Configuration
 
                 return new Tuple<Dictionary<string, Bot>, int>(bots, int.Parse(Environment.GetEnvironmentVariable("BOT_UPDATE_TIME") ?? "30"));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
             }

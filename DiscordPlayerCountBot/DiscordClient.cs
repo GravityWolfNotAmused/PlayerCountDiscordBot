@@ -11,7 +11,7 @@ namespace DiscordPlayerCountBot
     {
         public static async Task LoginAndStartAsync(this DiscordSocketClient client, string token, string address, bool shouldStart = true)
         {
-            if(shouldStart)
+            if (shouldStart)
             {
                 await client.LoginAsync(TokenType.Bot, token);
                 await client.SetGameAsync($"Starting: {address}");
@@ -19,7 +19,7 @@ namespace DiscordPlayerCountBot
             }
         }
 
-        public static async Task SetChannelName(this IDiscordClient socket, ulong? channelId, string gameStatus )
+        public static async Task SetChannelName(this IDiscordClient socket, ulong? channelId, string gameStatus)
         {
             if (channelId == null) return;
 
