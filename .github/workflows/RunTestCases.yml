@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Run Test Cases
 
 # Controls when the workflow will run
 on:
@@ -15,6 +15,10 @@ jobs:
   test:
     runs-on: windows-latest
     steps:
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
