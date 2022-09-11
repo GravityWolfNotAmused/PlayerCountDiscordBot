@@ -12,4 +12,4 @@
 Please report any issues to [Issues tab](https://github.com/GravityWolfNotAmused/PlayerCountDiscordBot/issues) or my discord.
 
 #### Want to Request Changes?
-Please fork this repository, and make a pull request for the changes you'd like to see to the project.
+Please fork the dev branch of this repository, and make a pull request for the changes you'd like to see to the project.
