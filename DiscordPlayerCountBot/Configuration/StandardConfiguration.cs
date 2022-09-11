@@ -13,7 +13,7 @@ namespace DiscordPlayerCountBot.Configuration
     public class StandardConfiguration : IConfigurable
     {
         private ILog Logger = LogManager.GetLogger(typeof(StandardConfiguration));
-        public async Task<Tuple<Dictionary<string, Bot>, int>> Configure()
+        public async Task<Tuple<Dictionary<string, Bot>, int>> Configure(bool shouldStart = true)
         {
             var bots = new Dictionary<string, Bot>();
             var config = new BotConfig();
@@ -39,7 +39,7 @@ namespace DiscordPlayerCountBot.Configuration
                 foreach (var info in config.ServerInformation)
                 {
                     var bot = new Bot(info, config.ApplicationTokens);
-                    await bot.StartAsync();
+                    await bot.StartAsync(shouldStart);
                     bots.Add(bot.Information.Address, bot);
                 }
             }

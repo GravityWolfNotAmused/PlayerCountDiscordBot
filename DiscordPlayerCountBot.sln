@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordPlayerCountBot.Tests", "DiscordPlayerCountBot.Tests\DiscordPlayerCountBot.Tests.csproj", "{917FC191-C1C2-4667-8265-23BC68D259B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{BBBF5976-1AE8-4592-A67B-E5FF35A916FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBBF5976-1AE8-4592-A67B-E5FF35A916FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBBF5976-1AE8-4592-A67B-E5FF35A916FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{917FC191-C1C2-4667-8265-23BC68D259B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{917FC191-C1C2-4667-8265-23BC68D259B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{917FC191-C1C2-4667-8265-23BC68D259B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{917FC191-C1C2-4667-8265-23BC68D259B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

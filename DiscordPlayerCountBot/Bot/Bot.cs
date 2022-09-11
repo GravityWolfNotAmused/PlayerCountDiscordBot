@@ -8,8 +8,6 @@ using DiscordPlayerCountBot.Providers.Base;
 using log4net;
 using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace PlayerCountBot
@@ -48,7 +46,7 @@ namespace PlayerCountBot
             DataProviders.Add((int)DataProvider.BATTLEMETRICS, new BattleMetricsProvider());
         }
 
-        public async Task StartAsync()
+        public async Task StartAsync(bool shouldStart)
         {
             if (Information.Address.Contains("hostname") || Information.Address.Contains("localhost"))
             {
@@ -56,7 +54,7 @@ namespace PlayerCountBot
             }
 
             Logger.Info($"[Bot] - Loaded {Information.Name} at address and port: {Information.Address}, {Information.ProviderType}");
-            await DiscordClient.LoginAndStartAsync(Information.Token, Information.Address);
+            await DiscordClient.LoginAndStartAsync(Information.Token, Information.Address, shouldStart);
         }
 
         public async Task StopAsync()
@@ -67,6 +65,7 @@ namespace PlayerCountBot
         public async Task UpdateAsync()
         {
             var dataProviderType = EnumHelper.GetDataProvider(Information.ProviderType);
+
             if (dataProviderType != Information.ProviderType)
             {
                 Logger.Warn($"[Bot] - Config for bot at address: {Information.Address} has an invalid provider type: {Information.ProviderType}");
@@ -90,33 +89,7 @@ namespace PlayerCountBot
 
             var activityType = (ActivityType)(activityInteger);
             await DiscordClient.SetGameAsync(gameStatus, null, activityType);
-
-            if (Information.ChannelID.HasValue)
-            {
-                IDiscordClient socket = DiscordClient;
-                IGuildChannel channel = (IGuildChannel)await socket.GetChannelAsync(Information.ChannelID.Value);
-
-                if (channel is null)
-                {
-                    var exception = new ArgumentException();
-                    Logger.Error($"[Bot] - Invalid Channel Id: {Information.ChannelID}, Channel was not found.", exception);
-                    throw exception;
-                }
-
-                if (channel != null)
-                {
-                    if (channel is ITextChannel)
-                    {
-                        gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
-                    }
-
-                    //Keep in mind there is a massive rate limit on this call that is specific to discord, and not Discord.Net
-                    //2x per 10 minutes
-                    //https://discord.com/developers/docs/topics/rate-limits
-                    //https://www.reddit.com/r/Discord_Bots/comments/qzrl5h/channel_name_edit_rate_limit/
-                    await channel.ModifyAsync(prop => prop.Name = gameStatus);
-                }
-            }
+            await DiscordClient.SetChannelName(Information.ChannelID, gameStatus);
         }
     }
 }

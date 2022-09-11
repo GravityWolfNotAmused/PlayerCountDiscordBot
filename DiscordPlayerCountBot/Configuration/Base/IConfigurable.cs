@@ -7,6 +7,6 @@ namespace DiscordPlayerCountBot.Configuration.Base
 {
     public interface IConfigurable
     {
-        Task<Tuple<Dictionary<string, Bot>, int>> Configure();
+        Task<Tuple<Dictionary<string, Bot>, int>> Configure(bool shouldStart = true);
     }
 }
