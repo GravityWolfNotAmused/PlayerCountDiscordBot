@@ -199,6 +199,67 @@ To declare Multiple bots in docker separate values in `BOT_NAMES`, `BOT_PUBADDRE
  Example:
   `BOT_APPLICATION_VARIABLES='SteamAPIKey,34124124123rfwer1424124124;BattleMetricsKey,24124124124rwefwrgery5323423412312'`
   
+**For those not using steam and/or Battle Metrics use the following in your docker compose:**
+**Please note: This is an example of format without data not specific data, so provider types, address, and more may not be correct.**
+
+**Without Battle Metrics:**
+
+```yaml
+version: "3.7"
+
+services:
+  discord-bot:
+     image: specker/discordplayercountbot
+     environment:
+       BOT_NAMES: "Bot1;Bot2"
+       BOT_PUBADDRESSES: "127.0.0.1;127.0.0.1"
+       BOT_PORTS: "16261;16262"
+       BOT_DISCORD_TOKENS: "DiscordToken1;DiscordToken2"
+       BOT_UPDATE_TIME: "30"
+       BOT_STATUSES: "1;2"
+       BOT_USENAMETAGS: "false;false"
+       BOT_PROVIDERTYPES: "0;0"
+       BOT_APPLICATION_VARIABLES: "SteamAPIKey,Here"
+```
+
+**Without Steam:**
+
+```yaml
+version: "3.7"
+
+services:
+  discord-bot:
+     image: specker/discordplayercountbot
+     environment:
+       BOT_NAMES: "Bot1;Bot2"
+       BOT_PUBADDRESSES: "127.0.0.1;127.0.0.1"
+       BOT_PORTS: "16261;16262"
+       BOT_DISCORD_TOKENS: "DiscordToken1;DiscordToken2"
+       BOT_UPDATE_TIME: "30"
+       BOT_STATUSES: "1;2"
+       BOT_USENAMETAGS: "false;false"
+       BOT_PROVIDERTYPES: "0;0"
+       BOT_APPLICATION_VARIABLES: "BattleMetricsKey,Here"
+```
+
+**Without Steam and Battle Metrics**
+```yaml
+version: "3.7"
+
+services:
+  discord-bot:
+     image: specker/discordplayercountbot
+     environment:
+       BOT_NAMES: "Bot1;Bot2"
+       BOT_PUBADDRESSES: "127.0.0.1;127.0.0.1"
+       BOT_PORTS: "16261;16262"
+       BOT_DISCORD_TOKENS: "DiscordToken1;DiscordToken2"
+       BOT_UPDATE_TIME: "30"
+       BOT_STATUSES: "1;2"
+       BOT_USENAMETAGS: "false;false"
+       BOT_PROVIDERTYPES: "0;0"
+```
+  
 # Issues
 Please report any issues to [Issues tab](https://github.com/GravityWolfNotAmused/PlayerCountDiscordBot/issues) or my discord.
 
