@@ -7,14 +7,13 @@ on:
   pull_request:
     branches: [ "latest", "dev" ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   test:
     runs-on: windows-latest
     steps:
+    - name: Checkout
+      uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
