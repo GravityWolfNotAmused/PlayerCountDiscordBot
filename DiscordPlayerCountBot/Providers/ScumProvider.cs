@@ -1,6 +1,7 @@
 ﻿using DiscordPlayerCountBot.Attributes;
 using DiscordPlayerCountBot.Providers.Base;
 using DiscordPlayerCountBot.Services;
+using DiscordPlayerCountBot.ViewModels;
 using PlayerCountBot;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace DiscordPlayerCountBot.Providers
 {
+    [Obsolete("Found to be worse than Battle Metrics", true)]
     [Name("Scum")]
     public class ScumProvider : ServerInformationProvider
     {
-        public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
+        public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new ScumService();
             var addressAndPort = information.GetAddressAndPort();
@@ -36,9 +38,9 @@ namespace DiscordPlayerCountBot.Providers
                 {
                     Address = addressAndPort.Item1,
                     Port = addressAndPort.Item2,
-                    CurrentPlayers = server.Players,
+                    Players = server.Players,
                     MaxPlayers = server.MaxPlayers,
-                    PlayersInQueue = 0
+                    QueuedPlayers = 0
                 };
             }
             catch (Exception e)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DiscordPlayerCountBot.ViewModels;
 using PlayerCountBot;
 
 namespace DiscordPlayerCountBot.Providers.Base
@@ -9,6 +10,6 @@ namespace DiscordPlayerCountBot.Providers.Base
     {
         bool WasLastExecutionAFailure { get; set; }
         Exception? LastException { get; set; }
-        Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables);
+        Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables);
     }
 }

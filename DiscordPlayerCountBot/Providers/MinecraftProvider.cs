@@ -5,13 +5,14 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using DiscordPlayerCountBot.Attributes;
+using DiscordPlayerCountBot.ViewModels;
 
 namespace DiscordPlayerCountBot.Providers
 {
     [Name("Minecraft")]
     public class MinecraftProvider : ServerInformationProvider
     {
-        public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
+        public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new MinecraftService();
             var addressAndPort = information.GetAddressAndPort();
@@ -35,14 +36,7 @@ namespace DiscordPlayerCountBot.Providers
                 if (playerInformation == null)
                     throw new ApplicationException("Failed to fetch player information from provider.");
 
-                return new()
-                {
-                    Address = addressAndPort.Item1,
-                    Port = addressAndPort.Item2,
-                    CurrentPlayers = response?.Players?.Online ?? 0,
-                    MaxPlayers = response?.Players?.Max ?? 0,
-                    PlayersInQueue = 0
-                };
+                return response.GetViewModel();
             }
             catch (Exception e)
             {

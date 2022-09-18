@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DiscordPlayerCountBot.ViewModels;
 
 namespace DiscordPlayerCountBot.Data
 {
@@ -48,6 +49,21 @@ namespace DiscordPlayerCountBot.Data
         public string? id { get; set; }
         public BattleMetricsServerAttributes? attributes { get; set; }
         public BattleMetricsServerRelationships? relationships { get; set; }
+        public BattleMetricsViewModel GetViewModel()
+        {
+            return new()
+            {
+                Address = attributes?.address ?? "",
+                Port = attributes?.port ?? 0,
+                MaxPlayers = attributes?.maxPlayers ?? 0,
+                Players = attributes?.players ?? 0,
+                Time = attributes?.details?.time ?? "",
+                Rank = attributes?.rank ?? 0,
+                GameMode = attributes?.details?.gamemode ?? "",
+                Map = attributes?.details?.map ?? "",
+                QueuedPlayers = 0
+            };
+        }
     }
 
     public class BattleMetricsServerGame

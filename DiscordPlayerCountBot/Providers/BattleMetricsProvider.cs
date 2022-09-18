@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DiscordPlayerCountBot.Attributes;
+using DiscordPlayerCountBot.Data;
 using DiscordPlayerCountBot.Providers.Base;
 using DiscordPlayerCountBot.Services;
+using DiscordPlayerCountBot.ViewModels;
 using PlayerCountBot;
 
 namespace DiscordPlayerCountBot.Providers
@@ -11,7 +13,7 @@ namespace DiscordPlayerCountBot.Providers
     [Name("BattleMetrics")]
     public class BattleMetricsProvider : ServerInformationProvider
     {
-        public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
+        public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new BattleMetricsService();
 
@@ -25,14 +27,7 @@ namespace DiscordPlayerCountBot.Providers
 
                 HandleLastException(information);
 
-                return new GenericServerInformation()
-                {
-                    Address = addressAndPort.Item1,
-                    CurrentPlayers = server.attributes?.players ?? 0,
-                    MaxPlayers = server.attributes?.maxPlayers ?? 0,
-                    Port = addressAndPort.Item2,
-                    PlayersInQueue = 0
-                };
+                return server.GetViewModel();
             }
             catch (Exception e)
             {

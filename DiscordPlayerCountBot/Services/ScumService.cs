@@ -1,11 +1,12 @@
 ﻿using DiscordPlayerCountBot.Data.Scum;
 using DiscordPlayerCountBot.Http;
-using System.Net.Http;
+using System;
 using System.Threading.Tasks;
 
 
 namespace DiscordPlayerCountBot.Services
 {
+    [Obsolete("Found to be worse than Battle Metrics", true)]
     public class ScumService : IScumService
     {
         public async Task<ScumProviderResponse?> GetPlayerInformationAsync(string address, int port)

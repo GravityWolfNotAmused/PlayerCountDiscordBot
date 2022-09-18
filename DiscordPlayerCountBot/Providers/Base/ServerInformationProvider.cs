@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using log4net;
 using PlayerCountBot;
 using DiscordPlayerCountBot.Attributes;
+using DiscordPlayerCountBot.ViewModels;
 
 namespace DiscordPlayerCountBot.Providers.Base
 {
@@ -22,7 +23,7 @@ namespace DiscordPlayerCountBot.Providers.Base
             Label = AttributeHelper.GetNameFromAttribute(this);
         }
 
-        public abstract Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables);
+        public abstract Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables);
         protected void HandleLastException(BotInformation information)
         {
             if (WasLastExecutionAFailure)
