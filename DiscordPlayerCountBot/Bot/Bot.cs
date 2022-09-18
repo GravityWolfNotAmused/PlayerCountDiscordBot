@@ -41,7 +41,6 @@ namespace PlayerCountBot
         {
             DataProviders.Add((int)DataProvider.STEAM, new SteamProvider());
             DataProviders.Add((int)DataProvider.CFX, new CFXProvider());
-            DataProviders.Add((int)DataProvider.SCUM, new ScumProvider());
             DataProviders.Add((int)DataProvider.MINECRAFT, new MinecraftProvider());
             DataProviders.Add((int)DataProvider.BATTLEMETRICS, new BattleMetricsProvider());
         }
@@ -71,6 +70,13 @@ namespace PlayerCountBot
                 Logger.Warn($"[Bot] - Config for bot at address: {Information.Address} has an invalid provider type: {Information.ProviderType}");
             }
 
+            var activityInteger = EnumHelper.GetActivityType(Information.Status);
+
+            if (Information.Status != activityInteger)
+            {
+                Logger.Warn($"[Bot] - Config for bot at address: {Information.Address} has an invalid activity type: {Information.Status}");
+            }
+
             var dataProvider = DataProviders[dataProviderType];
             var serverInformation = await dataProvider.GetServerInformation(Information, ApplicationTokens);
 
@@ -79,16 +85,9 @@ namespace PlayerCountBot
                 return;
             }
 
-            var gameStatus = serverInformation.GetStatusString(Information.Name, Information.UseNameAsLabel);
-            var activityInteger = EnumHelper.GetActivityType(Information.Status);
+            var gameStatus = serverInformation.ReplaceTagsWithValues(Information.StatusFormat, Information.UseNameAsLabel, Information.Name);
 
-            if (Information.Status != activityInteger)
-            {
-                Logger.Warn($"[Bot] - Config for bot at address: {Information.Address} has an invalid activity type: {Information.Status}");
-            }
-
-            var activityType = (ActivityType)(activityInteger);
-            await DiscordClient.SetGameAsync(gameStatus, null, activityType);
+            await DiscordClient.SetGameAsync(gameStatus, null, (ActivityType)activityInteger);
             await DiscordClient.SetChannelName(Information.ChannelID, gameStatus);
         }
     }
