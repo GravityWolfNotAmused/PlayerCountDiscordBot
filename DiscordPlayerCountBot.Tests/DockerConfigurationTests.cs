@@ -1,5 +1,3 @@
-using DiscordPlayerCountBot.Tests.Environment;
-
 namespace DiscordPlayerCountBot.Tests;
 
 [Collection("Configuration Test Suite")]
