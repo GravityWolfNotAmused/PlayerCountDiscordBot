@@ -28,6 +28,9 @@ namespace PlayerCountBot
         [JsonProperty]
         public ulong? ChannelID { get; set; }
 
+        [JsonProperty]
+        public string? StatusFormat { get; set; }
+
         public Tuple<string, ushort> GetAddressAndPort()
         {
             string[] splitData = Address.Split(":");
