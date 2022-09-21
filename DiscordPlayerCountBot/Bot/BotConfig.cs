@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace PlayerCountBot
@@ -19,6 +20,7 @@ namespace PlayerCountBot
 
             ServerInformation.Add(new BotInformation()
             {
+                Id = null,
                 Name = "TestBot",
                 Address = "127.0.0.1:27014",
                 Token = "DiscordTokenHere",
