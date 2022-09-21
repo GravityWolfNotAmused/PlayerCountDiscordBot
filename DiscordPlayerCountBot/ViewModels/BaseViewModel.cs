@@ -33,10 +33,16 @@ namespace DiscordPlayerCountBot.ViewModels
             foreach(var property in properties)
             {
                 var tag = $"@{property.Name}";
-                var value = property.GetValue(this);
+                object? value = property.GetValue(this);
 
-                if (format.Contains(tag))
+                if (format.Contains(tag) && value != null)
                 {
+                    if (property.Name == nameof(QueuedPlayers) && ((int?)value ?? 0) == 0)
+                    {
+                        status = status.Replace("Q: " + tag, "");
+                        continue;
+                    }
+
                     status = status.Replace(tag, value?.ToString());
                 }
             }
