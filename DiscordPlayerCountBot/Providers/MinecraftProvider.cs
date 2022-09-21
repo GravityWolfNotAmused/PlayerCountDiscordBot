@@ -12,6 +12,10 @@ namespace DiscordPlayerCountBot.Providers
     [Name("Minecraft")]
     public class MinecraftProvider : ServerInformationProvider
     {
+        public MinecraftProvider(BotInformation info) : base(info)
+        {
+        }
+
         public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new MinecraftService();

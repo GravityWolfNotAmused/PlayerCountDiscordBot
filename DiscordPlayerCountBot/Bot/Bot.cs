@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using DiscordPlayerCountBot;
+using DiscordPlayerCountBot.Attributes;
 using DiscordPlayerCountBot.Enum;
 using DiscordPlayerCountBot.Http;
 using DiscordPlayerCountBot.Providers;
@@ -12,22 +13,20 @@ using System.Threading.Tasks;
 
 namespace PlayerCountBot
 {
-    public class Bot
+
+    [Name("Bot")]
+    public class Bot : LoggableClass
     {
-        public BotInformation Information { get; set; }
         public DiscordSocketClient DiscordClient { get; set; }
         public Dictionary<int, IServerInformationProvider> DataProviders { get; set; } = new();
         public Dictionary<string, string> ApplicationTokens { get; set; } = new();
 
-        private ILog Logger = LogManager.GetLogger(typeof(Bot));
-
-        public Bot(BotInformation info, Dictionary<string, string> applicationTokens)
+        public Bot(BotInformation info, Dictionary<string, string> applicationTokens) : base(info)
         {
             if (info is null) throw new ArgumentNullException(nameof(info));
             if (applicationTokens is null) throw new ArgumentException(nameof(applicationTokens));
 
             ApplicationTokens = applicationTokens;
-            Information = info;
 
             DiscordClient = new DiscordSocketClient(new DiscordSocketConfig()
             {
@@ -39,10 +38,10 @@ namespace PlayerCountBot
 
         public void InitDataProviders()
         {
-            DataProviders.Add((int)DataProvider.STEAM, new SteamProvider());
-            DataProviders.Add((int)DataProvider.CFX, new CFXProvider());
-            DataProviders.Add((int)DataProvider.MINECRAFT, new MinecraftProvider());
-            DataProviders.Add((int)DataProvider.BATTLEMETRICS, new BattleMetricsProvider());
+            DataProviders.Add((int)DataProvider.STEAM, new SteamProvider(Information));
+            DataProviders.Add((int)DataProvider.CFX, new CFXProvider(Information));
+            DataProviders.Add((int)DataProvider.MINECRAFT, new MinecraftProvider(Information));
+            DataProviders.Add((int)DataProvider.BATTLEMETRICS, new BattleMetricsProvider(Information));
         }
 
         public async Task StartAsync(bool shouldStart)
@@ -52,7 +51,7 @@ namespace PlayerCountBot
                 Information.Address = await AddressHelper.ResolveAddress(Information.Address);
             }
 
-            Logger.Info($"[Bot] - Loaded {Information.Name} at address and port: {Information.Address}, {Information.ProviderType}");
+            Info($"Loaded {Information.Name} at address and port: {Information.Address}, {Information.ProviderType}");
             await DiscordClient.LoginAndStartAsync(Information.Token, Information.Address, shouldStart);
         }
 
@@ -67,14 +66,14 @@ namespace PlayerCountBot
 
             if (dataProviderType != Information.ProviderType)
             {
-                Logger.Warn($"[Bot] - Config for bot at address: {Information.Address} has an invalid provider type: {Information.ProviderType}");
+                Warn($"Config for bot at address: {Information.Address} has an invalid provider type: {Information.ProviderType}");
             }
 
             var activityInteger = EnumHelper.GetActivityType(Information.Status);
 
             if (Information.Status != activityInteger)
             {
-                Logger.Warn($"[Bot] - Config for bot at address: {Information.Address} has an invalid activity type: {Information.Status}");
+                Warn($"Config for bot at address: {Information.Address} has an invalid activity type: {Information.Status}");
             }
 
             var dataProvider = DataProviders[dataProviderType];

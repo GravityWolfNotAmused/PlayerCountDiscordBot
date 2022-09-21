@@ -13,6 +13,10 @@ namespace DiscordPlayerCountBot.Providers
     [Name("Scum")]
     public class ScumProvider : ServerInformationProvider
     {
+        public ScumProvider(BotInformation info) : base(info)
+        {
+        }
+
         public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new ScumService();

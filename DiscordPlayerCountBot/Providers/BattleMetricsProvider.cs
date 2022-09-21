@@ -13,6 +13,10 @@ namespace DiscordPlayerCountBot.Providers
     [Name("BattleMetrics")]
     public class BattleMetricsProvider : ServerInformationProvider
     {
+        public BattleMetricsProvider(BotInformation info) : base(info)
+        {
+        }
+
         public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new BattleMetricsService();

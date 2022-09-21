@@ -12,6 +12,10 @@ namespace DiscordPlayerCountBot.Providers
     [Name("Steam")]
     public class SteamProvider : ServerInformationProvider
     {
+        public SteamProvider(BotInformation info) : base(info)
+        {
+        }
+
         public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new SteamService();

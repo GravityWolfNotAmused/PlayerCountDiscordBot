@@ -13,6 +13,10 @@ namespace DiscordPlayerCountBot.Providers
     [Name("CFX")]
     public class CFXProvider : ServerInformationProvider
     {
+        public CFXProvider(BotInformation info) : base(info)
+        {
+        }
+
         public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new CFXService();
