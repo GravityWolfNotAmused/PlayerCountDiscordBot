@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.WebSockets;
 using System.Security;
 using System.Threading.Tasks;
 using System.Timers;
@@ -79,6 +80,18 @@ namespace DiscordPlayerCountBot
             }
             catch (Exception ex)
             {
+                if(ex is OperationCanceledException canceledException)
+                {
+                    Logger.Warn($"[Bot Updater] - Discord host connection was closed. Resetting connection.");
+                    return;
+                }
+
+                if(ex is WebSocketException socketException)
+                {
+                    Logger.Warn($"[Bot Updater] - Web socket was found to be in a invalid state.");
+                    return;
+                }
+
                 Logger.Error($"[Bot Updater] - Please send crash log to https://discord.gg/FPXdPjcX27.", ex);
             }
         }
