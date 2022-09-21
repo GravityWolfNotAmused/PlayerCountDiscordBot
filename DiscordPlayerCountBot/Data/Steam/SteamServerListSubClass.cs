@@ -17,7 +17,7 @@ namespace PlayerCountBot
         {
             foreach (SteamApiResponseData data in servers)
             {
-                if (int.Parse(data.addr.Split(":")[1]) == port)
+                if (int.Parse(data.addr.Split(":")[1]) == port || data.gameport == port)
                 {
                     return data;
                 }
