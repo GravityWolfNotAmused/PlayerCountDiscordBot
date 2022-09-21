@@ -10,8 +10,8 @@
     <OutputPath></OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="3.3.2" />
-    <PackageReference Include="log4net" Version="2.0.14" />
+    <PackageReference Include="Discord.Net" Version="3.8.1" />
+    <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SteamQueryNet" Version="1.0.6" />
   </ItemGroup>
