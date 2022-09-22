@@ -30,7 +30,7 @@ namespace DiscordPlayerCountBot.Providers
 
                 if (!response.Online)
                 {
-                    Logger.Warn($"[MinecraftProvider] - The minecraft provider states the server is offline. Server counts may not be correct.");
+                    Warn($"[MinecraftProvider] - The minecraft provider states the server is offline. Server counts may not be correct.");
                 }
 
                 HandleLastException(information);
