@@ -7,7 +7,9 @@ namespace PlayerCountBot
 {
     public class BotInformation
     {
+        [JsonIgnore]
         public Guid Id { get; set; } = Guid.NewGuid();
+
         public string Name { get; set; }
         public string Address { get; set; }
         public string Token { get; set; }
