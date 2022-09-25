@@ -1,3 +1,3 @@
 global using Xunit;
-global using DiscordPlayerCountBot.Configuration;
-global using PlayerCountBot;
+global using PlayerCountBot.Configuration;
+global using PlayerCountBot.Tests.Environment;
