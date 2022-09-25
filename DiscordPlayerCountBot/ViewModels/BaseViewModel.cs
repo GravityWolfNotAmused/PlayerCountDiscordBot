@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace DiscordPlayerCountBot.ViewModels
+﻿namespace PlayerCountBot.ViewModels
 {
     public class BaseViewModel
     {
@@ -30,7 +28,7 @@ namespace DiscordPlayerCountBot.ViewModels
             var type = GetType();
             var properties = type.GetProperties().ToList();
 
-            foreach(var property in properties)
+            foreach (var property in properties)
             {
                 var tag = $"@{property.Name}";
                 object? value = property.GetValue(this);

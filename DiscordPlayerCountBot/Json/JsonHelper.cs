@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-
-namespace DiscordPlayerCountBot.Json
+﻿namespace PlayerCountBot.Json
 {
     public static class JsonHelper
     {

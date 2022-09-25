@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using DiscordPlayerCountBot.Attributes;
-using DiscordPlayerCountBot.Providers.Base;
-using DiscordPlayerCountBot.Services;
-using DiscordPlayerCountBot.Source.CFX;
-using DiscordPlayerCountBot.ViewModels;
-using PlayerCountBot;
-
-namespace DiscordPlayerCountBot.Providers
+﻿namespace PlayerCountBot.Providers
 {
     [Name("CFX")]
     public class CFXProvider : ServerInformationProvider

@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Net;
 using System.Net.Http;
-using System.Net;
-using System.Threading.Tasks;
-using log4net;
-using PlayerCountBot;
-using DiscordPlayerCountBot.Attributes;
-using DiscordPlayerCountBot.ViewModels;
 
-namespace DiscordPlayerCountBot.Providers.Base
+namespace PlayerCountBot.Providers.Base
 {
     public abstract class ServerInformationProvider : LoggableClass, IServerInformationProvider
     {
         public bool WasLastExecutionAFailure { get; set; } = false;
         public Exception? LastException { get; set; }
-        protected ILog Logger { get; set; }
 
         public ServerInformationProvider(BotInformation info) : base(info)
         {

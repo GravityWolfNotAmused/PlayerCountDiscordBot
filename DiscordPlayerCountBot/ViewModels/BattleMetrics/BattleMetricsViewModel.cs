@@ -1,4 +1,4 @@
-﻿namespace DiscordPlayerCountBot.ViewModels
+﻿namespace PlayerCountBot.ViewModels
 {
     public class BattleMetricsViewModel : BaseViewModel
     {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using DiscordPlayerCountBot.ViewModels;
-using PlayerCountBot;
-
-namespace DiscordPlayerCountBot.Providers.Base
+﻿namespace PlayerCountBot.Providers.Base
 {
     public interface IServerInformationProvider
     {

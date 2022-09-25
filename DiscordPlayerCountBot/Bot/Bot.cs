@@ -1,17 +1,4 @@
-﻿using Discord;
-using Discord.WebSocket;
-using DiscordPlayerCountBot;
-using DiscordPlayerCountBot.Attributes;
-using DiscordPlayerCountBot.Enum;
-using DiscordPlayerCountBot.Http;
-using DiscordPlayerCountBot.Providers;
-using DiscordPlayerCountBot.Providers.Base;
-using log4net;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace PlayerCountBot
+﻿namespace PlayerCountBot
 {
 
     [Name("Bot")]

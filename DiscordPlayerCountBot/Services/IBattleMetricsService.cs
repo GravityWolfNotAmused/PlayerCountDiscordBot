@@ -1,7 +1,4 @@
-﻿using DiscordPlayerCountBot.Data;
-using System.Threading.Tasks;
-
-namespace DiscordPlayerCountBot.Services
+﻿namespace PlayerCountBot.Services
 {
     public interface IBattleMetricsService
     {

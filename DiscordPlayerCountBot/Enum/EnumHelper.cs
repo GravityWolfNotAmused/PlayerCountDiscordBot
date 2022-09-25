@@ -1,8 +1,4 @@
-﻿using Discord;
-using Microsoft.VisualBasic;
-using System.Linq;
-
-namespace DiscordPlayerCountBot.Enum
+﻿namespace PlayerCountBot.Enum
 {
     public static class EnumHelper
     {

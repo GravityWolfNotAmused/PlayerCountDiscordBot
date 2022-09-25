@@ -1,10 +1,4 @@
-﻿using DiscordPlayerCountBot.Data.Scum;
-using DiscordPlayerCountBot.Http;
-using System;
-using System.Threading.Tasks;
-
-
-namespace DiscordPlayerCountBot.Services
+﻿namespace PlayerCountBot.Services
 {
     [Obsolete("Found to be worse than Battle Metrics", true)]
     public class ScumService : IScumService

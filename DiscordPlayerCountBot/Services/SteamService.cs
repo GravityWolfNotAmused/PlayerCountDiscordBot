@@ -1,16 +1,8 @@
-﻿using DiscordPlayerCountBot.Http;
-using log4net;
-using PlayerCountBot;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace DiscordPlayerCountBot.Services
+﻿namespace PlayerCountBot.Services
 {
 
-    public class SteamService : ISteamService
+    public class SteamService : LoggableClass, ISteamService
     {
-        public ILog Logger = LogManager.GetLogger(typeof(SteamService));
-
         public async Task<SteamApiResponseData?> GetSteamApiResponse(string address, int port, string token)
         {
             using var httpClient = new HttpExecuter();

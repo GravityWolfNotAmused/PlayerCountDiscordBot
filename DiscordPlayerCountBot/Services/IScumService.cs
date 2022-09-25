@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using DiscordPlayerCountBot.Data.Scum;
-
-namespace DiscordPlayerCountBot.Services
+﻿namespace PlayerCountBot.Services
 {
     public interface IScumService
     {

@@ -1,13 +1,4 @@
-﻿using DiscordPlayerCountBot.Providers.Base;
-using DiscordPlayerCountBot.Services;
-using PlayerCountBot;
-using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using DiscordPlayerCountBot.Attributes;
-using DiscordPlayerCountBot.ViewModels;
-
-namespace DiscordPlayerCountBot.Providers
+﻿namespace PlayerCountBot.Providers
 {
     [Name("Minecraft")]
     public class MinecraftProvider : ServerInformationProvider

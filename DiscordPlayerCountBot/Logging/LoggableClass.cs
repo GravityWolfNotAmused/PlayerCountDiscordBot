@@ -1,17 +1,17 @@
-﻿using DiscordPlayerCountBot.Attributes;
-using log4net;
-using System;
-
-namespace PlayerCountBot
+﻿namespace PlayerCountBot
 {
     public class LoggableClass
     {
         protected readonly ILog Logger;
-        public readonly BotInformation Information;
+        public readonly BotInformation? Information;
 
-        public LoggableClass(BotInformation information)
+        public LoggableClass()
         {
             Logger = LogManager.GetLogger(GetType());
+        }
+
+        public LoggableClass(BotInformation information) : this()
+        {
             Information = information;
         }
 
@@ -30,12 +30,20 @@ namespace PlayerCountBot
             Logger.Error($"{GetLoggingPrefix()} {message}", exception);
         }
 
+        public void Debug(string message)
+        {
+            Logger.Debug($"{GetLoggingPrefix()} {message}");
+        }
         public string GetLoggingPrefix()
         {
             var label = AttributeHelper.GetNameFromAttribute(this) ?? GetType().Name;
-            var returnString = $"[{label}] - {Information.Id} -";
 
-            return returnString;
+            if (Information != null)
+            {
+                return $"[{label}] - {Information.Id} -";
+            }
+
+            return $"[{label}] -";
         }
     }
 }

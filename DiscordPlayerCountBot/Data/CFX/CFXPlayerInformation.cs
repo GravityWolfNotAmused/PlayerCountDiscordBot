@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-
-namespace DiscordPlayerCountBot.Source.CFX
+﻿namespace PlayerCountBot.Data
 {
     public class CFXPlayerInformation
     {

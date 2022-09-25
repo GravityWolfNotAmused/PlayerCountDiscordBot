@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DiscordPlayerCountBot.Attributes
+﻿namespace PlayerCountBot.Attributes
 {
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]

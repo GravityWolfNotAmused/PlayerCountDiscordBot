@@ -1,13 +1,4 @@
-﻿using DiscordPlayerCountBot.Attributes;
-using DiscordPlayerCountBot.Providers.Base;
-using DiscordPlayerCountBot.Services;
-using DiscordPlayerCountBot.ViewModels;
-using PlayerCountBot;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace DiscordPlayerCountBot.Providers
+﻿namespace PlayerCountBot.Providers
 {
     [Name("Steam")]
     public class SteamProvider : ServerInformationProvider

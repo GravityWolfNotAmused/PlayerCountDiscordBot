@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace DiscordPlayerCountBot.Http
+﻿namespace PlayerCountBot.Http
 {
     public interface IHttpExecuter
     {

@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using PlayerCountBot.Configuration;
 using System.Net.WebSockets;
 using System.Security;
-using System.Threading.Tasks;
 using System.Timers;
-using DiscordPlayerCountBot.Configuration;
-using DiscordPlayerCountBot.Configuration.Base;
-using DiscordPlayerCountBot.Enum;
-using log4net;
-using PlayerCountBot;
 
-namespace DiscordPlayerCountBot
+namespace PlayerCountBot
 {
-    public class UpdateController
+    public class UpdateController : LoggableClass
     {
-        private ILog Logger = LogManager.GetLogger(typeof(UpdateController));
         private HostEnvironment HostEnvType = HostEnvironment.STANDARD;
 
         private Dictionary<HostEnvironment, IConfigurable> HostingEnvironments { get; set; } = new();
@@ -23,7 +15,7 @@ namespace DiscordPlayerCountBot
         private int Time = 30;
         private Timer? Timer;
 
-        public UpdateController()
+        public UpdateController() : base()
         {
             InitHostingConfigurations();
 
@@ -36,12 +28,12 @@ namespace DiscordPlayerCountBot
             {
                 if (e is ArgumentException || e is FormatException)
                 {
-                    Logger.Error("[Bot Updater] - Error while parsing ISDOCKER variable. Please check your docker file, and fix your changes.", e);
+                    Error("Error while parsing ISDOCKER variable. Please check your docker file, and fix your changes.", e);
                 }
 
                 if (e is SecurityException)
                 {
-                    Logger.Error("[Bot Updater] - A security error has happened when trying to fet ISDOCKER variable.", e);
+                    Error("A security error has happened when trying to fet ISDOCKER variable.", e);
                 }
 
                 HostEnvType = HostEnvironment.STANDARD;
@@ -61,7 +53,7 @@ namespace DiscordPlayerCountBot
 
             Bots = config.Item1;
             Time = config.Item2;
-            Logger.Info($"[Bot Updater] - Created: {Bots.Count} bot(s) that update every {Time} seconds.");
+            Info($"Created: {Bots.Count} bot(s) that update every {Time} seconds.");
         }
 
         public async Task UpdatePlayerCounts()
@@ -80,19 +72,19 @@ namespace DiscordPlayerCountBot
             }
             catch (Exception ex)
             {
-                if(ex is OperationCanceledException canceledException)
+                if (ex is OperationCanceledException canceledException)
                 {
-                    Logger.Warn($"[Bot Updater] - Discord host connection was closed. Resetting connection.");
+                    Warn($"Discord host connection was closed. Resetting connection.");
                     return;
                 }
 
-                if(ex is WebSocketException socketException)
+                if (ex is WebSocketException socketException)
                 {
-                    Logger.Warn($"[Bot Updater] - Web socket was found to be in a invalid state.");
+                    Warn($"Web socket was found to be in a invalid state.");
                     return;
                 }
 
-                Logger.Error($"[Bot Updater] - Please send crash log to https://discord.gg/FPXdPjcX27.", ex);
+                Error($"Please send crash log to https://discord.gg/FPXdPjcX27.", ex);
             }
         }
 
@@ -114,15 +106,15 @@ namespace DiscordPlayerCountBot
             Timer.AutoReset = true;
             Timer.Enabled = true;
             Timer.Start();
-            Logger.Info($"[Bot Updater] - Update timer started");
-            Logger.Info($"[Bot Updater] - Timer set to go off every: {Time} second(s)");
+            Info($"Update timer started");
+            Info($"Timer set to go off every: {Time} second(s)");
         }
 
         public async void OnProcessExit(object? sender, EventArgs e)
         {
             foreach (KeyValuePair<string, Bot> entry in Bots)
             {
-                Logger.Warn($"[Bot Updater] - Stoping bot: {entry.Key}");
+                Warn($"Stoping bot: {entry.Key}");
                 await entry.Value.StopAsync();
             }
         }

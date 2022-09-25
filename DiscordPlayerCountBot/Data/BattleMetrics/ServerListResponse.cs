@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using DiscordPlayerCountBot.ViewModels;
-
-namespace DiscordPlayerCountBot.Data
+﻿namespace PlayerCountBot.Data
 {
-#nullable enable
     public class BattleMetricsServerDetails
     {
         public List<string> modIds { get; set; } = new List<string>();
@@ -88,6 +83,4 @@ namespace DiscordPlayerCountBot.Data
         public Links? links { get; set; }
         public List<object>? included { get; set; }
     }
-
-#nullable disable
 }

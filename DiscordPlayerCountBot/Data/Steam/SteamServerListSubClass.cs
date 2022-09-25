@@ -1,11 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-
-namespace PlayerCountBot
+﻿namespace PlayerCountBot
 {
     public class SteamServerListSubClass
     {
-        [JsonProperty]
         public List<SteamApiResponseData> servers { get; }
 
         public SteamServerListSubClass()
