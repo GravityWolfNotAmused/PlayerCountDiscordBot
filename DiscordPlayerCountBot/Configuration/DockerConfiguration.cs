@@ -24,21 +24,21 @@
             var botTags = variables["BOT_USENAMETAGS"]?.ToString()?.Split(";");
             var providerTypes = variables["BOT_PROVIDERTYPES"]?.ToString()?.Split(";");
 
-            var statusFormats = new string[] { };
+            List<string?> statusFormats = new();
 
             if (variables.Contains("BOT_STATUSFORMATS"))
             {
-                List<string?> formats = variables["BOT_STATUSFORMATS"]!.ToString()!.Split(";")?.Cast<string?>().ToList() ?? new();
+                List<string> formats = variables["BOT_STATUSFORMATS"]!.ToString()!.Split(";")!.ToList();
 
-                foreach (var format in formats)
+                foreach (string format in formats)
                 {
                     if (format == "null")
                     {
-                        formats.Add(null);
+                        statusFormats.Add(null);
                     }
                     else
                     {
-                        formats.Add(format);
+                        statusFormats.Add(format);
                     }
                 }
             }
@@ -99,7 +99,7 @@
                     Address = botAddresses?[i] + ":" + botPorts?[i],
                     Token = botTokens?[i] ?? throw new ApplicationException("Missing bot token."),
                     Status = activity,
-                    StatusFormat = i < statusFormats.Length ? statusFormats[i] : null,
+                    StatusFormat = i < statusFormats.Count ? statusFormats[i] : null,
                     UseNameAsLabel = useNameAsLabel,
                     ChannelID = channelID ?? null,
                     ProviderType = EnumHelper.GetDataProvider(int.Parse(providerTypes?[i] ?? "0"))

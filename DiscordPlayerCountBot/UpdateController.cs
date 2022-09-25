@@ -2,6 +2,7 @@
 using System.Net.WebSockets;
 using System.Security;
 using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace PlayerCountBot
 {
@@ -95,7 +96,7 @@ namespace PlayerCountBot
 
             for (; ; )
             {
-                System.Threading.Thread.Sleep(100);
+                Thread.Sleep(100);
             }
         }
 
