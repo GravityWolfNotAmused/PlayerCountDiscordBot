@@ -1,12 +1,7 @@
-﻿using DiscordPlayerCountBot.Json;
-using Newtonsoft.Json;
-using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DiscordPlayerCountBot.Http
+namespace PlayerCountBot.Http
 {
     public class HttpExecuter : IHttpExecuter, IDisposable
     {

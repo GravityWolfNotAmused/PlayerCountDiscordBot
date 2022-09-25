@@ -1,9 +1,4 @@
-﻿using PlayerCountBot;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace DiscordPlayerCountBot.Configuration.Base
+﻿namespace PlayerCountBot.Configuration.Base
 {
     public interface IConfigurable
     {

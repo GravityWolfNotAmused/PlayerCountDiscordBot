@@ -1,11 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-
-namespace PlayerCountBot
+﻿namespace PlayerCountBot
 {
     public class SteamServerListSubClass
     {
-        [JsonProperty]
         public List<SteamApiResponseData> servers { get; }
 
         public SteamServerListSubClass()
@@ -17,7 +13,7 @@ namespace PlayerCountBot
         {
             foreach (SteamApiResponseData data in servers)
             {
-                if (int.Parse(data.addr.Split(":")[1]) == port)
+                if (int.Parse(data.addr.Split(":")[1]) == port || data.gameport == port)
                 {
                     return data;
                 }

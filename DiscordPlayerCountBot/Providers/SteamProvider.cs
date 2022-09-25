@@ -1,19 +1,13 @@
-﻿using DiscordPlayerCountBot.Attributes;
-using DiscordPlayerCountBot.Providers.Base;
-using DiscordPlayerCountBot.Services;
-using PlayerCountBot;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace DiscordPlayerCountBot.Providers
+﻿namespace PlayerCountBot.Providers
 {
     [Name("Steam")]
     public class SteamProvider : ServerInformationProvider
     {
-        public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
+        public SteamProvider(BotInformation info) : base(info)
+        {
+        }
+
+        public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new SteamService();
 
@@ -27,13 +21,15 @@ namespace DiscordPlayerCountBot.Providers
 
                 HandleLastException(information);
 
-                return new()
+                return new SteamViewModel()
                 {
                     Address = addressAndPort.Item1,
                     Port = addressAndPort.Item2,
-                    CurrentPlayers = response.players,
+                    Players = response.players,
                     MaxPlayers = response.max_players,
-                    PlayersInQueue = response.GetQueueCount()
+                    QueuedPlayers = response.GetQueueCount(),
+                    Gametype = response.gametype,
+                    Map = response.map
                 };
             }
             catch (Exception e)

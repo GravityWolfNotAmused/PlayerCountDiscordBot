@@ -1,4 +1,4 @@
-using DiscordPlayerCountBot.Json;
+﻿using PlayerCountBot.Json;
 
 namespace DiscordPlayerCountBot.Tests;
 

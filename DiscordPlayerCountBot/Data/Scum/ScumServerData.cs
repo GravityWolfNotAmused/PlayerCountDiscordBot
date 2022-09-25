@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace DiscordPlayerCountBot.Data.Scum
+﻿namespace PlayerCountBot.Data
 {
     public class ScumServerData
     {

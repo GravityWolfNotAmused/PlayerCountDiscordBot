@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace DiscordPlayerCountBot.Data.Minecraft
+﻿namespace PlayerCountBot.Data
 {
     public class MinecraftServer
     {
@@ -36,6 +34,19 @@ namespace DiscordPlayerCountBot.Data.Minecraft
 
         [JsonProperty("info")]
         public MinecraftInfo Info { get; set; }
+
+        public MinecraftViewModel GetViewModel()
+        {
+            return new()
+            {
+                Address = Ip,
+                Port = Port,
+                Players = Players?.Online ?? 0,
+                MaxPlayers = Players?.Max ?? 0,
+                Version = Version ?? "",
+                QueuedPlayers = 0
+            };
+        }
     }
 
 

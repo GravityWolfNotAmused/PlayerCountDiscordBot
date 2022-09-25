@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace DiscordPlayerCountBot.Data.Scum
+﻿namespace PlayerCountBot.Data
 {
     public class ScumProviderResponse
     {

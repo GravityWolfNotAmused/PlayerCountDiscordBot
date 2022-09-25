@@ -1,11 +1,10 @@
-﻿using System;
-
-namespace DiscordPlayerCountBot.Attributes
+﻿namespace PlayerCountBot.Attributes
 {
+
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
     public class NameAttribute : Attribute
     {
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
         public NameAttribute(string name)
         {
