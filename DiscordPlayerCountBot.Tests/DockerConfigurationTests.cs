@@ -1,4 +1,4 @@
-namespace DiscordPlayerCountBot.Tests;
+namespace PlayerCountBot.Tests;
 
 [Collection("Configuration Test Suite")]
 public class DockerConfigurationTests
