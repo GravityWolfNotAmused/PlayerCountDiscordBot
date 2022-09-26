@@ -25,15 +25,15 @@
 
         public void InitDataProviders()
         {
-            DataProviders.Add((int)DataProvider.STEAM, new SteamProvider(Information));
-            DataProviders.Add((int)DataProvider.CFX, new CFXProvider(Information));
-            DataProviders.Add((int)DataProvider.MINECRAFT, new MinecraftProvider(Information));
-            DataProviders.Add((int)DataProvider.BATTLEMETRICS, new BattleMetricsProvider(Information));
+            DataProviders.Add((int)DataProvider.STEAM, new SteamProvider(Information!));
+            DataProviders.Add((int)DataProvider.CFX, new CFXProvider(Information!));
+            DataProviders.Add((int)DataProvider.MINECRAFT, new MinecraftProvider(Information!));
+            DataProviders.Add((int)DataProvider.BATTLEMETRICS, new BattleMetricsProvider(Information!));
         }
 
         public async Task StartAsync(bool shouldStart)
         {
-            if (Information.Address.Contains("hostname") || Information.Address.Contains("localhost"))
+            if (Information!.Address.Contains("hostname") || Information.Address.Contains("localhost"))
             {
                 Information.Address = await AddressHelper.ResolveAddress(Information.Address);
             }
@@ -49,7 +49,7 @@
 
         public async Task UpdateAsync()
         {
-            var dataProviderType = EnumHelper.GetDataProvider(Information.ProviderType);
+            var dataProviderType = EnumHelper.GetDataProvider(Information!.ProviderType);
 
             if (dataProviderType != Information.ProviderType)
             {

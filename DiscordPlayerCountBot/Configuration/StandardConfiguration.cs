@@ -31,7 +31,7 @@
                 {
                     var bot = new Bot(info, config.ApplicationTokens);
                     await bot.StartAsync(shouldStart);
-                    bots.Add(bot.Information!.Address, bot);
+                    bots.Add(bot.Information!.Id.ToString(), bot);
                 }
             }
 

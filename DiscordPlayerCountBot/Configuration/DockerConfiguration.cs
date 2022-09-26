@@ -107,7 +107,7 @@
 
                 var bot = new Bot(info, applicationTokens);
                 await bot.StartAsync(shouldStart);
-                bots.Add(bot.Information!.Address, bot);
+                bots.Add(bot.Information!.Id.ToString(), bot);
             }
 
             return new Tuple<Dictionary<string, Bot>, int>(bots, int.Parse(Environment.GetEnvironmentVariable("BOT_UPDATE_TIME") ?? "30"));
