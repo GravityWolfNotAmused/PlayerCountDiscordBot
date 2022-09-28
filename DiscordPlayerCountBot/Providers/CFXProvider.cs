@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using DiscordPlayerCountBot.Attributes;
-using DiscordPlayerCountBot.Providers.Base;
-using DiscordPlayerCountBot.Services;
-using PlayerCountBot;
-
-namespace DiscordPlayerCountBot.Providers
+﻿namespace PlayerCountBot.Providers
 {
     [Name("CFX")]
     public class CFXProvider : ServerInformationProvider
     {
-        public async override Task<GenericServerInformation?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
+        public CFXProvider(BotInformation info) : base(info)
+        {
+        }
+
+        public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
             var service = new CFXService();
 
@@ -29,12 +25,13 @@ namespace DiscordPlayerCountBot.Providers
 
                 HandleLastException(information);
 
-                return new GenericServerInformation()
+                return new CFXViewModel()
                 {
                     Address = addressAndPort.Item1,
-                    CurrentPlayers = playerInfo.Count,
+                    Players = playerInfo.Count,
                     MaxPlayers = serverInfo.GetMaxPlayers(),
                     Port = addressAndPort.Item2,
+                    QueuedPlayers = 0
                 };
             }
             catch (Exception e)

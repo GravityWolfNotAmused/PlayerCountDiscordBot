@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace DiscordPlayerCountBot.Data.Minecraft
+﻿namespace PlayerCountBot.Data
 {
     public class MinecraftDebugInfo
     {

@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-
-namespace DiscordPlayerCountBot.Data.Minecraft
+﻿namespace PlayerCountBot.Data
 {
     public class MinecraftMotd
     {

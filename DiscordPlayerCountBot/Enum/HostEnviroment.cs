@@ -1,4 +1,4 @@
-﻿namespace DiscordPlayerCountBot.Enum
+﻿namespace PlayerCountBot.Enum
 {
     public enum HostEnvironment
     {

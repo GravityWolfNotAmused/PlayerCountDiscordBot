@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace DiscordPlayerCountBot.Attributes
+﻿namespace PlayerCountBot.Attributes
 {
     public static class AttributeHelper
     {

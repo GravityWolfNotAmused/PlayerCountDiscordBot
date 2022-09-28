@@ -1,12 +1,5 @@
-﻿using DiscordPlayerCountBot.Data;
-using DiscordPlayerCountBot.Http;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace DiscordPlayerCountBot.Services
+﻿namespace PlayerCountBot.Services
 {
-
     public class BattleMetricsService : IBattleMetricsService
     {
         public async Task<BattleMetricsServerData?> GetPlayerInformationAsync(string address, string token)

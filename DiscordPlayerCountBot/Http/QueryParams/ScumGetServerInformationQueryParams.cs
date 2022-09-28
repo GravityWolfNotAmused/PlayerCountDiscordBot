@@ -1,6 +1,4 @@
-﻿using DiscordPlayerCountBot.Attributes;
-
-namespace DiscordPlayerCountBot.Http
+﻿namespace PlayerCountBot.Http
 {
     public class ScumGetServerInformationQueryParams : QueryParameterBuilder
     {

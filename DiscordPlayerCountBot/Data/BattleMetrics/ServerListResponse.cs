@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DiscordPlayerCountBot.Data
+﻿namespace PlayerCountBot.Data
 {
-#nullable enable
     public class BattleMetricsServerDetails
     {
         public List<string> modIds { get; set; } = new List<string>();
@@ -48,6 +44,21 @@ namespace DiscordPlayerCountBot.Data
         public string? id { get; set; }
         public BattleMetricsServerAttributes? attributes { get; set; }
         public BattleMetricsServerRelationships? relationships { get; set; }
+        public BattleMetricsViewModel GetViewModel()
+        {
+            return new()
+            {
+                Address = attributes?.address ?? "",
+                Port = attributes?.port ?? 0,
+                MaxPlayers = attributes?.maxPlayers ?? 0,
+                Players = attributes?.players ?? 0,
+                Time = attributes?.details?.time ?? "",
+                Rank = attributes?.rank ?? 0,
+                GameMode = attributes?.details?.gamemode ?? "",
+                Map = attributes?.details?.map ?? "",
+                QueuedPlayers = 0
+            };
+        }
     }
 
     public class BattleMetricsServerGame
@@ -72,6 +83,4 @@ namespace DiscordPlayerCountBot.Data
         public Links? links { get; set; }
         public List<object>? included { get; set; }
     }
-
-#nullable disable
 }

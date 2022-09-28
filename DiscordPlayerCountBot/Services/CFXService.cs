@@ -1,10 +1,4 @@
-﻿using DiscordPlayerCountBot.Http;
-using DiscordPlayerCountBot.Source.CFX;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace DiscordPlayerCountBot.Services
+﻿namespace PlayerCountBot.Services
 {
     public class CFXService : ICFXService
     {

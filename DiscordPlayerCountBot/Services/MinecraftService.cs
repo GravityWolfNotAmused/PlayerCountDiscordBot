@@ -1,9 +1,4 @@
-﻿using DiscordPlayerCountBot.Data.Minecraft;
-using DiscordPlayerCountBot.Http;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace DiscordPlayerCountBot.Services
+﻿namespace PlayerCountBot.Services
 {
     public class MinecraftService : IMinecraftService
     {

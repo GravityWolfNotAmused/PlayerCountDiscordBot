@@ -1,7 +1,4 @@
-﻿using DiscordPlayerCountBot.Attributes;
-using System.Linq;
-
-namespace DiscordPlayerCountBot.Http
+﻿namespace PlayerCountBot.Http
 {
     public class QueryParameterBuilder : IQueryParameterBuilder
     {

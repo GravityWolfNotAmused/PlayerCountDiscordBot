@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using PlayerCountBot;
-
-namespace DiscordPlayerCountBot.Services
+﻿namespace PlayerCountBot.Services
 {
     public interface ISteamService
     {

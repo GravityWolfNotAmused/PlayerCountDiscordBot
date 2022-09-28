@@ -1,11 +1,4 @@
-﻿using Discord;
-using Discord.WebSocket;
-using log4net.Repository.Hierarchy;
-using Microsoft.VisualBasic;
-using System;
-using System.Threading.Tasks;
-
-namespace DiscordPlayerCountBot
+﻿namespace PlayerCountBot
 {
     public static class DiscordClient
     {
