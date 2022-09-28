@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using EnvironmentHelper = PlayerCountBot.Tests.Environment.EnvironmentHelper;
+
 namespace PlayerCountBot.Tests;
 
 [Collection("Configuration Test Suite")]
@@ -7,7 +10,7 @@ public class DockerConfigurationTests
     [Fact(DisplayName = "Test Docker Configuration with all data", Timeout = 30)]
     public async Task DockerConfigurationTestWithAllData()
     {
-        EnivronmentHelper.SetTestEnvironmentWithAllVariables();
+        EnvironmentHelper.SetTestEnvironmentWithAllVariables();
 
         var bots = new Dictionary<string, Bot>();
         var time = -1;
@@ -18,7 +21,7 @@ public class DockerConfigurationTests
         bots = configuration.Item1;
         time = configuration.Item2;
 
-        EnivronmentHelper.ClearTestEnvironmentVariables();
+        EnvironmentHelper.ClearTestEnvironmentVariables();
 
         Assert.True(time > 0, $"Time was returned from config and not zero. Actual: {time}");
         Assert.True(bots.Count > 0, $"More than one bot was created. Actual: {bots.Count}");
@@ -27,10 +30,29 @@ public class DockerConfigurationTests
         Assert.True(bots.ToList()[0].Value.ApplicationTokens.ContainsKey("BattleMetricsKey"), $"Battle Metrics Key should be present.");
     }
 
+    [Fact(DisplayName = "Test Docker Configuration with duplicate addresses")]
+    public async Task DockerConfigurationWithDuplicateAddresses()
+    {
+        EnvironmentHelper.SetTestEnvironmentWithDuplicateAddresses();
+
+        var dockerConfiguration = new DockerConfiguration();
+        var configuration = await dockerConfiguration.Configure(false);
+
+        EnvironmentHelper.ClearTestEnvironmentVariables();
+        var duplicateAddressCount = configuration.Item1.GroupBy(x => x.Value.Information!.Address)
+              .Where(g => g.Count() > 1)
+              .Select(y => new { Element = y.Key, Counter = y.Count() })
+              .ToList();
+
+        Assert.NotNull(duplicateAddressCount);
+        Assert.True(configuration.Item1.Values.Count > 0, "Should have created more than 0 bots.");
+        Assert.True(duplicateAddressCount.Any(grouping => grouping.Counter > 1), $"Should be two addresses that are the same.");
+    }
+
     [Fact(DisplayName = "Test Docker Configuration without Battle Metrics", Timeout = 30)]
     public async Task DockerConfigurationTestWithoutBattleMetrics()
     {
-        EnivronmentHelper.SetTestEnvironmentWithoutBattleMetrics();
+        EnvironmentHelper.SetTestEnvironmentWithoutBattleMetrics();
 
         var bots = new Dictionary<string, Bot>();
         var time = -1;
@@ -41,7 +63,7 @@ public class DockerConfigurationTests
         bots = configuration.Item1;
         time = configuration.Item2;
 
-        EnivronmentHelper.ClearTestEnvironmentVariables();
+        EnvironmentHelper.ClearTestEnvironmentVariables();
 
         Assert.True(time > 0, $"Time was returned from config and not zero. Actual: {time}");
         Assert.True(bots.Count > 0, $"More than one bot was created. Actual: {bots.Count}");
@@ -53,7 +75,7 @@ public class DockerConfigurationTests
     [Fact(DisplayName = "Test Docker Configuration without Application Variables", Timeout = 30)]
     public async Task DockerConfigurationTestWithoutApplicationVariables()
     {
-        EnivronmentHelper.SetTestEnvironmentWithoutApplicationVariables();
+        EnvironmentHelper.SetTestEnvironmentWithoutApplicationVariables();
 
         var bots = new Dictionary<string, Bot>();
         var time = -1;
@@ -64,7 +86,7 @@ public class DockerConfigurationTests
         bots = configuration.Item1;
         time = configuration.Item2;
 
-        EnivronmentHelper.ClearTestEnvironmentVariables();
+        EnvironmentHelper.ClearTestEnvironmentVariables();
 
         Assert.True(time > 0, $"Time was returned from config and not zero. Actual: {time}");
         Assert.True(bots.Count > 0, $"More than one bot was created. Actual: {bots.Count}");
@@ -74,7 +96,7 @@ public class DockerConfigurationTests
     [Fact(DisplayName = "Test Docker Configuration without Steam variable", Timeout = 30)]
     public async Task DockerConfigurationTestWithoutSteam()
     {
-        EnivronmentHelper.SetTestEnvironmentWithoutSteam();
+        EnvironmentHelper.SetTestEnvironmentWithoutSteam();
 
         var bots = new Dictionary<string, Bot>();
         var time = -1;
@@ -85,7 +107,7 @@ public class DockerConfigurationTests
         bots = configuration.Item1;
         time = configuration.Item2;
 
-        EnivronmentHelper.ClearTestEnvironmentVariables();
+        EnvironmentHelper.ClearTestEnvironmentVariables();
 
         Assert.True(time > 0, $"Time was returned from config and not zero. Actual: {time}");
         Assert.True(bots.Count > 0, $"More than one bot was created. Actual: {bots.Count}");
