@@ -71,7 +71,7 @@
                 return;
             }
 
-            var gameStatus = serverInformation.ReplaceTagsWithValues(Information.StatusFormat, Information.UseNameAsLabel, Information.Name);
+            var gameStatus = serverInformation.ReplaceTagsWithValues(Information.GetCurrentFormat(), Information.UseNameAsLabel, Information.Name);
 
             await DiscordClient.SetGameAsync(gameStatus, null, (ActivityType)activityInteger);
             await DiscordClient.SetChannelName(Information.ChannelID, gameStatus);

@@ -13,6 +13,7 @@ services:
        BOT_STATUSES: "3"
        BOT_PROVIDERTYPES: "0"
        BOT_CHANNELIDS: "824409821985636452" #If you do not wish to update a text/voice channels name you may remove this line.
+       #BOT_STATUSFORMATS: "@Players/@MaxPlayers Q: @QueueCount" #Use this to specify status format. Can be removed if using default format.
        #Application Variables
        #These setting apply to the whole application.
        BOT_UPDATE_TIME: "30"

@@ -13,6 +13,28 @@
         public ulong? ChannelID { get; set; }
         public string? StatusFormat { get; set; }
 
+        public List<string> GetFormats() => StatusFormat?.Split("|").ToList() ?? new();
+
+        [JsonIgnore]
+        public int CurrentFormat = 0;
+
+        public string? GetCurrentFormat()
+        {
+            if (StatusFormat == null) return null;
+
+            var formats = GetFormats();
+
+            if (CurrentFormat >= formats.Count)
+            {
+                CurrentFormat = 0;
+            }
+
+            var selectedFormat = formats[CurrentFormat];
+            CurrentFormat++;
+
+            return selectedFormat;
+        }
+
         public Tuple<string, ushort> GetAddressAndPort()
         {
             string[] splitData = Address.Split(":");
