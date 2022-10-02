@@ -15,6 +15,22 @@
             System.Environment.SetEnvironmentVariable("BOT_UPDATE_TIME", "10");
             System.Environment.SetEnvironmentVariable("BOT_APPLICATION_VARIABLES", "SteamAPIKey,12345;BattleMetricsKey,12345");
         }
+        public static void SetTestEnvironmentWithOneStatusRestAreNull()
+        {
+            System.Environment.SetEnvironmentVariable("ISDOCKER", "true");
+            System.Environment.SetEnvironmentVariable("BOT_NAMES", "Steam;CFX;Scum;Minecraft;BattleMetrics");
+            System.Environment.SetEnvironmentVariable("BOT_PUBADDRESSES", "51.222.191.212;96.43.133.194;178.63.74.20;minecraft.hypixel.net;15086629");
+            System.Environment.SetEnvironmentVariable("BOT_PORTS", "2403;30120;7042;25565;0");
+            System.Environment.SetEnvironmentVariable("BOT_DISCORD_TOKENS", "1;2;3;4;5");
+            System.Environment.SetEnvironmentVariable("BOT_USENAMETAGS", "false;false;false;false;false");
+            System.Environment.SetEnvironmentVariable("BOT_STATUSES", "0;0;0;0;0");
+            System.Environment.SetEnvironmentVariable("BOT_PROVIDERTYPES", "3;3;3;3;3");
+            System.Environment.SetEnvironmentVariable("BOT_UPDATE_TIME", "10");
+            System.Environment.SetEnvironmentVariable("BOT_APPLICATION_VARIABLES", "SteamAPIKey,12345;BattleMetricsKey,12345");
+            System.Environment.SetEnvironmentVariable("BOT_STATUSFORMATS", "@Players/@MaxPlayers Q: @QueueCount|Hello :)|Test;null;null;null;null");
+            //
+        }
+
         public static void SetTestEnvironmentWithDuplicateAddresses()
         {
             System.Environment.SetEnvironmentVariable("ISDOCKER", "true");
@@ -28,6 +44,7 @@
             System.Environment.SetEnvironmentVariable("BOT_UPDATE_TIME", "10");
             System.Environment.SetEnvironmentVariable("BOT_APPLICATION_VARIABLES", "SteamAPIKey,12345;BattleMetricsKey,12345");
         }
+
         public static void SetTestEnvironmentWithoutSteam()
         {
             System.Environment.SetEnvironmentVariable("ISDOCKER", "true");

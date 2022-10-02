@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using EnvironmentHelper = PlayerCountBot.Tests.Environment.EnvironmentHelper;
 
 namespace PlayerCountBot.Tests;
@@ -7,7 +6,7 @@ namespace PlayerCountBot.Tests;
 public class DockerConfigurationTests
 {
 
-    [Fact(DisplayName = "Test Docker Configuration with all data", Timeout = 30)]
+    [Fact(DisplayName = "All Data", Timeout = 30)]
     public async Task DockerConfigurationTestWithAllData()
     {
         EnvironmentHelper.SetTestEnvironmentWithAllVariables();
@@ -30,7 +29,7 @@ public class DockerConfigurationTests
         Assert.True(bots.ToList()[0].Value.ApplicationTokens.ContainsKey("BattleMetricsKey"), $"Battle Metrics Key should be present.");
     }
 
-    [Fact(DisplayName = "Test Docker Configuration with duplicate addresses")]
+    [Fact(DisplayName = "Duplicate addresses")]
     public async Task DockerConfigurationWithDuplicateAddresses()
     {
         EnvironmentHelper.SetTestEnvironmentWithDuplicateAddresses();
@@ -49,7 +48,43 @@ public class DockerConfigurationTests
         Assert.True(duplicateAddressCount.Any(grouping => grouping.Counter > 1), $"Should be two addresses that are the same.");
     }
 
-    [Fact(DisplayName = "Test Docker Configuration without Battle Metrics", Timeout = 30)]
+    [Fact(DisplayName = "Multiple Status Formats Contains Nulls", Timeout = 30)]
+    public async Task DockerConfigurationTestWithOneStatusRestAreNull()
+    {
+        EnvironmentHelper.SetTestEnvironmentWithOneStatusRestAreNull();
+
+        var bots = new Dictionary<string, Bot>();
+        var time = -1;
+
+        var dockerConfiguration = new DockerConfiguration();
+        var configuration = await dockerConfiguration.Configure(false);
+
+        bots = configuration.Item1;
+        time = configuration.Item2;
+
+        foreach (var bot in bots)
+        {
+            var botInformation = bot.Value.Information;
+
+            if (botInformation!.StatusFormat == null) continue;
+
+            var statuses = botInformation!.GetFormats();
+
+            Assert.True(statuses.Count == 0 || statuses.Count == 3, "This test should only contain bots with three statuses, or none.");
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var format = botInformation.GetCurrentFormat();
+
+                Assert.True(format == null || format != "", $"Format should contain characters, or null. Value: {format}");
+                Assert.False(botInformation.CurrentFormat < 0, $"Current Format cannot be a negative number.");
+            }
+        }
+
+        EnvironmentHelper.ClearTestEnvironmentVariables();
+    }
+
+    [Fact(DisplayName = "Without Battle Metrics", Timeout = 30)]
     public async Task DockerConfigurationTestWithoutBattleMetrics()
     {
         EnvironmentHelper.SetTestEnvironmentWithoutBattleMetrics();
@@ -72,7 +107,7 @@ public class DockerConfigurationTests
         Assert.False(bots.ToList()[0].Value.ApplicationTokens.ContainsKey("BattleMetricsKey"), $"Battle Metrics Key should not be present.");
     }
 
-    [Fact(DisplayName = "Test Docker Configuration without Application Variables", Timeout = 30)]
+    [Fact(DisplayName = "Without Application Variables", Timeout = 30)]
     public async Task DockerConfigurationTestWithoutApplicationVariables()
     {
         EnvironmentHelper.SetTestEnvironmentWithoutApplicationVariables();
@@ -93,7 +128,7 @@ public class DockerConfigurationTests
         Assert.True(bots.ToList()[0].Value.ApplicationTokens.Count == 0, $"Should be 0 variables in the dictionary. Actual: {bots.ToList()[0].Value.ApplicationTokens.Count}");
     }
 
-    [Fact(DisplayName = "Test Docker Configuration without Steam variable", Timeout = 30)]
+    [Fact(DisplayName = "Without Steam Variable", Timeout = 30)]
     public async Task DockerConfigurationTestWithoutSteam()
     {
         EnvironmentHelper.SetTestEnvironmentWithoutSteam();
