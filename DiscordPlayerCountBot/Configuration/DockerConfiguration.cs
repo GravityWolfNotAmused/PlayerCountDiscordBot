@@ -21,7 +21,6 @@
             var botPorts = variables["BOT_PORTS"]?.ToString()?.Split(";");
             var botTokens = variables["BOT_DISCORD_TOKENS"]?.ToString()?.Split(";");
             var botStatuses = variables["BOT_STATUSES"]?.ToString()?.Split(";");
-            var botTags = variables["BOT_USENAMETAGS"]?.ToString()?.Split(";");
             var providerTypes = variables["BOT_PROVIDERTYPES"]?.ToString()?.Split(";");
 
             List<string?> statusFormats = new();
@@ -86,8 +85,6 @@
             for (int i = 0; i < botNames?.Length; i++)
             {
                 var activity = int.Parse(botStatuses?[i] ?? "0");
-                var useNameAsLabel = bool.Parse(botTags?[i] ?? "false");
-
                 ulong? channelID = null;
 
                 if (i < channelIDs.Count)
@@ -100,7 +97,6 @@
                     Token = botTokens?[i] ?? throw new ApplicationException("Missing bot token."),
                     Status = activity,
                     StatusFormat = i < statusFormats.Count ? statusFormats[i] : null,
-                    UseNameAsLabel = useNameAsLabel,
                     ChannelID = channelID ?? null,
                     ProviderType = EnumHelper.GetDataProvider(int.Parse(providerTypes?[i] ?? "0"))
                 };

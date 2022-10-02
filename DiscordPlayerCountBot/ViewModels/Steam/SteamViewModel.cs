@@ -4,6 +4,5 @@
     {
         public string Map { get; set; }
         public string Gametype { get; set; }
-
     }
 }

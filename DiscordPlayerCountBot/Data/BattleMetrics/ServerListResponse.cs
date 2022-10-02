@@ -38,15 +38,15 @@
         public string? queryStatus { get; set; }
     }
 
-    public class BattleMetricsServerData
+    public class BattleMetricsServerData : IViewModelConverter
     {
         public string? type { get; set; }
         public string? id { get; set; }
         public BattleMetricsServerAttributes? attributes { get; set; }
         public BattleMetricsServerRelationships? relationships { get; set; }
-        public BattleMetricsViewModel GetViewModel()
+        public BaseViewModel? ToViewModel()
         {
-            return new()
+            return new BattleMetricsViewModel()
             {
                 Address = attributes?.address ?? "",
                 Port = attributes?.port ?? 0,

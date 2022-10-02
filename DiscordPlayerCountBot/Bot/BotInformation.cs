@@ -8,7 +8,6 @@
         public string Address { get; set; }
         public string Token { get; set; }
         public int Status { get; set; }
-        public bool UseNameAsLabel { get; set; }
         public int ProviderType { get; set; } = 0;
         public ulong? ChannelID { get; set; }
         public string? StatusFormat { get; set; }
@@ -20,7 +19,7 @@
 
         public string? GetCurrentFormat()
         {
-            if (StatusFormat == null) return null;
+            if (string.IsNullOrEmpty(StatusFormat) || string.IsNullOrWhiteSpace(StatusFormat)) return null;
 
             var formats = GetFormats();
 

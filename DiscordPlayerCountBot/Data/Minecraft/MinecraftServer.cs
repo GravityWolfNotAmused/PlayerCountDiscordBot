@@ -1,6 +1,6 @@
 ﻿namespace PlayerCountBot.Data
 {
-    public class MinecraftServer
+    public class MinecraftServer : IViewModelConverter
     {
         [JsonProperty("ip")]
         public string Ip { get; set; }
@@ -35,9 +35,9 @@
         [JsonProperty("info")]
         public MinecraftInfo Info { get; set; }
 
-        public MinecraftViewModel GetViewModel()
+        public BaseViewModel? ToViewModel()
         {
-            return new()
+            return new MinecraftViewModel()
             {
                 Address = Ip,
                 Port = Port,

@@ -1,6 +1,6 @@
 ﻿namespace PlayerCountBot
 {
-    public class SteamApiResponseData
+    public class SteamApiResponseData : IViewModelConverter
     {
         public string addr { get; set; }
         public int gameport { get; set; }
@@ -20,6 +20,19 @@
         public string os { get; set; }
         public string gametype { get; set; }
 
+        public BaseViewModel? ToViewModel()
+        {
+            return new SteamViewModel()
+            {
+                Address = addr,
+                Port = gameport,
+                Players = players,
+                MaxPlayers = max_players,
+                Gametype = gametype,
+                Map = map,
+                QueuedPlayers = GetQueueCount()
+            };
+        }
         public int GetQueueCount()
         {
             if (gametype != null)

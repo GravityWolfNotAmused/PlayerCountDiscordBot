@@ -64,14 +64,14 @@
             }
 
             var dataProvider = DataProviders[dataProviderType];
-            var serverInformation = await dataProvider.GetServerInformation(Information, ApplicationTokens);
+            var serverInformation = await dataProvider.GetServerInformation(ApplicationTokens);
 
             if (serverInformation == null)
             {
                 return;
             }
 
-            var gameStatus = serverInformation.ReplaceTagsWithValues(Information.GetCurrentFormat(), Information.UseNameAsLabel, Information.Name);
+            var gameStatus = serverInformation.ReplaceTagsWithValues(Information.GetCurrentFormat(), Information.Name);
 
             await DiscordClient.SetGameAsync(gameStatus, null, (ActivityType)activityInteger);
             await DiscordClient.SetChannelName(Information.ChannelID, gameStatus);

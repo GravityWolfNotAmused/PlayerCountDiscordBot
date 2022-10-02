@@ -1,6 +1,6 @@
 ﻿namespace PlayerCountBot.Data
 {
-    public class ScumProviderResponse
+    public class ScumProviderResponse : IViewModelConverter
     {
         public bool Success { get; set; }
         public string Error { get; set; }
@@ -10,6 +10,11 @@
         public ScumServerData? GetScumServerData(int port)
         {
             return Data.Where(data => data.QueryPort == port || data.Port == port).FirstOrDefault();
+        }
+
+        public BaseViewModel? ToViewModel()
+        {
+            throw new NotImplementedException();
         }
     }
 }

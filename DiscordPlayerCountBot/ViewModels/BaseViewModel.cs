@@ -8,12 +8,9 @@
         public int MaxPlayers { get; set; }
         public int QueuedPlayers { get; set; }
 
-        public string ReplaceTagsWithValues(string? format, bool useNameAsLabel, string label = "")
+        public string ReplaceTagsWithValues(string? format, string label = "")
         {
             string status = format ?? "";
-
-            if (useNameAsLabel)
-                status += $"{label} ";
 
             if (format == null)
             {

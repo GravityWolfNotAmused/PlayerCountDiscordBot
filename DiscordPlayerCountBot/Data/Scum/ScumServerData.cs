@@ -1,6 +1,6 @@
 ﻿namespace PlayerCountBot.Data
 {
-    public class ScumServerData
+    public class ScumServerData : IViewModelConverter
     {
         public string Address { get; set; }
         public int Port { get; set; }
@@ -10,8 +10,19 @@
         public int Players { get; set; }
         [JsonProperty("players_max")]
         public int MaxPlayers { get; set; }
-        public string? Version { get; set; }
-        public string? Time { get; set; }
+        public string Version { get; set; }
+        public string Time { get; set; }
         public bool Password { get; set; }
+
+        public BaseViewModel? ToViewModel()
+        {
+            return new ScumViewModel()
+            {
+                Address = Address,
+                Port = Port,
+                Time = Time,
+                Version = Version,
+            };
+        }
     }
 }
