@@ -1,12 +1,12 @@
 ﻿namespace PlayerCountBot.Services
 {
-    public class BattleMetricsService : IBattleMetricsService
+    public class BattleMetricsService : IProviderService<BattleMetricsServerData>
     {
-        public async Task<BattleMetricsServerData?> GetPlayerInformationAsync(string address, string token)
+        public async Task<BattleMetricsServerData?> GetInformation(string address, string? token = null)
         {
             using var httpClient = new HttpExecuter();
 
-            var response = await httpClient.GET<object, BattleMetricsServerGame>($"https://api.battlemetrics.com/servers/{address}", authToken: new Tuple<string, string>("Authorization", token));
+            var response = await httpClient.GET<object, BattleMetricsServerGame>($"https://api.battlemetrics.com/servers/{address.Split(':')[0]}", authToken: new Tuple<string, string>("Authorization", token));
             return response?.data;
         }
     }

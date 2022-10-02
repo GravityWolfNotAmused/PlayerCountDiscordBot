@@ -1,17 +1,13 @@
-﻿namespace PlayerCountBot.Services
-{
-    public class CFXService : ICFXService
-    {
-        public async Task<List<CFXPlayerInformation>?> GetPlayerInformationAsync(string address)
-        {
-            using var httpClient = new HttpExecuter();
-            return await httpClient.GET<object, List<CFXPlayerInformation>>($"http://{address}/Players.json");
-        }
+﻿using System.Net;
 
-        public async Task<CFXServer?> GetServerInformationAsync(string address)
+namespace PlayerCountBot.Services
+{
+    public class CFXService : IProviderService<CFXServer>
+    {
+        public async Task<CFXServer?> GetInformation(string search, string? token = null)
         {
             using var httpClient = new HttpExecuter();
-            return await httpClient.GET<object, CFXServer>($"http://{address}/Info.json");
+            return await httpClient.GET<object, CFXServer>($"http://{search}/Dynamic.json");
         }
     }
 }
