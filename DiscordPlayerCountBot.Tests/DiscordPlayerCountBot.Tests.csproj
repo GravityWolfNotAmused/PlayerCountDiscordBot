@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
-	<PackageId>PlayerCountBot</PackageId>
+	<PackageId>PlayerCountBot.Test</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
