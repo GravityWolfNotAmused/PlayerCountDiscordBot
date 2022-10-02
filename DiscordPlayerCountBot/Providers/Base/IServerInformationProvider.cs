@@ -4,6 +4,6 @@
     {
         bool WasLastExecutionAFailure { get; set; }
         Exception? LastException { get; set; }
-        Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables);
+        Task<BaseViewModel?> GetServerInformation(Dictionary<string, string> applicationVariables);
     }
 }

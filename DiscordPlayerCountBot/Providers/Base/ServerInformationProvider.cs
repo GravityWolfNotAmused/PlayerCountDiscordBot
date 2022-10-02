@@ -1,18 +1,63 @@
-﻿using System.Net;
-using System.Net.Http;
+﻿using Microsoft.VisualBasic;
+using System.Net;
 
 namespace PlayerCountBot.Providers.Base
 {
-    public abstract class ServerInformationProvider : LoggableClass, IServerInformationProvider
+    public abstract class ServerInformationProvider<T, T2> : LoggableClass, IServerInformationProvider where T : IProviderService<T2> where T2 : IViewModelConverter
     {
         public bool WasLastExecutionAFailure { get; set; } = false;
         public Exception? LastException { get; set; }
+        public readonly Dictionary<int, string> Keys = new()
+        {
+            {(int)DataProvider.CFX, "" },
+            {(int)DataProvider.SCUM, "" },
+            {(int)DataProvider.MINECRAFT, "" },
+            {(int)DataProvider.STEAM, "SteamAPIKey" },
+            {(int)DataProvider.BATTLEMETRICS, "BattleMetricsKey"}
+        };
+
+        public T Service { get; set; }
 
         public ServerInformationProvider(BotInformation info) : base(info)
         {
+            Service = Activator.CreateInstance<T>();
         }
 
-        public abstract Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables);
+        public string? GetToken(Dictionary<string, string> applicationVariables, int providerType)
+        {
+            var token = "";
+            var key = Keys[providerType];
+
+            if (key == "") return null;
+
+            applicationVariables.TryGetValue(key, out token);
+
+            if (string.IsNullOrEmpty(token) || string.IsNullOrWhiteSpace(token)) throw new ApplicationException($"Missing application variable: {key}");
+
+            return token;
+        }
+
+        public async Task<BaseViewModel?> GetServerInformation(Dictionary<string, string> applicationVariables)
+        {
+            try
+            {
+                var addressAndPort = Information!.GetAddressAndPort();
+                var response = await Service?.GetInformation($"{addressAndPort.Item1}:{addressAndPort.Item2}", GetToken(applicationVariables, Information!.ProviderType))!;
+
+                if (response == null)
+                    throw new ApplicationException("Response cannot be null.");
+
+                HandleLastException(Information!);
+
+                return response.ToViewModel();
+            }
+            catch (Exception e)
+            {
+                HandleException(e);
+                return null;
+            }
+        }
+
         protected void HandleLastException(BotInformation information)
         {
             if (WasLastExecutionAFailure)
@@ -23,6 +68,7 @@ namespace PlayerCountBot.Providers.Base
                 WasLastExecutionAFailure = false;
             }
         }
+
 
         protected void HandleException(Exception e)
         {
