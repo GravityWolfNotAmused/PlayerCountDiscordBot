@@ -53,7 +53,7 @@ namespace PlayerCountBot.Http
             using var request = new HttpRequestMessage(method, fullPath);
 
             if (authToken != null)
-                request.Headers.Add(authToken?.Item1!, authToken?.Item2);
+                request.Headers.Add(authToken?.Item1!, "Bearer " + authToken?.Item2);
 
             if (body != null)
                 request.Content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
