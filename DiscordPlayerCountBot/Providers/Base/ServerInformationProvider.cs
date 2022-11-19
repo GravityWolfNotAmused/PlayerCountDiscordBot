@@ -1,7 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System.Net;
-
-namespace PlayerCountBot.Providers.Base
+﻿namespace PlayerCountBot.Providers.Base
 {
     public abstract class ServerInformationProvider<T, T2> : LoggableClass, IServerInformationProvider where T : IProviderService<T2> where T2 : IViewModelConverter
     {
@@ -62,7 +59,6 @@ namespace PlayerCountBot.Providers.Base
         {
             if (WasLastExecutionAFailure)
             {
-
                 Info($"Bot named: {information.Name} at address: {information.Address} successfully fetched data after failure.");
                 LastException = null;
                 WasLastExecutionAFailure = false;
@@ -93,7 +89,7 @@ namespace PlayerCountBot.Providers.Base
 
             if (e is HttpRequestException requestException)
             {
-                Error($"The {Label} has failed to respond. {requestException.StatusCode}");
+                Error($"The {Label} provider has failed to respond. {requestException.StatusCode}");
                 return;
             }
 
@@ -123,7 +119,6 @@ namespace PlayerCountBot.Providers.Base
             }
 
             Error($"There was an error speaking with {Label}.", e);
-            throw e;
         }
     }
 }

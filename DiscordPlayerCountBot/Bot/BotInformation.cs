@@ -1,4 +1,6 @@
-﻿namespace PlayerCountBot
+﻿using System;
+
+namespace PlayerCountBot
 {
     public class BotInformation
     {
@@ -23,13 +25,18 @@
 
             var formats = GetFormats();
 
-            if (CurrentFormat >= formats.Count)
+            if (formats.Count == 0) return null;
+            if (formats.Count == 1) return formats[0];
+
+            var highestIndex = formats.Count - 1;
+            Interlocked.Increment(ref CurrentFormat);
+
+            if (CurrentFormat > highestIndex)
             {
                 CurrentFormat = 0;
             }
 
             var selectedFormat = formats[CurrentFormat];
-            CurrentFormat++;
 
             return selectedFormat;
         }
