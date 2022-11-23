@@ -40,6 +40,7 @@
 
             Info($"Loaded {Information.Name} at address and port: {Information.Address}, {Information.ProviderType}");
             await DiscordClient.LoginAndStartAsync(Information.Token, Information.Address, shouldStart);
+            await DiscordClient.ChannelNameWarning(Information.ChannelID);
         }
 
         public async Task StopAsync()
