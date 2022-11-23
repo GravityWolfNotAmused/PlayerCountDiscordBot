@@ -27,7 +27,7 @@
             {
                 if (channel is ITextChannel)
                 {
-                    gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
+                    //gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
                 }
 
                 //Keep in mind there is a massive rate limit on this call that is specific to discord, and not Discord.Net
