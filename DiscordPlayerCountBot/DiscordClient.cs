@@ -59,7 +59,7 @@ namespace PlayerCountBot
                 }
                 else
                 {
-                    gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
+                    //gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
                 }
 
 
