@@ -1,8 +1,8 @@
-name: Build Artifact
+name: Build Artifact for Windows Dev
 
 on:
   push:
-    branches: [ "latest", "dev" ]
+    branches: [ "dev" ]
 
 jobs:
   build:
