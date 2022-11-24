@@ -52,7 +52,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: playercountbot-${{ steps.branch-name.outputs.current_branch }}-${{steps.date.outputs.date}}-arm64
-        path: ./DiscordPlayerCountBot/bin/Release/net6.0/win-armx64/publish 
+        path: ./DiscordPlayerCountBot/bin/Release/net6.0/win-arm64/publish 
 
   build-on-linux:
     runs-on: ubuntu-latest
