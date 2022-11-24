@@ -25,10 +25,18 @@
 
             if (channel != null)
             {
+<<<<<<< Updated upstream
                 if (channel is ITextChannel)
                 {
                     gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
                 }
+=======
+                if (channel is ITextChannel && channel is not IVoiceChannel)
+				{
+					gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
+				}
+
+>>>>>>> Stashed changes
 
                 //Keep in mind there is a massive rate limit on this call that is specific to discord, and not Discord.Net
                 //2x per 10 minutes
