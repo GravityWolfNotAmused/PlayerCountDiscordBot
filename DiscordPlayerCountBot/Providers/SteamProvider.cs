@@ -32,18 +32,11 @@
                     Map = response.map
                 };
 
-                var gameTypeEntries = model.Gametype.Split(",");
-                string? serverTime = null;
+                var serverTime = model.Gametype.Split(",")
+                    .Where(entry => entry.Contains(':') && entry.Length == 5)
+                    .FirstOrDefault();
 
-                foreach (var gameTypeEntry in gameTypeEntries)
-                {
-                    if (!(gameTypeEntry.Contains(':') && gameTypeEntry.Length == 5)) continue;
-
-                    serverTime = gameTypeEntry;
-                    break;
-                }
-
-                if (serverTime != null)
+                if (!string.IsNullOrEmpty(serverTime))
                 {
                     if (TimeOnly.TryParse(serverTime, out var time))
                     {
