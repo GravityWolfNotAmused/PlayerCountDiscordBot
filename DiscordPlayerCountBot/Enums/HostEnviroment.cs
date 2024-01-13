@@ -1,4 +1,4 @@
-﻿namespace PlayerCountBot.Enum
+﻿namespace PlayerCountBot.Enums
 {
     public enum HostEnvironment
     {

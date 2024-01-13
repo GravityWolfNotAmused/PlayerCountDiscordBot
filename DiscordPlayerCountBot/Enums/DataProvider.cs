@@ -1,4 +1,4 @@
-﻿namespace PlayerCountBot.Enum
+﻿namespace PlayerCountBot.Enums
 {
     public enum DataProvider
     {
@@ -6,6 +6,7 @@
         CFX,
         SCUM,
         MINECRAFT,
-        BATTLEMETRICS
+        BATTLEMETRICS,
+        RCONClient
     }
 }
