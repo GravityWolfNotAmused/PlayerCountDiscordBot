@@ -25,10 +25,10 @@
 
             if (channel != null)
             {
-		if (channel is ITextChannel && channel is not IVoiceChannel)
-		{
-			gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
-		}
+		        if (channel is ITextChannel && channel is not IVoiceChannel)
+		        {
+			        gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
+		        }
 
                 //Keep in mind there is a massive rate limit on this call that is specific to discord, and not Discord.Net
                 //2x per 10 minutes
