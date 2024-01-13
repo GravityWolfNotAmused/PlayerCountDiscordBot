@@ -1,6 +1,4 @@
-﻿using SteamQueryNet.Enums;
-
-namespace PlayerCountBot.Providers
+﻿namespace PlayerCountBot.Providers
 {
     [Name("BattleMetrics")]
     public class BattleMetricsProvider : ServerInformationProvider
@@ -23,18 +21,7 @@ namespace PlayerCountBot.Providers
 
                 HandleLastException(information);
 
-                var model = server.GetViewModel();
-
-                if (!string.IsNullOrEmpty(model.Time) && TimeOnly.TryParse(model.Time, out var time))
-                {
-                    if (information.SunriseHour.HasValue && information.SunsetHour.HasValue)
-                        model.SunMoon = time.Hour > information.SunriseHour && time.Hour < information.SunsetHour ? "☀️" : "🌙";
-
-                    if (!information.SunriseHour.HasValue || !information.SunsetHour.HasValue)
-                        model.SunMoon = time.Hour > 6 && time.Hour < 20 ? "☀️" : "🌙";
-                }
-
-                return model;
+                return server.GetViewModel();
             }
             catch (Exception e)
             {
