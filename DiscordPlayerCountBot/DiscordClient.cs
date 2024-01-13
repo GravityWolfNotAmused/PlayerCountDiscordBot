@@ -23,17 +23,20 @@
                 throw new ArgumentException($"[Bot] - Invalid Channel Id: {channelId}, Channel was not found.");
             }
 
+            /*
+            * Keep in mind there is a massive rate limit on this call that is specific to discord, and not Discord.Net
+            * 2x per 10 minutes
+            * https://discord.com/developers/docs/topics/rate-limits
+            * https://www.reddit.com/r/Discord_Bots/comments/qzrl5h/channel_name_edit_rate_limit/
+            */
+
             if (channel != null)
             {
-		if (channel is ITextChannel && channel is not IVoiceChannel)
-		{
-			gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
-		}
+                if (channel is ITextChannel && channel is not IVoiceChannel)
+                {
+                    gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
+                }
 
-                //Keep in mind there is a massive rate limit on this call that is specific to discord, and not Discord.Net
-                //2x per 10 minutes
-                //https://discord.com/developers/docs/topics/rate-limits
-                //https://www.reddit.com/r/Discord_Bots/comments/qzrl5h/channel_name_edit_rate_limit/
                 await channel.ModifyAsync(prop => prop.Name = gameStatus);
             }
         }
