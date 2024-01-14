@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using SteamServerQuery;
+using System.Net;
 using System.Net.Http;
 
 namespace PlayerCountBot.Providers.Base
@@ -17,7 +18,6 @@ namespace PlayerCountBot.Providers.Base
         {
             if (WasLastExecutionAFailure)
             {
-
                 Info($"Bot named: {information.Name} at address: {information.Address} successfully fetched data after failure.");
                 LastException = null;
                 WasLastExecutionAFailure = false;
@@ -73,6 +73,12 @@ namespace PlayerCountBot.Providers.Base
             if (e is ApplicationException applicationException)
             {
                 Error($"{applicationException.Message}");
+                return;
+            }
+
+            if(e is SteamException steamException)
+            {
+                Error($"There was an issue speaking with Steam Query Server.", e);
                 return;
             }
 

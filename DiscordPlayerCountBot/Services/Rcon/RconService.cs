@@ -7,7 +7,7 @@ namespace DiscordPlayerCountBot.Services
 {
     public class RconService : IRconService
     {
-        private Dictionary<RconServiceType, RconServiceInformation> PlayerCommands = new()
+        private readonly Dictionary<RconServiceType, RconServiceInformation> PlayerCommands = new()
         {
             {RconServiceType.CSGO, new RconServiceInformation("status", new CSGOInformationParser())},
             {RconServiceType.Minecraft, new RconServiceInformation("list", new MinecraftInformationParser()) },

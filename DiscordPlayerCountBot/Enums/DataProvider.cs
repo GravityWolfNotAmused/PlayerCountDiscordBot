@@ -7,6 +7,7 @@
         SCUM,
         MINECRAFT,
         BATTLEMETRICS,
-        RCONClient
+        RCONClient,
+        SteamQuery
     }
 }

@@ -1,5 +1,4 @@
 ﻿using DiscordPlayerCountBot.Enums;
-using DiscordPlayerCountBot.Enums;
 using DiscordPlayerCountBot.Exceptions;
 using DiscordPlayerCountBot.Services;
 
