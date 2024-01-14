@@ -22,7 +22,7 @@ namespace PlayerCountBot.Providers
 
             var service = new RconService();
             
-            if(!Enum.TryParse<RconServiceType>(information.RconServiceName, true, out var serviceType))
+            if (!Enum.TryParse<RconServiceType>(information.RconServiceName, true, out var serviceType))
             {
                 throw new ConfigurationException($"Bot: {information.Name} has an invalid RconServiceName specified in it's config. {values}");
             }
@@ -32,7 +32,7 @@ namespace PlayerCountBot.Providers
                 var addressAndPort = information.GetAddressAndPort();
                 var response = await service.GetRconResponse(addressAndPort.Item1, addressAndPort.Item2, applicationVariables["RconPassword"], serviceType);
 
-                if(response == null)
+                if (response == null)
                     throw new ApplicationException($"Server Address: {information.Address} was not found in Steam's directory.");
 
                 HandleLastException(information);

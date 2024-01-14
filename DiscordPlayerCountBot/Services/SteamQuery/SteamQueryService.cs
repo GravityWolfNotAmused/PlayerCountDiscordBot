@@ -4,7 +4,7 @@ namespace DiscordPlayerCountBot.Services.SteamQuery
 {
     public class SteamQueryService : ISteamQueryService
     {
-        public async Task<BaseViewModel> GetQueryResponse(string address, int port, string authorizationToken)
+        public async Task<BaseViewModel> GetQueryResponse(string address, int port)
         {
             var model = new BaseViewModel()
             {
@@ -18,7 +18,7 @@ namespace DiscordPlayerCountBot.Services.SteamQuery
                 model.MaxPlayers = serverInformation.MaxPlayers;
                 model.Players = serverInformation.Players;
                 model.QueuedPlayers = 0;
-            }catch
+            } catch
             {
                 throw;
             }

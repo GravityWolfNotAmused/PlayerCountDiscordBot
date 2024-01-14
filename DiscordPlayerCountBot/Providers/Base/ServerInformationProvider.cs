@@ -76,7 +76,7 @@ namespace PlayerCountBot.Providers.Base
                 return;
             }
 
-            if(e is SteamException steamException)
+            if (e is SteamException steamException)
             {
                 Error($"There was an issue speaking with Steam Query Server.", e);
                 return;
