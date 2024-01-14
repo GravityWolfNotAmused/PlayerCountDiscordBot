@@ -17,7 +17,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RconSharp" Version="2.0.1" />
-    <PackageReference Include="SteamQueryNet" Version="1.0.6" />
+    <PackageReference Include="SteamServerQuery.NET" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="README.MD" />
