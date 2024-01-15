@@ -1,17 +1,17 @@
 ﻿using DiscordPlayerCountBot.Enums;
 using DiscordPlayerCountBot.Exceptions;
-using DiscordPlayerCountBot.Services.Praser;
+using DiscordPlayerCountBot.Services.Rcon.ServiceInformation;
 using RconSharp;
 
 namespace DiscordPlayerCountBot.Services
 {
     public class RconService : IRconService
     {
-        private readonly Dictionary<RconServiceType, RconServiceInformation> PlayerCommands = new()
+        private readonly Dictionary<RconServiceType, IRconServiceInformation> PlayerCommands = new()
         {
-            {RconServiceType.CSGO, new RconServiceInformation("status", new CSGOInformationParser())},
-            {RconServiceType.Minecraft, new RconServiceInformation("list", new MinecraftInformationParser()) },
-            {RconServiceType.Ark, new RconServiceInformation("listplayers", new ArkInformationParser())}
+            {RconServiceType.CSGO, new CSGORconServiceInformation()},
+            {RconServiceType.Minecraft, new MinecraftRconServiceInformation()},
+            {RconServiceType.Ark, new ArkRconServiceInformation()}
         };
 
         public async Task<BaseViewModel> GetRconResponse(string address, int port, string authorizationToken, RconServiceType serviceType)
@@ -32,9 +32,9 @@ namespace DiscordPlayerCountBot.Services
                 throw new RconAuthenticationException($"There was a failure to authenticate with server: {address}:{port}.\nIs your password correct?\nIs this the correct server address?");
             }
 
-            var command = serviceInformation.PlayersCommand;
+            var command = serviceInformation.GetPlayerListCommand();
             var response = await client.ExecuteCommandAsync(command);
-            var viewModel = serviceInformation.Parser.Parse(response);
+            var viewModel = serviceInformation.GetParser().Parse(response);
 
             viewModel.Address = address;
             viewModel.Port = port;

@@ -1,16 +1,12 @@
-﻿using DiscordPlayerCountBot.Services.Praser;
+﻿using DiscordPlayerCountBot.Enums;
+using DiscordPlayerCountBot.Services.Praser;
 
 namespace DiscordPlayerCountBot.Services
 {
-    public class RconServiceInformation
+    public interface IRconServiceInformation
     {
-        public string PlayersCommand { get; private set; }
-        public IRconInformationParser Parser { get; private set; }
-
-        public RconServiceInformation(string playersCommand, IRconInformationParser parser)
-        {
-            PlayersCommand = playersCommand;
-            Parser = parser;
-        }
+        public abstract RconServiceType GetServiceType();
+        public abstract string GetPlayerListCommand();
+        public abstract IRconInformationParser GetParser();
     }
 }

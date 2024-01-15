@@ -29,6 +29,8 @@
             DataProviders.Add((int)DataProvider.CFX, new CFXProvider(Information!));
             DataProviders.Add((int)DataProvider.MINECRAFT, new MinecraftProvider(Information!));
             DataProviders.Add((int)DataProvider.BATTLEMETRICS, new BattleMetricsProvider(Information!));
+            DataProviders.Add((int)DataProvider.RCONClient, new RconProvider(Information!));
+            DataProviders.Add((int)DataProvider.SteamQuery, new SteamQueryProvider(Information!));
         }
 
         public async Task StartAsync(bool shouldStart)
