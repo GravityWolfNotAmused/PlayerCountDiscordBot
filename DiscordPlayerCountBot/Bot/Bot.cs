@@ -1,34 +1,32 @@
-﻿namespace PlayerCountBot
+﻿using PlayerCountBot.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace PlayerCountBot
 {
 
     [Name("Bot")]
     public class Bot : LoggableClass
     {
-        public DiscordSocketClient DiscordClient { get; set; }
-        public Dictionary<int, IServerInformationProvider> DataProviders { get; set; } = new();
-        public Dictionary<string, string> ApplicationTokens { get; set; } = new();
+        public readonly DiscordSocketClient DiscordClient;
+        public readonly BotInformation Information;
+        public readonly Dictionary<DataProvider, IServerInformationProvider> DataProviders = new();
+        public readonly Dictionary<string, string> ApplicationTokens = new();
 
-        public Bot(BotInformation info, Dictionary<string, string> applicationTokens) : base(info)
+        public Bot(BotInformation info, Dictionary<string, string> applicationTokens, IServiceProvider services)
         {
             if (info is null) throw new ArgumentNullException(nameof(info));
             if (applicationTokens is null) throw new ArgumentException(nameof(applicationTokens));
 
             ApplicationTokens = applicationTokens;
+            Information = info;
 
             DiscordClient = new DiscordSocketClient(new DiscordSocketConfig()
             {
                 HandlerTimeout = null
             });
 
-            InitDataProviders();
-        }
-
-        public void InitDataProviders()
-        {
-            DataProviders.Add((int)DataProvider.STEAM, new SteamProvider(Information!));
-            DataProviders.Add((int)DataProvider.CFX, new CFXProvider(Information!));
-            DataProviders.Add((int)DataProvider.MINECRAFT, new MinecraftProvider(Information!));
-            DataProviders.Add((int)DataProvider.BATTLEMETRICS, new BattleMetricsProvider(Information!));
+            DataProviders = services.GetServices<IServerInformationProvider>()
+                .ToDictionary(value => value.GetRequiredProviderType());
         }
 
         public async Task StartAsync(bool shouldStart)
@@ -38,7 +36,7 @@
                 Information.Address = await AddressHelper.ResolveAddress(Information.Address);
             }
 
-            Info($"Loaded {Information.Name} at address and port: {Information.Address}, {Information.ProviderType}");
+            Info($"Loaded {Information.Name} ({Information.Id}) at address and port: {Information.Address}, {(DataProvider)Information.ProviderType}");
             await DiscordClient.LoginAndStartAsync(Information.Token, Information.Address, shouldStart);
         }
 
@@ -49,19 +47,24 @@
 
         public async Task UpdateAsync()
         {
-            var dataProviderType = EnumHelper.GetDataProvider(Information!.ProviderType);
+            var dataProviderInt = EnumHelper.GetDataProvider(Information!.ProviderType);
 
-            if (dataProviderType != Information.ProviderType)
+            if (dataProviderInt != Information.ProviderType)
             {
-                Warn($"Config for bot at address: {Information.Address} has an invalid provider type: {Information.ProviderType}");
+                Warn($"Config for bot at address: {Information.Address} has an invalid provider type: {Information.ProviderType}", Information.Id.ToString());
             }
 
             var activityInteger = EnumHelper.GetActivityType(Information.Status);
 
             if (Information.Status != activityInteger)
             {
-                Warn($"Config for bot at address: {Information.Address} has an invalid activity type: {Information.Status}");
+                Warn($"Config for bot at address: {Information.Address} has an invalid activity type: {Information.Status}", Information.Id.ToString());
             }
+
+            var dataProviderType = (DataProvider)dataProviderInt;
+
+            if (!DataProviders.ContainsKey(dataProviderType))
+                throw new Exception($"Missing Data Provider for Type: {dataProviderType}");
 
             var dataProvider = DataProviders[dataProviderType];
             var serverInformation = await dataProvider.GetServerInformation(Information, ApplicationTokens);

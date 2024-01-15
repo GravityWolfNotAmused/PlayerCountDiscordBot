@@ -1,4 +1,4 @@
-﻿namespace PlayerCountBot.Enum
+﻿namespace PlayerCountBot.Enums
 {
     public static class EnumHelper
     {

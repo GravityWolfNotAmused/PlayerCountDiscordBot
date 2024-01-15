@@ -14,6 +14,7 @@
         public string? StatusFormat { get; set; }
         public int? SunriseHour { get; set; }
         public int? SunsetHour { get; set; }
+        public string? RconServiceName { get; set; }
 
         public Tuple<string, ushort> GetAddressAndPort()
         {

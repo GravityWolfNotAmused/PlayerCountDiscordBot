@@ -1,4 +1,4 @@
-﻿namespace DiscordPlayerCountBot.Tests
+﻿namespace PlayerCountBot.Tests
 {
     [Collection("Sun & Moon Tag Test Suite")]
     public class SunMoonTagTests

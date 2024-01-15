@@ -7,7 +7,6 @@
         public Dictionary<string, string> ApplicationTokens { get; set; } = new();
         public void CreateDefaults()
         {
-
             ServerInformation.Add(new()
             {
                 Name = "TestBot",

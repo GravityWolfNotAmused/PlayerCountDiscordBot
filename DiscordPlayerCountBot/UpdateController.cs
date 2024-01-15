@@ -1,4 +1,4 @@
-﻿using PlayerCountBot.Configuration;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System.Net.WebSockets;
 using System.Security;
 using System.Timers;
@@ -16,9 +16,12 @@ namespace PlayerCountBot
         private int Time = 30;
         private Timer? Timer;
 
-        public UpdateController() : base()
+        public UpdateController(IServiceProvider services)
         {
-            InitHostingConfigurations();
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
+
+            HostingEnvironments = services.GetServices<IConfigurable>()
+                                          .ToDictionary(value => value.GetRequiredEnvironment());
 
             try
             {
@@ -29,22 +32,16 @@ namespace PlayerCountBot
             {
                 if (e is ArgumentException || e is FormatException)
                 {
-                    Error("Error while parsing ISDOCKER variable. Please check your docker file, and fix your changes.", e);
+                    Error("Error while parsing ISDOCKER variable. Please check your docker file, and fix your changes.", null, e);
                 }
 
                 if (e is SecurityException)
                 {
-                    Error("A security error has happened when trying to fet ISDOCKER variable.", e);
+                    Error("A security error has happened when trying to fet ISDOCKER variable.", null, e);
                 }
 
                 HostEnvType = HostEnvironment.STANDARD;
             }
-        }
-
-        public void InitHostingConfigurations()
-        {
-            HostingEnvironments.Add(HostEnvironment.STANDARD, new StandardConfiguration());
-            HostingEnvironments.Add(HostEnvironment.DOCKER, new DockerConfiguration());
         }
 
         public async Task LoadConfig()
@@ -54,6 +51,7 @@ namespace PlayerCountBot
 
             Bots = config.Item1;
             Time = config.Item2;
+
             Info($"Created: {Bots.Count} bot(s) that update every {Time} seconds.");
         }
 
@@ -61,43 +59,39 @@ namespace PlayerCountBot
         {
             foreach (var bot in Bots.Values)
             {
-                await bot.UpdateAsync();
+                try
+                {
+                    await bot.UpdateAsync();
+                }
+                catch (Exception ex)
+                {
+                    if (ex is OperationCanceledException canceledException)
+                    {
+                        Warn($"Discord host connection was closed. Resetting connection.", bot.Information.Id.ToString());
+                        return;
+                    }
+
+                    if (ex is WebSocketException socketException)
+                    {
+                        Warn($"Web socket was found to be in a invalid state.", bot.Information.Id.ToString());
+                        return;
+                    }
+
+                    Error($"Please send crash log to https://discord.gg/FPXdPjcX27.", bot.Information.Id.ToString(), ex);
+                }
             }
         }
 
         private async void OnTimerExecute(object? source, ElapsedEventArgs e)
         {
-            try
-            {
-                await UpdatePlayerCounts();
-            }
-            catch (Exception ex)
-            {
-                if (ex is OperationCanceledException canceledException)
-                {
-                    Warn($"Discord host connection was closed. Resetting connection.");
-                    return;
-                }
-
-                if (ex is WebSocketException socketException)
-                {
-                    Warn($"Web socket was found to be in a invalid state.");
-                    return;
-                }
-
-                Error($"Please send crash log to https://discord.gg/FPXdPjcX27.", ex);
-            }
+            await UpdatePlayerCounts();
         }
 
         public async Task MainAsync()
         {
             await LoadConfig();
             Start();
-
-            for (; ; )
-            {
-                Thread.Sleep(100);
-            }
+            await Task.Delay(-1);
         }
 
         private void Start()
@@ -113,7 +107,7 @@ namespace PlayerCountBot
 
         public async void OnProcessExit(object? sender, EventArgs e)
         {
-            foreach (KeyValuePair<string, Bot> entry in Bots)
+            foreach (var entry in Bots)
             {
                 Warn($"Stoping bot: {entry.Key}");
                 await entry.Value.StopAsync();
