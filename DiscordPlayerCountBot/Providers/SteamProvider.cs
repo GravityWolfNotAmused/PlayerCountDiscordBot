@@ -1,4 +1,6 @@
-﻿namespace PlayerCountBot.Providers
+﻿using DiscordPlayerCountBot.Extensions;
+
+namespace PlayerCountBot.Providers
 {
     [Name("Steam")]
     public class SteamProvider : ServerInformationProvider
@@ -38,16 +40,12 @@
 
                 if (!string.IsNullOrEmpty(serverTime))
                 {
-                    if (TimeOnly.TryParse(serverTime, out var time))
+                    if (model.Time.TryGetSunMoonPhase(information.SunriseHour, information.SunsetHour, out var sunMoon))
                     {
-                        if (information.SunriseHour.HasValue && information.SunsetHour.HasValue)
-                            model.SunMoon = time.Hour > information.SunriseHour && time.Hour < information.SunsetHour ? "☀️" : "🌙";
-
-                        if (!information.SunriseHour.HasValue || !information.SunsetHour.HasValue)
-                            model.SunMoon = time.Hour > 6 && time.Hour < 20 ? "☀️" : "🌙";
-
-                        model.Time = serverTime;
+                        model.SunMoon = sunMoon;
                     }
+
+                    model.Time = serverTime;
                 }
 
                 return model;
