@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using EnvironmentHelper = PlayerCountBot.Tests.Environment.EnvironmentHelper;
 
-namespace PlayerCountBot.Tests;
+namespace DiscordPlayerCountBot.Tests;
 
 [Collection("Configuration Test Suite")]
 public class DockerConfigurationTests
