@@ -14,7 +14,7 @@ namespace PlayerCountBot.Providers
 
         public override DataProvider GetRequiredProviderType()
         {
-            return DataProvider.SteamQuery;
+            return DataProvider.STEAMQUERY;
         }
 
         public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)

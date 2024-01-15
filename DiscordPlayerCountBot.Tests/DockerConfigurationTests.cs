@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using EnvironmentHelper = PlayerCountBot.Tests.Environment.EnvironmentHelper;
+using EnvironmentHelper = DiscordPlayerCountBot.Tests.Environment.EnvironmentHelper;
 
 namespace DiscordPlayerCountBot.Tests;
 

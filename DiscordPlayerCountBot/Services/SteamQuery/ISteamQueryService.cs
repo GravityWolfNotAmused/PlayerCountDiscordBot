@@ -1,6 +1,4 @@
-﻿using PlayerCountBot.Enums;
-
-namespace PlayerCountBot.Services.SteamQuery
+﻿namespace PlayerCountBot.Services.SteamQuery
 {
     internal interface ISteamQueryService
     {

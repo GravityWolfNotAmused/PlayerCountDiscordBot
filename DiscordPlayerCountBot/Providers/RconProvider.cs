@@ -16,7 +16,7 @@ namespace PlayerCountBot.Providers
 
         public override DataProvider GetRequiredProviderType()
         {
-            return DataProvider.RCONClient;
+            return DataProvider.RCONCLIENT;
         }
 
         public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
