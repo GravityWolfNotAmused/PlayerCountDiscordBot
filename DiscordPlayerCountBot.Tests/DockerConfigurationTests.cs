@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using EnvironmentHelper = PlayerCountBot.Tests.Environment.EnvironmentHelper;
 
@@ -15,7 +16,10 @@ public class DockerConfigurationTests
         var bots = new Dictionary<string, Bot>();
         var time = -1;
 
-        var dockerConfiguration = new DockerConfiguration();
+        var serviceProvider = new ServiceCollection()
+            .BuildServiceProvider();
+
+        var dockerConfiguration = new DockerConfiguration(serviceProvider);
         var configuration = await dockerConfiguration.Configure(false);
 
         bots = configuration.Item1;
@@ -35,7 +39,10 @@ public class DockerConfigurationTests
     {
         EnvironmentHelper.SetTestEnvironmentWithDuplicateAddresses();
 
-        var dockerConfiguration = new DockerConfiguration();
+        var services = new ServiceCollection()
+            .BuildServiceProvider();
+
+        var dockerConfiguration = new DockerConfiguration(services);
         var configuration = await dockerConfiguration.Configure(false);
 
         EnvironmentHelper.ClearTestEnvironmentVariables();
@@ -57,7 +64,10 @@ public class DockerConfigurationTests
         var bots = new Dictionary<string, Bot>();
         var time = -1;
 
-        var dockerConfiguration = new DockerConfiguration();
+        var services = new ServiceCollection()
+            .BuildServiceProvider();
+
+        var dockerConfiguration = new DockerConfiguration(services);
         var configuration = await dockerConfiguration.Configure(false);
 
         bots = configuration.Item1;
@@ -80,7 +90,10 @@ public class DockerConfigurationTests
         var bots = new Dictionary<string, Bot>();
         var time = -1;
 
-        var dockerConfiguration = new DockerConfiguration();
+        var services = new ServiceCollection()
+            .BuildServiceProvider();
+
+        var dockerConfiguration = new DockerConfiguration(services);
         var configuration = await dockerConfiguration.Configure(false);
 
         bots = configuration.Item1;
@@ -101,7 +114,10 @@ public class DockerConfigurationTests
         var bots = new Dictionary<string, Bot>();
         var time = -1;
 
-        var dockerConfiguration = new DockerConfiguration();
+        var services = new ServiceCollection()
+            .BuildServiceProvider();
+
+        var dockerConfiguration = new DockerConfiguration(services);
         var configuration = await dockerConfiguration.Configure(false);
 
         bots = configuration.Item1;

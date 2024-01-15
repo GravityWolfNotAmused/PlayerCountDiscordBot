@@ -4,7 +4,13 @@
     [Name("Docker Configuration")]
     public class DockerConfiguration : LoggableClass, IConfigurable
     {
-        public DockerConfiguration() : base() { }
+        public IServiceProvider Services { get; set; }
+
+        public DockerConfiguration(IServiceProvider services) 
+        {
+            Services = services;
+        }
+
         public async Task<Tuple<Dictionary<string, Bot>, int>> Configure(bool shouldStart = true)
         {
             var bots = new Dictionary<string, Bot>();
@@ -75,7 +81,7 @@
                     {
                         if (e is FormatException || e is OverflowException)
                         {
-                            Error($"Could not parse Channel ID: {channelIDString}", e);
+                            Error($"Could not parse Channel ID: {channelIDString}", null, e);
                         }
 
                         throw new Exception(e.Message, e);
@@ -105,12 +111,17 @@
                     ProviderType = EnumHelper.GetDataProvider(int.Parse(providerTypes?[i] ?? "0"))
                 };
 
-                var bot = new Bot(info, applicationTokens);
+                var bot = new Bot(info, applicationTokens, Services);
                 await bot.StartAsync(shouldStart);
                 bots.Add(bot.Information!.Id.ToString(), bot);
             }
 
             return new Tuple<Dictionary<string, Bot>, int>(bots, int.Parse(Environment.GetEnvironmentVariable("BOT_UPDATE_TIME") ?? "30"));
+        }
+
+        public HostEnvironment GetRequiredEnvironment()
+        {
+            return HostEnvironment.DOCKER;
         }
     }
 }

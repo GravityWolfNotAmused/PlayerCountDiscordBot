@@ -10,28 +10,36 @@ global using PlayerCountBot.Providers.Base;
 global using PlayerCountBot.Providers;
 global using PlayerCountBot.ViewModels;
 global using Newtonsoft.Json;
-global using System;
-global using System.Collections.Generic;
-global using System.Linq;
-global using System.Threading.Tasks;
-global using System.IO;
 global using System.Text;
 
 global using Discord;
 global using Discord.WebSocket;
-global using log4net;
 
-using log4net.Config;
-using System.Reflection;
+using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
+using Microsoft.Extensions.DependencyInjection;
+using PlayerCountBot.Configuration;
 
-var repository = LogManager.GetRepository(Assembly.GetCallingAssembly());
-var fileInfo = new FileInfo(@"log4net.config");
-XmlConfigurator.Configure(repository, fileInfo);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console(theme: AnsiConsoleTheme.Literate, outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}", restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug, applyThemeToRedirectedOutput: true)
+    .WriteTo.File("logs.txt", Serilog.Events.LogEventLevel.Warning)
+    .CreateLogger();
 
-var tempLogger = LogManager.GetLogger(typeof(Program));
-tempLogger.Info("[Application]:: Starting Controller.");
+Log.Information("[Application] - Starting Player Count Discord Bot.");
 
-var controller = new UpdateController();
-AppDomain.CurrentDomain.ProcessExit += new EventHandler(controller.OnProcessExit!);
+var serviceCollection = new ServiceCollection()
+    .AddSingleton<UpdateController>();
 
-controller.MainAsync().GetAwaiter().GetResult();
+serviceCollection.AddTransient<IConfigurable, StandardConfiguration>();
+serviceCollection.AddTransient<IConfigurable, DockerConfiguration>();
+
+serviceCollection.AddTransient<IServerInformationProvider, SteamProvider>();
+serviceCollection.AddTransient<IServerInformationProvider, CFXProvider>();
+serviceCollection.AddTransient<IServerInformationProvider, MinecraftProvider>();
+serviceCollection.AddTransient<IServerInformationProvider, BattleMetricsProvider>();
+
+
+var app = serviceCollection.BuildServiceProvider();
+
+var controller = app.GetRequiredService<UpdateController>();
+await controller.MainAsync();

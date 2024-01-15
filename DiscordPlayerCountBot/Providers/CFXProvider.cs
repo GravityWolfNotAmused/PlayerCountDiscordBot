@@ -3,8 +3,9 @@
     [Name("CFX")]
     public class CFXProvider : ServerInformationProvider
     {
-        public CFXProvider(BotInformation info) : base(info)
+        public override DataProvider GetRequiredProviderType()
         {
+            return DataProvider.CFX;
         }
 
         public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
@@ -36,7 +37,7 @@
             }
             catch (Exception e)
             {
-                HandleException(e);
+                HandleException(e, information.Id.ToString());
                 return null;
             }
         }

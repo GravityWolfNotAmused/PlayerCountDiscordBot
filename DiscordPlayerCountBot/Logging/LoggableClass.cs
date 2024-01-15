@@ -1,49 +1,41 @@
-﻿namespace PlayerCountBot
+﻿using Serilog;
+
+namespace PlayerCountBot
 {
     public class LoggableClass
     {
-        protected readonly ILog Logger;
-        public readonly BotInformation? Information;
-
-        public LoggableClass()
+        public void Info(string message, string? id = null)
         {
-            Logger = LogManager.GetLogger(GetType());
+            Log.Information(BuildLogMessage(id, GetType().Name, message));
         }
 
-        public LoggableClass(BotInformation information) : this()
+        public void Warn(string message, string? id = null)
         {
-            Information = information;
+            Log.Warning(BuildLogMessage(id, GetType().Name, message));
         }
 
-        public void Info(string message)
+        public void Error(string message, string? id = null, Exception ? exception = null)
         {
-            Logger.Info($"{GetLoggingPrefix()} {message}");
+            Log.Error(BuildLogMessage(id, GetType().Name, message), exception);
         }
 
-        public void Warn(string message)
+        public void Debug(string message, string? id = null)
         {
-            Logger.Warn($"{GetLoggingPrefix()} {message}");
+            Log.Debug(BuildLogMessage(id, GetType().Name, message));
         }
 
-        public void Error(string message, Exception? exception = null)
+        public string BuildLogMessage(string? id, string label, string msg)
         {
-            Logger.Error($"{GetLoggingPrefix()} {message}", exception);
-        }
+            var message = "";
 
-        public void Debug(string message)
-        {
-            Logger.Debug($"{GetLoggingPrefix()} {message}");
-        }
-        public string GetLoggingPrefix()
-        {
-            var label = AttributeHelper.GetNameFromAttribute(this) ?? GetType().Name;
+            message += $"[{label}]";
 
-            if (Information != null)
+            if (!string.IsNullOrEmpty(id))
             {
-                return $"[{label}] - {Information.Id} -";
+                message += $" - {id}";
             }
 
-            return $"[{label}] -";
+            return message + $" - {msg}";
         }
     }
 }
