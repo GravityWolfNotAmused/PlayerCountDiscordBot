@@ -9,7 +9,7 @@ namespace PlayerCountBot.Providers
     {
         private readonly RconService Service;
 
-        public RconProvider(RconService service) 
+        public RconProvider(RconService service)
         {
             Service = service;
         }
@@ -27,7 +27,7 @@ namespace PlayerCountBot.Providers
             {
                 throw new ConfigurationException($"Bot: {information.Name} must have RconServiceName specified in it's config. {values}");
             }
-                        
+
             if (!Enum.TryParse<RconServiceType>(information.RconServiceName, true, out var serviceType))
             {
                 throw new ConfigurationException($"Bot: {information.Name} has an invalid RconServiceName specified in it's config. {values}");

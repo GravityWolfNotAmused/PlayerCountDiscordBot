@@ -6,7 +6,7 @@
     {
         public IServiceProvider Services { get; set; }
 
-        public DockerConfiguration(IServiceProvider services) 
+        public DockerConfiguration(IServiceProvider services)
         {
             Services = services;
         }

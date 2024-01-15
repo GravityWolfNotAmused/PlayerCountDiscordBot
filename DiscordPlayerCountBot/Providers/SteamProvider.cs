@@ -47,7 +47,7 @@ namespace PlayerCountBot.Providers
                 if (!string.IsNullOrEmpty(serverTime))
                 {
                     model.Time = serverTime;
-                    
+
                     if (model.Time.TryGetSunMoonPhase(information.SunriseHour, information.SunsetHour, out var sunMoon))
                     {
                         model.SunMoon = sunMoon;

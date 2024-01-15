@@ -14,7 +14,7 @@ namespace PlayerCountBot
             Log.Warning(BuildLogMessage(id, GetType().Name, message));
         }
 
-        public void Error(string message, string? id = null, Exception ? exception = null)
+        public void Error(string message, string? id = null, Exception? exception = null)
         {
             Log.Error(BuildLogMessage(id, GetType().Name, message), exception);
         }

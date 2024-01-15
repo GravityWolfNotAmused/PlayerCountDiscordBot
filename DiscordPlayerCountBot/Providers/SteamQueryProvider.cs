@@ -30,7 +30,7 @@ namespace PlayerCountBot.Providers
                 }
 
                 HandleLastException(information);
-                
+
                 return response;
             }
             catch (Exception e)
