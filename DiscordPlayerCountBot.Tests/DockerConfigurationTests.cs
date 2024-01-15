@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-using EnvironmentHelper = PlayerCountBot.Tests.Environment.EnvironmentHelper;
+using EnvironmentHelper = DiscordPlayerCountBot.Tests.Environment.EnvironmentHelper;
 
-namespace PlayerCountBot.Tests;
+namespace DiscordPlayerCountBot.Tests;
 
 [Collection("Configuration Test Suite")]
 public class DockerConfigurationTests
