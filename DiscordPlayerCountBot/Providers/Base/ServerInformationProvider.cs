@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using SteamServerQuery;
+using System.Net;
 using System.Net.Http;
 
 namespace PlayerCountBot.Providers.Base
@@ -72,7 +73,13 @@ namespace PlayerCountBot.Providers.Base
                 return;
             }
 
-            Error($"There was an error speaking with {Label}.", id, e);
+            if (e is SteamException steamException)
+            {
+                Error($"There was an issue speaking with Steam Query Server.", e);
+                return;
+            }
+
+            Error($"There was an error speaking with {Label}.", e);
             throw e;
         }
 

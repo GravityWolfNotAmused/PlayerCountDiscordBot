@@ -22,7 +22,7 @@
 
                 HandleLastException(information);
 
-                return new SteamViewModel()
+                var model = new SteamViewModel()
                 {
                     Address = addressAndPort.Item1,
                     Port = addressAndPort.Item2,
@@ -32,6 +32,26 @@
                     Gametype = response.gametype,
                     Map = response.map
                 };
+
+                var serverTime = model.Gametype.Split(",")
+                    .Where(entry => entry.Contains(':') && entry.Length == 5)
+                    .FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(serverTime))
+                {
+                    if (TimeOnly.TryParse(serverTime, out var time))
+                    {
+                        if (information.SunriseHour.HasValue && information.SunsetHour.HasValue)
+                            model.SunMoon = time.Hour > information.SunriseHour && time.Hour < information.SunsetHour ? "☀️" : "🌙";
+
+                        if (!information.SunriseHour.HasValue || !information.SunsetHour.HasValue)
+                            model.SunMoon = time.Hour > 6 && time.Hour < 20 ? "☀️" : "🌙";
+
+                        model.Time = serverTime;
+                    }
+                }
+
+                return model;
             }
             catch (Exception e)
             {

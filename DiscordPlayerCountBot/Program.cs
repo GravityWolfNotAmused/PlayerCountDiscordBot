@@ -2,7 +2,7 @@
 global using PlayerCountBot.Attributes;
 global using PlayerCountBot.Configuration.Base;
 global using PlayerCountBot.Data;
-global using PlayerCountBot.Enum;
+global using PlayerCountBot.Enums;
 global using PlayerCountBot.Http;
 global using PlayerCountBot.Json;
 global using PlayerCountBot.Services;
