@@ -1,4 +1,5 @@
-﻿namespace PlayerCountBot.Attributes
+﻿
+namespace PlayerCountBot.Attributes
 {
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
