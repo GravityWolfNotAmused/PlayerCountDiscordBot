@@ -1,7 +1,7 @@
-﻿using DiscordPlayerCountBot.Exceptions;
+﻿using PlayerCountBot.Exceptions;
 using System.Text.RegularExpressions;
 
-namespace DiscordPlayerCountBot.Services.Praser
+namespace PlayerCountBot.Services.Praser
 {
     public class CSGOInformationParser : IRconInformationParser
     {

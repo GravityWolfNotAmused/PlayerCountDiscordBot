@@ -1,4 +1,4 @@
-﻿namespace DiscordPlayerCountBot.Exceptions
+﻿namespace PlayerCountBot.Exceptions
 {
     internal class ConfigurationException : Exception
     {

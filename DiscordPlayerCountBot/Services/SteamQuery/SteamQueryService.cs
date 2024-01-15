@@ -1,6 +1,6 @@
-﻿using SteamServerQuery;
+﻿using SteamQueryNet;
 
-namespace DiscordPlayerCountBot.Services.SteamQuery
+namespace PlayerCountBot.Services.SteamQuery
 {
     public class SteamQueryService : ISteamQueryService
     {
@@ -12,16 +12,16 @@ namespace DiscordPlayerCountBot.Services.SteamQuery
                 Port = port
             };
 
-            try
-            {
-                var serverInformation = await SteamServer.QueryServerAsync(address, port = 0);
-                model.MaxPlayers = serverInformation.MaxPlayers;
-                model.Players = serverInformation.Players;
-                model.QueuedPlayers = 0;
-            } catch
-            {
-                throw;
-            }
+            var serverQuery = await new ServerQuery()
+                .Connect($"{address}:{port}")
+                .GetServerInfoAsync();
+
+            if (serverQuery == null)
+                throw new Exception("Failed to fetch server information from Steam Query");
+
+            model.MaxPlayers = serverQuery.MaxPlayers;
+            model.Players = serverQuery.Players;
+            model.QueuedPlayers = 0;
 
             return model;
         }

@@ -1,6 +1,6 @@
-﻿using DiscordPlayerCountBot.Enums;
+﻿using PlayerCountBot.Enums;
 
-namespace DiscordPlayerCountBot.Services.SteamQuery
+namespace PlayerCountBot.Services.SteamQuery
 {
     internal interface ISteamQueryService
     {

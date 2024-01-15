@@ -1,4 +1,4 @@
-﻿namespace DiscordPlayerCountBot.Enums
+﻿namespace PlayerCountBot.Enums
 {
     public enum RconServiceType
     {

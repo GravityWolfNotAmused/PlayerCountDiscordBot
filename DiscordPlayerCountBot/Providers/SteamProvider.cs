@@ -1,8 +1,17 @@
-﻿namespace PlayerCountBot.Providers
+﻿using PlayerCountBot.Extensions;
+
+namespace PlayerCountBot.Providers
 {
     [Name("Steam")]
     public class SteamProvider : ServerInformationProvider
     {
+        private readonly SteamService Service;
+
+        public SteamProvider(SteamService service)
+        {
+            Service = service;
+        }
+
         public override DataProvider GetRequiredProviderType()
         {
             return DataProvider.STEAM;
@@ -10,12 +19,10 @@
 
         public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
-            var service = new SteamService();
-
             try
             {
                 var addressAndPort = information.GetAddressAndPort();
-                var response = await service.GetSteamApiResponse(addressAndPort.Item1, addressAndPort.Item2, applicationVariables["SteamAPIKey"]);
+                var response = await Service.GetSteamApiResponse(addressAndPort.Item1, addressAndPort.Item2, applicationVariables["SteamAPIKey"]);
 
                 if (response == null)
                     throw new ApplicationException($"Server Address: {information.Address} was not found in Steam's directory.");
@@ -34,20 +41,16 @@
                 };
 
                 var serverTime = model.Gametype.Split(",")
-                    .Where(entry => entry.Contains(':') && entry.Length == 5)
-                    .FirstOrDefault();
+                                    .Where(entry => entry.Contains(':') && entry.Length == 5)
+                                    .FirstOrDefault();
 
                 if (!string.IsNullOrEmpty(serverTime))
                 {
-                    if (TimeOnly.TryParse(serverTime, out var time))
+                    model.Time = serverTime;
+
+                    if (model.Time.TryGetSunMoonPhase(information.SunriseHour, information.SunsetHour, out var sunMoon))
                     {
-                        if (information.SunriseHour.HasValue && information.SunsetHour.HasValue)
-                            model.SunMoon = time.Hour > information.SunriseHour && time.Hour < information.SunsetHour ? "☀️" : "🌙";
-
-                        if (!information.SunriseHour.HasValue || !information.SunsetHour.HasValue)
-                            model.SunMoon = time.Hour > 6 && time.Hour < 20 ? "☀️" : "🌙";
-
-                        model.Time = serverTime;
+                        model.SunMoon = sunMoon;
                     }
                 }
 

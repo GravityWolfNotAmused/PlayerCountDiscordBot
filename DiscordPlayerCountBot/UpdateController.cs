@@ -59,32 +59,32 @@ namespace PlayerCountBot
         {
             foreach (var bot in Bots.Values)
             {
-                await bot.UpdateAsync();
+                try
+                {
+                    await bot.UpdateAsync();
+                }
+                catch (Exception ex)
+                {
+                    if (ex is OperationCanceledException canceledException)
+                    {
+                        Warn($"Discord host connection was closed. Resetting connection.", bot.Information.Id.ToString());
+                        return;
+                    }
+
+                    if (ex is WebSocketException socketException)
+                    {
+                        Warn($"Web socket was found to be in a invalid state.", bot.Information.Id.ToString());
+                        return;
+                    }
+
+                    Error($"Please send crash log to https://discord.gg/FPXdPjcX27.", bot.Information.Id.ToString(), ex);
+                }
             }
         }
 
         private async void OnTimerExecute(object? source, ElapsedEventArgs e)
         {
-            try
-            {
-                await UpdatePlayerCounts();
-            }
-            catch (Exception ex)
-            {
-                if (ex is OperationCanceledException canceledException)
-                {
-                    Warn($"Discord host connection was closed. Resetting connection.");
-                    return;
-                }
-
-                if (ex is WebSocketException socketException)
-                {
-                    Warn($"Web socket was found to be in a invalid state.");
-                    return;
-                }
-
-                Error($"Please send crash log to https://discord.gg/FPXdPjcX27.", null, ex);
-            }
+            await UpdatePlayerCounts();
         }
 
         public async Task MainAsync()

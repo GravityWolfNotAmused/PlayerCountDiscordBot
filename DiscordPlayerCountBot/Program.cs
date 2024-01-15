@@ -19,6 +19,9 @@ using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using Microsoft.Extensions.DependencyInjection;
 using PlayerCountBot.Configuration;
+using PlayerCountBot.Services;
+using PlayerCountBot.Services.Rcon.ServiceInformation;
+using PlayerCountBot.Services.SteamQuery;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(theme: AnsiConsoleTheme.Literate, outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}", restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug, applyThemeToRedirectedOutput: true)
@@ -33,11 +36,23 @@ var serviceCollection = new ServiceCollection()
 serviceCollection.AddTransient<IConfigurable, StandardConfiguration>();
 serviceCollection.AddTransient<IConfigurable, DockerConfiguration>();
 
+serviceCollection.AddTransient<SteamService>();
+serviceCollection.AddTransient<SteamQueryService>();
+serviceCollection.AddTransient<BattleMetricsService>();
+serviceCollection.AddTransient<CFXService>();
+serviceCollection.AddTransient<MinecraftService>();
+serviceCollection.AddTransient<RconService>();
+
 serviceCollection.AddTransient<IServerInformationProvider, SteamProvider>();
 serviceCollection.AddTransient<IServerInformationProvider, CFXProvider>();
 serviceCollection.AddTransient<IServerInformationProvider, MinecraftProvider>();
 serviceCollection.AddTransient<IServerInformationProvider, BattleMetricsProvider>();
+serviceCollection.AddTransient<IServerInformationProvider, RconProvider>();
+serviceCollection.AddTransient<IServerInformationProvider, SteamQueryProvider>();
 
+serviceCollection.AddTransient<IRconServiceInformation, CSGORconServiceInformation>();
+serviceCollection.AddTransient<IRconServiceInformation, MinecraftRconServiceInformation>();
+serviceCollection.AddTransient<IRconServiceInformation, ArkRconServiceInformation>();
 
 var app = serviceCollection.BuildServiceProvider();
 

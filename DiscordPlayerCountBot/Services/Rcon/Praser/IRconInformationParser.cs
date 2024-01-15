@@ -1,4 +1,4 @@
-﻿namespace DiscordPlayerCountBot.Services.Praser
+﻿namespace PlayerCountBot.Services.Praser
 {
     public interface IRconInformationParser
     {

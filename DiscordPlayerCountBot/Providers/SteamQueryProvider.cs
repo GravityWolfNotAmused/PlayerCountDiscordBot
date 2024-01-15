@@ -1,22 +1,28 @@
-﻿using DiscordPlayerCountBot.Services.SteamQuery;
+﻿using PlayerCountBot.Services.SteamQuery;
 
 namespace PlayerCountBot.Providers
 {
     [Name("Steam Query")]
     public class SteamQueryProvider : ServerInformationProvider
     {
-        public SteamQueryProvider(BotInformation info) : base(info)
+        private readonly SteamQueryService Service;
+
+        public SteamQueryProvider(SteamQueryService service)
         {
+            Service = service;
+        }
+
+        public override DataProvider GetRequiredProviderType()
+        {
+            return DataProvider.SteamQuery;
         }
 
         public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
-            var service = new SteamQueryService();
-
             try
             {
                 var addressAndPort = information.GetAddressAndPort();
-                var response = await service.GetQueryResponse(addressAndPort.Item1, addressAndPort.Item2);
+                var response = await Service.GetQueryResponse(addressAndPort.Item1, addressAndPort.Item2);
 
                 if (response == null)
                 {

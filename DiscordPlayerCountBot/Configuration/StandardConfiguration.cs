@@ -32,7 +32,7 @@
 
                 if (config == null) throw new ApplicationException("You have broken the syntax of your config file.");
 
-                Info($"Config.json loaded:\n{fileContents}");
+                Debug($"Config.json loaded:\n{fileContents}");
 
                 foreach (var info in config.ServerInformation)
                 {

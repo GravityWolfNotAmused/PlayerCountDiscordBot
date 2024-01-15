@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using PlayerCountBot.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PlayerCountBot
 {
@@ -35,7 +36,7 @@ namespace PlayerCountBot
                 Information.Address = await AddressHelper.ResolveAddress(Information.Address);
             }
 
-            Info($"Loaded {Information.Name} at address and port: {Information.Address}, {(DataProvider)Information.ProviderType}");
+            Info($"Loaded {Information.Name} ({Information.Id}) at address and port: {Information.Address}, {(DataProvider)Information.ProviderType}");
             await DiscordClient.LoginAndStartAsync(Information.Token, Information.Address, shouldStart);
         }
 

@@ -3,6 +3,13 @@
     [Name("CFX")]
     public class CFXProvider : ServerInformationProvider
     {
+        public readonly CFXService Service;
+
+        public CFXProvider(CFXService service)
+        {
+            Service = service;
+        }
+
         public override DataProvider GetRequiredProviderType()
         {
             return DataProvider.CFX;
@@ -10,12 +17,10 @@
 
         public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
         {
-            var service = new CFXService();
-
             try
             {
-                var playerInfo = await service.GetPlayerInformationAsync(information.Address);
-                var serverInfo = await service.GetServerInformationAsync(information.Address);
+                var playerInfo = await Service.GetPlayerInformationAsync(information.Address);
+                var serverInfo = await Service.GetServerInformationAsync(information.Address);
                 var addressAndPort = information.GetAddressAndPort();
 
                 if (playerInfo == null)

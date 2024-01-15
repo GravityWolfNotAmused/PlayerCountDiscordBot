@@ -1,18 +1,19 @@
-﻿using DiscordPlayerCountBot.Enums;
-using DiscordPlayerCountBot.Exceptions;
-using DiscordPlayerCountBot.Services.Rcon.ServiceInformation;
+﻿using PlayerCountBot.Enums;
+using PlayerCountBot.Exceptions;
+using Microsoft.Extensions.DependencyInjection;
 using RconSharp;
 
-namespace DiscordPlayerCountBot.Services
+namespace PlayerCountBot.Services
 {
     public class RconService : IRconService
     {
-        private readonly Dictionary<RconServiceType, IRconServiceInformation> PlayerCommands = new()
+        private readonly Dictionary<RconServiceType, IRconServiceInformation> PlayerCommands = new();
+
+        public RconService(IServiceProvider serviceProvider)
         {
-            {RconServiceType.CSGO, new CSGORconServiceInformation()},
-            {RconServiceType.Minecraft, new MinecraftRconServiceInformation()},
-            {RconServiceType.Ark, new ArkRconServiceInformation()}
-        };
+            PlayerCommands = serviceProvider.GetServices<IRconServiceInformation>()
+                                            .ToDictionary(value => value.GetServiceType());
+        }
 
         public async Task<BaseViewModel> GetRconResponse(string address, int port, string authorizationToken, RconServiceType serviceType)
         {

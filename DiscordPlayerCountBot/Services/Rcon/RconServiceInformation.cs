@@ -1,7 +1,7 @@
-﻿using DiscordPlayerCountBot.Enums;
-using DiscordPlayerCountBot.Services.Praser;
+﻿using PlayerCountBot.Enums;
+using PlayerCountBot.Services.Praser;
 
-namespace DiscordPlayerCountBot.Services
+namespace PlayerCountBot.Services
 {
     public interface IRconServiceInformation
     {

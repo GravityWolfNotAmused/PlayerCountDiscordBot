@@ -1,4 +1,4 @@
-﻿namespace DiscordPlayerCountBot.Exceptions
+﻿namespace PlayerCountBot.Exceptions
 {
     public class ParsingException : Exception
     {

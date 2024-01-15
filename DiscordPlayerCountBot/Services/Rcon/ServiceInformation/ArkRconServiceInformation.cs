@@ -1,7 +1,7 @@
-﻿using DiscordPlayerCountBot.Enums;
-using DiscordPlayerCountBot.Services.Praser;
+﻿using PlayerCountBot.Enums;
+using PlayerCountBot.Services.Praser;
 
-namespace DiscordPlayerCountBot.Services.Rcon.ServiceInformation
+namespace PlayerCountBot.Services.Rcon.ServiceInformation
 {
     public class ArkRconServiceInformation : IRconServiceInformation
     {
