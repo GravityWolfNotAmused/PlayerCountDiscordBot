@@ -1,4 +1,4 @@
-﻿namespace PlayerCountBot
+﻿namespace PlayerCountBot.Extensions
 {
     public static class DiscordClient
     {

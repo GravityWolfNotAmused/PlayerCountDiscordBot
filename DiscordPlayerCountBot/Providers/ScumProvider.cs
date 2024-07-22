@@ -4,8 +4,9 @@
     [Name("Scum")]
     public class ScumProvider : ServerInformationProvider
     {
-        public ScumProvider(BotInformation info) : base(info)
+        public override DataProvider GetRequiredProviderType()
         {
+            return DataProvider.SCUM;
         }
 
         public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
@@ -40,7 +41,7 @@
             }
             catch (Exception e)
             {
-                HandleException(e);
+                HandleException(e, information.Id.ToString());
                 return null;
             }
         }
