@@ -1,4 +1,4 @@
-﻿namespace PlayerCountBot.Tests.Environment
+﻿namespace DiscordPlayerCountBot.Tests.Environment
 {
     public static class EnvironmentHelper
     {

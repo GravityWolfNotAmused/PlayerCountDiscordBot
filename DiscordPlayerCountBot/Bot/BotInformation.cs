@@ -12,6 +12,9 @@
         public int ProviderType { get; set; } = 0;
         public ulong? ChannelID { get; set; }
         public string? StatusFormat { get; set; }
+        public int? SunriseHour { get; set; }
+        public int? SunsetHour { get; set; }
+        public string? RconServiceName { get; set; }
 
         public Tuple<string, ushort> GetAddressAndPort()
         {

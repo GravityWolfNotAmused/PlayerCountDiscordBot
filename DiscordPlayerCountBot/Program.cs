@@ -2,7 +2,7 @@
 global using PlayerCountBot.Attributes;
 global using PlayerCountBot.Configuration.Base;
 global using PlayerCountBot.Data;
-global using PlayerCountBot.Enum;
+global using PlayerCountBot.Enums;
 global using PlayerCountBot.Http;
 global using PlayerCountBot.Json;
 global using PlayerCountBot.Services;
@@ -10,28 +10,51 @@ global using PlayerCountBot.Providers.Base;
 global using PlayerCountBot.Providers;
 global using PlayerCountBot.ViewModels;
 global using Newtonsoft.Json;
-global using System;
-global using System.Collections.Generic;
-global using System.Linq;
-global using System.Threading.Tasks;
-global using System.IO;
 global using System.Text;
 
 global using Discord;
 global using Discord.WebSocket;
-global using log4net;
 
-using log4net.Config;
-using System.Reflection;
+using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
+using Microsoft.Extensions.DependencyInjection;
+using PlayerCountBot.Configuration;
+using PlayerCountBot.Services;
+using PlayerCountBot.Services.Rcon.ServiceInformation;
+using PlayerCountBot.Services.SteamQuery;
 
-var repository = LogManager.GetRepository(Assembly.GetCallingAssembly());
-var fileInfo = new FileInfo(@"log4net.config");
-XmlConfigurator.Configure(repository, fileInfo);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console(theme: AnsiConsoleTheme.Literate, outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}", restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug, applyThemeToRedirectedOutput: true)
+    .WriteTo.File("logs.txt", Serilog.Events.LogEventLevel.Warning)
+    .CreateLogger();
 
-var tempLogger = LogManager.GetLogger(typeof(Program));
-tempLogger.Info("[Application]:: Starting Controller.");
+Log.Information("[Application] - Starting Player Count Discord Bot.");
 
-var controller = new UpdateController();
-AppDomain.CurrentDomain.ProcessExit += new EventHandler(controller.OnProcessExit!);
+var serviceCollection = new ServiceCollection()
+    .AddSingleton<UpdateController>();
 
-controller.MainAsync().GetAwaiter().GetResult();
+serviceCollection.AddTransient<IConfigurable, StandardConfiguration>();
+serviceCollection.AddTransient<IConfigurable, DockerConfiguration>();
+
+serviceCollection.AddTransient<SteamService>();
+serviceCollection.AddTransient<SteamQueryService>();
+serviceCollection.AddTransient<BattleMetricsService>();
+serviceCollection.AddTransient<CFXService>();
+serviceCollection.AddTransient<MinecraftService>();
+serviceCollection.AddTransient<RconService>();
+
+serviceCollection.AddTransient<IServerInformationProvider, SteamProvider>();
+serviceCollection.AddTransient<IServerInformationProvider, CFXProvider>();
+serviceCollection.AddTransient<IServerInformationProvider, MinecraftProvider>();
+serviceCollection.AddTransient<IServerInformationProvider, BattleMetricsProvider>();
+serviceCollection.AddTransient<IServerInformationProvider, RconProvider>();
+serviceCollection.AddTransient<IServerInformationProvider, SteamQueryProvider>();
+
+serviceCollection.AddTransient<IRconServiceInformation, CSGORconServiceInformation>();
+serviceCollection.AddTransient<IRconServiceInformation, MinecraftRconServiceInformation>();
+serviceCollection.AddTransient<IRconServiceInformation, ArkRconServiceInformation>();
+
+var app = serviceCollection.BuildServiceProvider();
+
+var controller = app.GetRequiredService<UpdateController>();
+await controller.MainAsync();
