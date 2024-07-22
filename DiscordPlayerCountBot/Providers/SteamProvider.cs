@@ -40,7 +40,10 @@ namespace PlayerCountBot.Providers
                     Map = response.map
                 };
 
-                var serverTime = model.Gametype.Split(",")
+                if (!model.Gametype?.Contains(',') ?? false)
+                    return model;
+
+                var serverTime = model.Gametype?.Split(",")
                                     .Where(entry => entry.Contains(':') && entry.Length == 5)
                                     .FirstOrDefault();
 
