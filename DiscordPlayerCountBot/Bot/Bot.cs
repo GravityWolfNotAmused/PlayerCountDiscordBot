@@ -69,7 +69,22 @@ namespace PlayerCountBot
                 Description = $"This will show the player count for the server: {Information.Name}"
             };
 
-            await DiscordClient.CreateGlobalApplicationCommandAsync(globalCommand.Build());
+            try
+            {
+                await DiscordClient.Rest.DeleteAllGlobalCommandsAsync();
+            }catch(Exception ex)
+            {
+                Error("Failed to delete global commands.", Information.Id.ToString(), ex);
+            }
+
+            try
+            {
+                await DiscordClient.CreateGlobalApplicationCommandAsync(globalCommand.Build());
+            }
+            catch (Exception ex)
+            {
+                Error("Failed to apply global commands.", Information.Id.ToString(), ex);
+            }
         }
 
         public async Task StartAsync(bool shouldStart)

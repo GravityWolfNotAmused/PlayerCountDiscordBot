@@ -1,6 +1,4 @@
-﻿using PlayerCountBot.Enums;
-using PlayerCountBot.Exceptions;
-using PlayerCountBot.Services;
+﻿using PlayerCountBot.Exceptions;
 
 namespace PlayerCountBot.Providers
 {
