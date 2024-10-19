@@ -11,6 +11,7 @@ namespace PlayerCountBot
         public readonly BotInformation Information;
         public readonly Dictionary<DataProvider, IServerInformationProvider> DataProviders = new();
         public readonly Dictionary<string, string> ApplicationTokens = new();
+        public string LastKnownStatus = string.Empty;
 
         public Bot(BotInformation info, Dictionary<string, string> applicationTokens, IServiceProvider services)
         {
@@ -25,8 +26,50 @@ namespace PlayerCountBot
                 HandlerTimeout = null
             });
 
+            DiscordClient.Ready += DiscordClient_Ready;
+            DiscordClient.SlashCommandExecuted += DiscordClient_SlashCommandExecuted;
+
+
             DataProviders = services.GetServices<IServerInformationProvider>()
                 .ToDictionary(value => value.GetRequiredProviderType());
+        }
+
+        private async Task DiscordClient_SlashCommandExecuted(SocketSlashCommand command)
+        {
+            // NOTE: I only have logic for one slash command, if I am going to add more functionality.
+            // I will want to create a way to register commands, so people can expand it.
+
+            if (string.IsNullOrEmpty(LastKnownStatus))
+            {
+                await command.RespondAsync("Bot does not have a status to display.");
+                return;
+            }
+
+            var embed = new EmbedBuilder
+            {
+                Title = $"Server: {Information.Name}",
+                Fields = new()
+                {
+                    new()
+                    {
+                        Name = "Players",
+                        Value = LastKnownStatus
+                    }
+                }
+            };
+
+            await command.RespondAsync(embeds: new[] { embed.Build() }, ephemeral: true);
+        }
+
+        private async Task DiscordClient_Ready()
+        {
+            var globalCommand = new SlashCommandBuilder()
+            {
+                Name = "players",
+                Description = $"This will show the player count for the server: {Information.Name}"
+            };
+
+            await DiscordClient.CreateGlobalApplicationCommandAsync(globalCommand.Build());
         }
 
         public async Task StartAsync(bool shouldStart)
@@ -74,10 +117,10 @@ namespace PlayerCountBot
                 return;
             }
 
-            var gameStatus = serverInformation.ReplaceTagsWithValues(Information.StatusFormat, Information.UseNameAsLabel, Information.Name);
+            LastKnownStatus = serverInformation.ReplaceTagsWithValues(Information.StatusFormat, Information.UseNameAsLabel, Information.Name);
 
-            await DiscordClient.SetGameAsync(gameStatus, null, (ActivityType)activityInteger);
-            await DiscordClient.SetChannelName(Information.ChannelID, gameStatus);
+            await DiscordClient.SetGameAsync(LastKnownStatus, null, (ActivityType)activityInteger);
+            await DiscordClient.SetChannelName(Information.ChannelID, LastKnownStatus);
         }
     }
 }
