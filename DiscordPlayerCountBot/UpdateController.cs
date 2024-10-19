@@ -68,13 +68,13 @@ namespace PlayerCountBot
                     if (ex is OperationCanceledException canceledException)
                     {
                         Warn($"Discord host connection was closed. Resetting connection.", bot.Information.Id.ToString());
-                        return;
+                        continue;
                     }
 
                     if (ex is WebSocketException socketException)
                     {
                         Warn($"Web socket was found to be in a invalid state.", bot.Information.Id.ToString());
-                        return;
+                        continue;
                     }
 
                     Error($"Please send crash log to https://discord.gg/FPXdPjcX27.", bot.Information.Id.ToString(), ex);
