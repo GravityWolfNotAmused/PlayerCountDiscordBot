@@ -26,7 +26,7 @@
             }
 
             var type = GetType();
-            var properties = type.GetProperties().ToList();
+            var properties = type.GetProperties();
 
             foreach (var property in properties)
             {
@@ -41,7 +41,7 @@
                         continue;
                     }
 
-                    status = status.Replace(tag, value?.ToString());
+                    status = status.Replace(tag, value?.ToString() ?? "");
                 }
             }
 
