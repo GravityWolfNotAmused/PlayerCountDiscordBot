@@ -1,6 +1,5 @@
 global using Xunit;
 
-global using PlayerCountBot;
-global using PlayerCountBot.Configuration;
-global using PlayerCountBot.Extensions;
-global using PlayerCountBot.Json;
+global using DiscordPlayerCountBot.Configuration;
+global using DiscordPlayerCountBot.Extensions;
+global using DiscordPlayerCountBot.Json;
