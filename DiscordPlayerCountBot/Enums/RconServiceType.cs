@@ -1,9 +1,8 @@
-﻿namespace PlayerCountBot.Enums
+﻿namespace DiscordPlayerCountBot.Enums;
+
+public enum RconServiceType
 {
-    public enum RconServiceType
-    {
-        CSGO,
-        Minecraft,
-        Ark
-    }
+    CSGO,
+    Minecraft,
+    Ark
 }

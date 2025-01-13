@@ -1,17 +1,16 @@
-﻿namespace PlayerCountBot
+﻿namespace DiscordPlayerCountBot.Data.Steam;
+
+public class SteamServerListResponse
 {
-    public class SteamServerListResponse
+    public SteamServerListSubClass response { get; }
+
+    public SteamServerListResponse()
     {
-        public SteamServerListSubClass response { get; }
+        response = new SteamServerListSubClass();
+    }
 
-        public SteamServerListResponse()
-        {
-            response = new SteamServerListSubClass();
-        }
-
-        public SteamApiResponseData? GetServerDataByPort(int port)
-        {
-            return response.GetAddressDataByPort(port);
-        }
+    public SteamApiResponseData? GetServerDataByPort(int port)
+    {
+        return response.GetAddressDataByPort(port);
     }
 }

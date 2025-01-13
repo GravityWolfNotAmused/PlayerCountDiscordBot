@@ -1,7 +1,8 @@
-﻿namespace PlayerCountBot.Services
+﻿using DiscordPlayerCountBot.Data.Steam;
+
+namespace DiscordPlayerCountBot.Services;
+
+public interface ISteamService
 {
-    public interface ISteamService
-    {
-        public Task<SteamApiResponseData?> GetSteamApiResponse(string address, int port, string token);
-    }
+    public Task<SteamApiResponseData?> GetSteamApiResponse(string address, int port, string token);
 }

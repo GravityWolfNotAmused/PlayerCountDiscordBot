@@ -1,46 +1,47 @@
-﻿namespace PlayerCountBot.Http
+﻿using DiscordPlayerCountBot.Attributes;
+
+namespace DiscordPlayerCountBot.Http.QueryParams.Base;
+
+public class QueryParameterBuilder : IQueryParameterBuilder
 {
-    public class QueryParameterBuilder : IQueryParameterBuilder
+    public virtual string CreateQueryParameterString()
     {
-        public virtual string CreateQueryParameterString()
+        var type = GetType();
+        var properties = type.GetProperties();
+        var queryString = string.Empty;
+        var isFirstParameter = true;
+
+        foreach (var property in properties.Reverse())
         {
-            var type = GetType();
-            var properties = type.GetProperties();
-            var queryString = string.Empty;
-            var isFirstParameter = true;
+            var value = property.GetValue(this);
 
-            foreach (var property in properties.Reverse())
+            if (value == null) continue;
+
+            if (!isFirstParameter)
             {
-                var value = property.GetValue(this);
-
-                if (value == null) continue;
-
-                if (!isFirstParameter)
-                {
-                    queryString += "&";
-                }
-
-                if (isFirstParameter)
-                {
-                    queryString += "?";
-                    isFirstParameter = false;
-                }
-
-                if (value != null)
-                {
-                    var nameAttribute = property.CustomAttributes.Where(attribute => attribute.AttributeType == typeof(NameAttribute)).FirstOrDefault();
-
-                    if (nameAttribute != null)
-                    {
-                        queryString += $"{nameAttribute.ConstructorArguments[0].Value?.ToString()}={value}";
-                        continue;
-                    }
-
-                    queryString += $"{property.Name}={value}";
-                }
+                queryString += "&";
             }
 
-            return queryString;
+            if (isFirstParameter)
+            {
+                queryString += "?";
+                isFirstParameter = false;
+            }
+
+            if (value != null)
+            {
+                var nameAttribute = property.CustomAttributes.Where(attribute => attribute.AttributeType == typeof(NameAttribute)).FirstOrDefault();
+
+                if (nameAttribute != null)
+                {
+                    queryString += $"{nameAttribute.ConstructorArguments[0].Value?.ToString()}={value}";
+                    continue;
+                }
+
+                queryString += $"{property.Name}={value}";
+            }
         }
+
+        return queryString;
     }
 }

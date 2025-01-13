@@ -1,7 +1,8 @@
-﻿namespace PlayerCountBot.Services
+﻿using DiscordPlayerCountBot.Data.Scum;
+
+namespace DiscordPlayerCountBot.Services;
+
+public interface IScumService
 {
-    public interface IScumService
-    {
-        public Task<ScumProviderResponse?> GetPlayerInformationAsync(string address, int port);
-    }
+    public Task<ScumProviderResponse?> GetPlayerInformationAsync(string address, int port);
 }

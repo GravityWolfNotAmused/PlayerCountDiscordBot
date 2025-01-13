@@ -1,9 +1,9 @@
-﻿using PlayerCountBot.Enums;
+﻿using DiscordPlayerCountBot.Enums;
+using DiscordPlayerCountBot.ViewModels;
 
-namespace PlayerCountBot.Services
+namespace DiscordPlayerCountBot.Services;
+
+public interface IRconService
 {
-    public interface IRconService
-    {
-        public Task<BaseViewModel> GetRconResponse(string address, int port, string authorizationToken, RconServiceType serviceType);
-    }
+    public Task<BaseViewModel> GetRconResponse(string address, int port, string authorizationToken, RconServiceType serviceType);
 }

@@ -1,10 +1,9 @@
-﻿namespace PlayerCountBot.ViewModels
+﻿namespace DiscordPlayerCountBot.ViewModels.Steam;
+
+public class SteamViewModel : BaseViewModel
 {
-    public class SteamViewModel : BaseViewModel
-    {
-        public string Map { get; set; }
-        public string? Gametype { get; set; }
-        public string Time { get; set; }
-        public string SunMoon { get; set; }
-    }
+    public string Map { get; set; }
+    public string? Gametype { get; set; }
+    public string Time { get; set; }
+    public string SunMoon { get; set; }
 }

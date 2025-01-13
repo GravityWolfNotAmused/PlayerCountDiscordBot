@@ -1,53 +1,50 @@
-﻿using PlayerCountBot.Exceptions;
+﻿using DiscordPlayerCountBot.Attributes;
+using DiscordPlayerCountBot.Bot;
+using DiscordPlayerCountBot.Enums;
+using DiscordPlayerCountBot.Exceptions;
+using DiscordPlayerCountBot.Providers.Base;
+using DiscordPlayerCountBot.Services.Rcon;
+using DiscordPlayerCountBot.ViewModels;
 
-namespace PlayerCountBot.Providers
+namespace DiscordPlayerCountBot.Providers;
+
+[Name("Rcon")]
+public class RconProvider(RconService service) : ServerInformationProvider
 {
-    [Name("Rcon")]
-    public class RconProvider : ServerInformationProvider
+    public override DataProvider GetRequiredProviderType()
     {
-        private readonly RconService Service;
+        return DataProvider.RCONCLIENT;
+    }
 
-        public RconProvider(RconService service)
+    public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
+    {
+        var values = $"Valid Values: {string.Join(",", Enum.GetNames<RconServiceType>())}";
+
+        if (information.RconServiceName == null)
         {
-            Service = service;
+            throw new ConfigurationException($"Bot: {information.Name} must have RconServiceName specified in it's config. {values}");
         }
 
-        public override DataProvider GetRequiredProviderType()
+        if (!Enum.TryParse<RconServiceType>(information.RconServiceName, true, out var serviceType))
         {
-            return DataProvider.RCONCLIENT;
+            throw new ConfigurationException($"Bot: {information.Name} has an invalid RconServiceName specified in it's config. {values}");
         }
 
-        public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
+        try
         {
-            var values = $"Valid Values: {string.Join(",", Enum.GetNames<RconServiceType>())}";
+            var addressAndPort = information.GetAddressAndPort();
 
-            if (information.RconServiceName == null)
-            {
-                throw new ConfigurationException($"Bot: {information.Name} must have RconServiceName specified in it's config. {values}");
-            }
+            var response = await service.GetRconResponse(addressAndPort.Item1, addressAndPort.Item2, applicationVariables["RconPassword"], serviceType)
+                ?? throw new ApplicationException($"Server Address: {information.Address} was not found in Steam's directory.");
 
-            if (!Enum.TryParse<RconServiceType>(information.RconServiceName, true, out var serviceType))
-            {
-                throw new ConfigurationException($"Bot: {information.Name} has an invalid RconServiceName specified in it's config. {values}");
-            }
+            HandleLastException(information);
 
-            try
-            {
-                var addressAndPort = information.GetAddressAndPort();
-                var response = await Service.GetRconResponse(addressAndPort.Item1, addressAndPort.Item2, applicationVariables["RconPassword"], serviceType);
-
-                if (response == null)
-                    throw new ApplicationException($"Server Address: {information.Address} was not found in Steam's directory.");
-
-                HandleLastException(information);
-
-                return response;
-            }
-            catch (Exception e)
-            {
-                HandleException(e);
-                return null;
-            }
+            return response;
+        }
+        catch (Exception e)
+        {
+            HandleException(e);
+            return null;
         }
     }
 }

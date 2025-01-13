@@ -1,88 +1,76 @@
-﻿using DiscordPlayerCountBot.EnvironmentParser.Base;
+﻿using DiscordPlayerCountBot.Bot;
+using DiscordPlayerCountBot.Attributes;
+using DiscordPlayerCountBot.EnvironmentParser;
+using DiscordPlayerCountBot.Configuration.Base;
+
 using Microsoft.Extensions.DependencyInjection;
+using DiscordPlayerCountBot.Enums;
+using DiscordPlayerCountBot.Providers.Base;
 
-namespace PlayerCountBot.Configuration
+namespace DiscordPlayerCountBot.Configuration;
+
+[Name("Docker Configuration")]
+public class DockerConfiguration(IServiceProvider services) : LoggableClass, IConfigurable
 {
-    [Name("Docker Configuration")]
-    public class DockerConfiguration : LoggableClass, IConfigurable
+    public async Task<Tuple<Dictionary<string, Bot.Bot>, int>> Configure(bool shouldStart = true)
     {
-        public IServiceProvider Services { get; set; }
+        EnvironmentHelper.ValidateVariables();
 
-        public DockerConfiguration(IServiceProvider services)
+        var parser = services.GetRequiredService<EnvironmentParserResolver>();
+        var dataProviders = services.GetServices<IServerInformationProvider>()
+            .ToDictionary(value => value.GetRequiredProviderType());
+
+        var bots = new Dictionary<string, Bot.Bot>();
+        Info("[Docker Configuration] - Loading Docker Config.");
+
+        var botNames = parser.ParseVariable<IEnumerable<string>>("BOT_NAMES");
+        var botAddresses = parser.ParseVariable<IEnumerable<string>>("BOT_PUBADDRESSES");
+        var botPorts = parser.ParseVariable<IEnumerable<int>>("BOT_PORTS");
+        var botTokens = parser.ParseVariable<IEnumerable<string>>("BOT_DISCORD_TOKENS");
+        var botStatuses = parser.ParseVariable<IEnumerable<int>>("BOT_STATUSES");
+        var botTags = parser.ParseVariable<IEnumerable<bool>>("BOT_USENAMETAGS");
+        var providerTypes = parser.ParseVariable<IEnumerable<int>>("BOT_PROVIDERTYPES");
+        var statusFormats = parser.ParseVariable<IEnumerable<string?>>("BOT_STATUSFORMATS");
+        var applicationTokens = parser.ParseVariable<Dictionary<string, string>>("BOT_APPLICATION_VARIABLES");
+        var channelIds = parser.ParseVariable<IEnumerable<ulong?>>("BOT_CHANNELIDS");
+        var updateTime = parser.ParseVariable<int>("BOT_UPDATE_TIME");
+
+        var index = 0;
+
+        foreach (var botName in botNames)
         {
-            Services = services;
-        }
+            var address = botAddresses.ElementAtOrDefault(index);
+            var port = botPorts.ElementAtOrDefault(index);
+            var token = botTokens.ElementAtOrDefault(index) ?? throw new ApplicationException("Missing bot token.");
+            var status = botStatuses.ElementAtOrDefault(index);
+            var statusFormat = statusFormats.ElementAtOrDefault(index);
+            var nameAsLabel = botTags.ElementAtOrDefault(index);
+            var channelID = channelIds.ElementAtOrDefault(index);
+            var provider = EnumHelper.GetDataProvider(providerTypes.ElementAtOrDefault(index));
 
-        private static T ParseVariable<T>(Dictionary<string, IEnvironmentParser> parsers, string key)
-        {
-            if (!parsers.ContainsKey(key))
-                throw new KeyNotFoundException($"Missing environment parser for: {key}");
-
-            EnvironmentParserBase<T> parser = (EnvironmentParserBase<T>) parsers[key];
-
-            return parser.ParseTyped(Environment.GetEnvironmentVariable(key));
-        }
-
-        public async Task<Tuple<Dictionary<string, Bot>, int>> Configure(bool shouldStart = true)
-        {
-            EnvironmentHelper.ValidateVariables();
-            var bots = new Dictionary<string, Bot>();
-            Info("[Docker Configuration] - Loading Docker Config.");
-
-            var parsers = Services.GetServices<IEnvironmentParser>()
-                .ToDictionary(parser => parser.GetKey());
-
-            if (!parsers.Any()) throw new Exception("No parsers found for Docker Configuration.");
-
-            var botNames = ParseVariable<IEnumerable<string>>(parsers, "BOT_NAMES");
-            var botAddresses = ParseVariable<IEnumerable<string>>(parsers, "BOT_PUBADDRESSES");
-            var botPorts = ParseVariable<IEnumerable<int>>(parsers, "BOT_PORTS");
-            var botTokens = ParseVariable<IEnumerable<string>>(parsers, "BOT_DISCORD_TOKENS");
-            var botStatuses = ParseVariable<IEnumerable<int>>(parsers, "BOT_STATUSES");
-            var botTags = ParseVariable<IEnumerable<bool>>(parsers, "BOT_USENAMETAGS");
-            var providerTypes = ParseVariable<IEnumerable<int>>(parsers, "BOT_PROVIDERTYPES");
-            var statusFormats = ParseVariable<IEnumerable<string?>>(parsers, "BOT_STATUSFORMATS");
-            var applicationTokens = ParseVariable<Dictionary<string, string>>(parsers, "BOT_APPLICATION_VARIABLES");
-            var channelIds = ParseVariable<IEnumerable<ulong?>>(parsers, "BOT_CHANNELIDS");
-            var updateTime = ParseVariable<int>(parsers, "BOT_UPDATE_TIME");
-
-            var index = 0;
-
-            foreach (var botName in botNames)
+            var info = new BotInformation()
             {
-                var address = botAddresses.ElementAtOrDefault(index);
-                var port = botPorts.ElementAtOrDefault(index);
-                var token = botTokens.ElementAtOrDefault(index) ?? throw new ApplicationException("Missing bot token.");
-                var status = botStatuses.ElementAtOrDefault(index);
-                var statusFormat = statusFormats.ElementAtOrDefault(index);
-                var nameAsLabel = botTags.ElementAtOrDefault(index);
-                var channelID = channelIds.ElementAtOrDefault(index);
-                var provider = EnumHelper.GetDataProvider(providerTypes.ElementAtOrDefault(index));
+                Name = botName,
+                Address = string.Format("{0}:{1}", address, port),
+                Token = token,
+                Status = status,
+                StatusFormat = statusFormat,
+                UseNameAsLabel = nameAsLabel,
+                ChannelID = channelID,
+                ProviderType = provider
+            };
 
-                var info = new BotInformation()
-                {
-                    Name = botName,
-                    Address = string.Format("{0}:{1}", address, port),
-                    Token = token,
-                    Status = status,
-                    StatusFormat = statusFormat,
-                    UseNameAsLabel = nameAsLabel,
-                    ChannelID = channelID,
-                    ProviderType = provider
-                };
-
-                var bot = new Bot(info, applicationTokens, Services);
-                await bot.StartAsync(shouldStart);
-                bots.Add(bot.Information.Id.ToString(), bot);
-                index++;
-            }
-
-            return new Tuple<Dictionary<string, Bot>, int>(bots, updateTime);
+            var bot = new Bot.Bot(info, applicationTokens, dataProviders);
+            await bot.StartAsync(shouldStart);
+            bots.Add(bot.Information.Id.ToString(), bot);
+            index++;
         }
 
-        public HostEnvironment GetRequiredEnvironment()
-        {
-            return HostEnvironment.DOCKER;
-        }
+        return new Tuple<Dictionary<string, Bot.Bot>, int>(bots, updateTime);
+    }
+
+    public HostEnvironment GetRequiredEnvironment()
+    {
+        return HostEnvironment.DOCKER;
     }
 }

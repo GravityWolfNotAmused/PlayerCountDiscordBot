@@ -1,8 +1,7 @@
-﻿namespace DiscordPlayerCountBot.EnvironmentParser.Base
+﻿namespace DiscordPlayerCountBot.EnvironmentParser.Base;
+
+public interface IEnvironmentParser
 {
-    public interface IEnvironmentParser
-    {
-        object Parse(string? environmentVariable);
-        string GetKey();
-    }
+    object Parse(string? environmentVariable);
+    string GetKey();
 }

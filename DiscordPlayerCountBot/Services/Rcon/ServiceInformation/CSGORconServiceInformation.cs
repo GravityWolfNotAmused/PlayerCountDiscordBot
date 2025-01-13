@@ -1,23 +1,22 @@
-﻿using PlayerCountBot.Enums;
-using PlayerCountBot.Services.Praser;
+﻿using DiscordPlayerCountBot.Enums;
+using DiscordPlayerCountBot.Services.Rcon.Praser;
 
-namespace PlayerCountBot.Services.Rcon.ServiceInformation
+namespace DiscordPlayerCountBot.Services.Rcon.ServiceInformation;
+
+public class CSGORconServiceInformation : IRconServiceInformation
 {
-    public class CSGORconServiceInformation : IRconServiceInformation
+    public IRconInformationParser GetParser()
     {
-        public IRconInformationParser GetParser()
-        {
-            return new CSGOInformationParser();
-        }
+        return new CSGOInformationParser();
+    }
 
-        public RconServiceType GetServiceType()
-        {
-            return RconServiceType.CSGO;
-        }
+    public RconServiceType GetServiceType()
+    {
+        return RconServiceType.CSGO;
+    }
 
-        public string GetPlayerListCommand()
-        {
-            return "status";
-        }
+    public string GetPlayerListCommand()
+    {
+        return "status";
     }
 }

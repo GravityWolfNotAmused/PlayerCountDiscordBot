@@ -1,7 +1,8 @@
-﻿namespace PlayerCountBot.Services
+﻿using DiscordPlayerCountBot.Data.BattleMetrics;
+
+namespace DiscordPlayerCountBot.Services;
+
+public interface IBattleMetricsService
 {
-    public interface IBattleMetricsService
-    {
-        public Task<BattleMetricsServerData?> GetPlayerInformationAsync(string address, string token);
-    }
+    public Task<BattleMetricsServerData?> GetPlayerInformationAsync(string address, string token);
 }

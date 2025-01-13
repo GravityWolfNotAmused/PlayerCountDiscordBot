@@ -1,3 +1,4 @@
+using DiscordPlayerCountBot.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using EnvironmentHelper = DiscordPlayerCountBot.Tests.Environment.EnvironmentHelper;
 
@@ -12,7 +13,7 @@ public class DockerConfigurationTests
     {
         EnvironmentHelper.SetTestEnvironmentWithAllVariables();
 
-        var bots = new Dictionary<string, Bot>();
+        var bots = new Dictionary<string, Bot.Bot>();
         var time = -1;
 
         var serviceProvider = new ServiceCollection()
@@ -60,7 +61,7 @@ public class DockerConfigurationTests
     {
         EnvironmentHelper.SetTestEnvironmentWithoutBattleMetrics();
 
-        var bots = new Dictionary<string, Bot>();
+        var bots = new Dictionary<string, Bot.Bot>();
         var time = -1;
 
         var services = new ServiceCollection()
@@ -86,7 +87,7 @@ public class DockerConfigurationTests
     {
         EnvironmentHelper.SetTestEnvironmentWithoutApplicationVariables();
 
-        var bots = new Dictionary<string, Bot>();
+        var bots = new Dictionary<string, Bot.Bot>();
         var time = -1;
 
         var services = new ServiceCollection()
@@ -110,7 +111,7 @@ public class DockerConfigurationTests
     {
         EnvironmentHelper.SetTestEnvironmentWithoutSteam();
 
-        var bots = new Dictionary<string, Bot>();
+        var bots = new Dictionary<string, Bot.Bot>();
         var time = -1;
 
         var services = new ServiceCollection()

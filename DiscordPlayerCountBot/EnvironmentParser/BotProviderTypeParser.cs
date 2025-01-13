@@ -1,13 +1,13 @@
 ﻿using DiscordPlayerCountBot.EnvironmentParser.Base;
 
-namespace DiscordPlayerCountBot.EnvironmentParser
+namespace DiscordPlayerCountBot.EnvironmentParser;
+
+public class BotProviderTypeParser : EnvironmentParserBase<IEnumerable<int>>
 {
-    public class BotProviderTypeParser : EnvironmentParserBase<IEnumerable<int>>
+    public override string GetKey() => "BOT_PROVIDERTYPES";
+    public override IEnumerable<int> ParseTyped(string? environmentVariable)
     {
-        public override string GetKey() => "BOT_PROVIDERTYPES";
-        public override IEnumerable<int> ParseTyped(string? environmentVariable)
-        {
-            return environmentVariable?.Split(";").Select(int.Parse) ?? Enumerable.Empty<int>();
-        }
+        return environmentVariable?.Split(";")
+            .Select(int.Parse) ?? [];
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace PlayerCountBot.Enums
+﻿namespace DiscordPlayerCountBot.Enums;
+
+public enum HostEnvironment
 {
-    public enum HostEnvironment
-    {
-        STANDARD,
-        DOCKER
-    }
+    STANDARD,
+    DOCKER
 }
