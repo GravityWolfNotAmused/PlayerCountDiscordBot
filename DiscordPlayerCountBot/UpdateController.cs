@@ -22,7 +22,7 @@ namespace PlayerCountBot
 
             HostingEnvironments = services.GetServices<IConfigurable>()
                                           .ToDictionary(value => value.GetRequiredEnvironment());
-
+            
             try
             {
                 var IsDocker = Environment.GetEnvironmentVariable("ISDOCKER") != null && bool.Parse(Environment.GetEnvironmentVariable("ISDOCKER") ?? "false");

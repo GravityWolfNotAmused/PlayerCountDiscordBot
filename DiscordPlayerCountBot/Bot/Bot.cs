@@ -121,10 +121,9 @@ namespace PlayerCountBot
 
             var dataProviderType = (DataProvider)dataProviderInt;
 
-            if (!DataProviders.ContainsKey(dataProviderType))
+            if (!DataProviders.TryGetValue(dataProviderType, out IServerInformationProvider? dataProvider))
                 throw new Exception($"Missing Data Provider for Type: {dataProviderType}");
 
-            var dataProvider = DataProviders[dataProviderType];
             var serverInformation = await dataProvider.GetServerInformation(Information, ApplicationTokens);
 
             if (serverInformation == null)

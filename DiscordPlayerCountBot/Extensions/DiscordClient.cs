@@ -16,12 +16,8 @@
         {
             if (channelId == null) return;
 
-            IGuildChannel channel = (IGuildChannel)await socket.GetChannelAsync(channelId.Value);
-
-            if (channel is null)
-            {
-                throw new ArgumentException($"[Bot] - Invalid Channel Id: {channelId}, Channel was not found.");
-            }
+            IGuildChannel channel = (IGuildChannel)await socket.GetChannelAsync(channelId.Value)
+                ?? throw new ArgumentException($"[Bot] - Invalid Channel Id: {channelId}, Channel was not found.");
 
             /*
             * Keep in mind there is a massive rate limit on this call that is specific to discord, and not Discord.Net
@@ -30,15 +26,15 @@
             * https://www.reddit.com/r/Discord_Bots/comments/qzrl5h/channel_name_edit_rate_limit/
             */
 
-            if (channel != null)
-            {
-                if (channel is ITextChannel && channel is not IVoiceChannel)
-                {
-                    gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
-                }
+            if (channel == null)
+                return;
 
-                await channel.ModifyAsync(prop => prop.Name = gameStatus);
+            if (channel is ITextChannel && channel is not IVoiceChannel)
+            {
+                gameStatus = gameStatus.Replace('/', '-').Replace(' ', '-').Replace(':', '-');
             }
+
+            await channel.ModifyAsync(prop => prop.Name = gameStatus);
         }
     }
 }

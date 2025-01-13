@@ -2,7 +2,7 @@
 {
     public static class EnvironmentHelper
     {
-        public static Tuple<bool, List<string>> ValidateVariables()
+        public static void ValidateVariables()
         {
             var variables = Environment.GetEnvironmentVariables();
             var requiredVariableNames = new List<string>() { "BOT_NAMES", "BOT_PUBADDRESSES", "BOT_PORTS", "BOT_DISCORD_TOKENS", "BOT_STATUSES", "BOT_USENAMETAGS", "BOT_PROVIDERTYPES" };
@@ -20,7 +20,9 @@
                 return containsVariable;
             });
 
-            return new(hasAllRequiredVariables, listOfMissingVariableNames);
+            if (!hasAllRequiredVariables)
+                throw new ApplicationException($"Missing required variable(s) from docker configuration. {string.Join(',', listOfMissingVariableNames)}");
+
         }
     }
 }

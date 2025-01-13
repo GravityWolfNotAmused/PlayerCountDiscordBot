@@ -19,12 +19,13 @@ using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using Microsoft.Extensions.DependencyInjection;
 using PlayerCountBot.Configuration;
-using PlayerCountBot.Services;
 using PlayerCountBot.Services.Rcon.ServiceInformation;
 using PlayerCountBot.Services.SteamQuery;
+using DiscordPlayerCountBot.EnvironmentParser.Base;
+using DiscordPlayerCountBot.EnvironmentParser;
 
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console(theme: AnsiConsoleTheme.Literate, outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}", restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug, applyThemeToRedirectedOutput: true)
+    .WriteTo.Console(theme: AnsiConsoleTheme.Literate, outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u3}] {Message:lj}{NewLine}{Exception}", restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug, applyThemeToRedirectedOutput: true)
     .WriteTo.File("logs.txt", Serilog.Events.LogEventLevel.Warning)
     .CreateLogger();
 
@@ -35,6 +36,18 @@ var serviceCollection = new ServiceCollection()
 
 serviceCollection.AddTransient<IConfigurable, StandardConfiguration>();
 serviceCollection.AddTransient<IConfigurable, DockerConfiguration>();
+
+serviceCollection.AddSingleton<IEnvironmentParser, BotNameParser>();
+serviceCollection.AddSingleton<IEnvironmentParser, BotAddressParser>();
+serviceCollection.AddSingleton<IEnvironmentParser, BotPortParser>();
+serviceCollection.AddSingleton<IEnvironmentParser, BotTokenParser>();
+serviceCollection.AddSingleton<IEnvironmentParser, BotStatusParser>();
+serviceCollection.AddSingleton<IEnvironmentParser, BotTagParser>();
+serviceCollection.AddSingleton<IEnvironmentParser, BotProviderTypeParser>();
+serviceCollection.AddSingleton<IEnvironmentParser, BotStatusFormatParser>();
+serviceCollection.AddSingleton<IEnvironmentParser, BotApplicationVariableParser>();
+serviceCollection.AddSingleton<IEnvironmentParser, BotChannelIdParser>();
+serviceCollection.AddSingleton<IEnvironmentParser, BotUpdateTimeParser>();
 
 serviceCollection.AddTransient<SteamService>();
 serviceCollection.AddTransient<SteamQueryService>();
