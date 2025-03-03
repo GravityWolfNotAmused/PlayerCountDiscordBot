@@ -62,6 +62,7 @@ serviceCollection.AddTransient<IServerInformationProvider, SteamQueryProvider>()
 serviceCollection.AddTransient<IRconServiceInformation, CSGORconServiceInformation>();
 serviceCollection.AddTransient<IRconServiceInformation, MinecraftRconServiceInformation>();
 serviceCollection.AddTransient<IRconServiceInformation, ArkRconServiceInformation>();
+serviceCollection.AddSingleton<EnvironmentParserResolver>();
 
 var app = serviceCollection.BuildServiceProvider();
 

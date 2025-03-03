@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DiscordPlayerCountBot.EnvironmentParser;
 
-public class EnvironmentParserResolver(ServiceProvider services)
+public class EnvironmentParserResolver(IServiceProvider services)
 {
     private readonly Dictionary<string, IEnvironmentParser> _environmentParsers = 
         services.GetServices<IEnvironmentParser>().ToDictionary(entry => entry.GetKey());
