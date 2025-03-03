@@ -21,7 +21,7 @@ public class BattleMetricsProvider(BattleMetricsService service) : ServerInforma
         try
         {
             var addressAndPort = information.GetAddressAndPort();
-            
+
             var server = await service.GetPlayerInformationAsync(addressAndPort.Item1, applicationVariables["BattleMetricsKey"])
                 ?? throw new ApplicationException("Server cannot be null. Is your server offline?");
 

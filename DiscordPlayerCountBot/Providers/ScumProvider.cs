@@ -23,7 +23,7 @@ public class ScumProvider : ServerInformationProvider
 
         try
         {
-            var apiResponse = await service.GetPlayerInformationAsync(addressAndPort.Item1, addressAndPort.Item2) 
+            var apiResponse = await service.GetPlayerInformationAsync(addressAndPort.Item1, addressAndPort.Item2)
                 ?? throw new ApplicationException("Response cannot be null.");
 
             if (apiResponse.Servers == 0)

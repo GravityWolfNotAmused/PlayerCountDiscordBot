@@ -5,7 +5,7 @@ namespace DiscordPlayerCountBot.EnvironmentParser;
 
 public class EnvironmentParserResolver(IServiceProvider services)
 {
-    private readonly Dictionary<string, IEnvironmentParser> _environmentParsers = 
+    private readonly Dictionary<string, IEnvironmentParser> _environmentParsers =
         services.GetServices<IEnvironmentParser>().ToDictionary(entry => entry.GetKey());
 
     public IEnvironmentParser GetEnvironmentParser(string variableName)
@@ -20,7 +20,7 @@ public class EnvironmentParserResolver(IServiceProvider services)
 
     public T ParseVariable<T>(string variableName)
     {
-        var parser = (EnvironmentParserBase<T>) GetEnvironmentParser(variableName);
+        var parser = (EnvironmentParserBase<T>)GetEnvironmentParser(variableName);
 
         return parser.ParseTyped(Environment.GetEnvironmentVariable(variableName));
     }
