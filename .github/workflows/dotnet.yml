@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Get current date
       id: date
       run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
@@ -19,7 +19,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 9.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -32,4 +32,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: playercountbot-${{ steps.branch-name.outputs.current_branch }}-${{steps.date.outputs.date}}
-        path: ./DiscordPlayerCountBot/bin/Release/net6.0/win-x64/publish 
+        path: ./DiscordPlayerCountBot/bin/Release/net9.0/win-x64/publish 

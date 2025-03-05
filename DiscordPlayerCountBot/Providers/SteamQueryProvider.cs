@@ -1,43 +1,40 @@
-﻿using PlayerCountBot.Services.SteamQuery;
+﻿using DiscordPlayerCountBot.Attributes;
+using DiscordPlayerCountBot.Bot;
+using DiscordPlayerCountBot.Enums;
+using DiscordPlayerCountBot.Providers.Base;
+using DiscordPlayerCountBot.Services.SteamQuery;
+using DiscordPlayerCountBot.ViewModels;
 
-namespace PlayerCountBot.Providers
+namespace DiscordPlayerCountBot.Providers;
+
+[Name("Steam Query")]
+public class SteamQueryProvider(SteamQueryService service) : ServerInformationProvider
 {
-    [Name("Steam Query")]
-    public class SteamQueryProvider : ServerInformationProvider
+    public override DataProvider GetRequiredProviderType()
     {
-        private readonly SteamQueryService Service;
+        return DataProvider.STEAMQUERY;
+    }
 
-        public SteamQueryProvider(SteamQueryService service)
+    public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
+    {
+        try
         {
-            Service = service;
-        }
+            var addressAndPort = information.GetAddressAndPort();
+            var response = await service.GetQueryResponse(addressAndPort.Item1, addressAndPort.Item2);
 
-        public override DataProvider GetRequiredProviderType()
-        {
-            return DataProvider.STEAMQUERY;
-        }
-
-        public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
-        {
-            try
+            if (response == null)
             {
-                var addressAndPort = information.GetAddressAndPort();
-                var response = await Service.GetQueryResponse(addressAndPort.Item1, addressAndPort.Item2);
-
-                if (response == null)
-                {
-                    throw new ApplicationException($" Failed to get a Server Information response from Steam Query.");
-                }
-
-                HandleLastException(information);
-
-                return response;
+                throw new ApplicationException($" Failed to get a Server Information response from Steam Query.");
             }
-            catch (Exception e)
-            {
-                HandleException(e);
-                return null;
-            }
+
+            HandleLastException(information);
+
+            return response;
+        }
+        catch (Exception e)
+        {
+            HandleException(e);
+            return null;
         }
     }
 }

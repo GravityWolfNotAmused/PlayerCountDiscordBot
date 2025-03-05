@@ -1,70 +1,65 @@
-﻿using System.Net.Http;
+﻿using DiscordPlayerCountBot.Http.QueryParams.Base;
+using DiscordPlayerCountBot.Json;
 using System.Net.Http.Headers;
 
-namespace PlayerCountBot.Http
+namespace DiscordPlayerCountBot.Http;
+
+public class HttpExecuter : IHttpExecuter, IDisposable
 {
-    public class HttpExecuter : IHttpExecuter, IDisposable
+    public readonly HttpClient HttpClient = new();
+
+    public void Dispose()
     {
-        public readonly HttpClient HttpClient;
+        HttpClient?.Dispose();
+        GC.SuppressFinalize(this);
+    }
 
-        public HttpExecuter()
-        {
-            HttpClient = new HttpClient();
-        }
+    public async Task<TResponse?> GET<TRequest, TResponse>(string endPoint, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
+    {
+        return await ExecuteHttpRequest<TRequest, TResponse>(endPoint, HttpMethod.Get, queryBuilder, body, authToken);
+    }
 
-        public void Dispose()
-        {
-            HttpClient?.Dispose();
-            GC.SuppressFinalize(this);
-        }
+    public async Task<TResponse?> POST<TRequest, TResponse>(string endPoint, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
+    {
+        return await ExecuteHttpRequest<TRequest, TResponse>(endPoint, HttpMethod.Post, queryBuilder, body, authToken);
+    }
 
-        public async Task<TResponse?> GET<TRequest, TResponse>(string endPoint, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
-        {
-            return await ExecuteHttpRequest<TRequest, TResponse>(endPoint, HttpMethod.Get, queryBuilder, body, authToken);
-        }
+    public async Task<TResponse?> PATCH<TRequest, TResponse>(string endPoint, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
+    {
+        return await ExecuteHttpRequest<TRequest, TResponse>(endPoint, HttpMethod.Patch, queryBuilder, body, authToken);
+    }
 
-        public async Task<TResponse?> POST<TRequest, TResponse>(string endPoint, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
-        {
-            return await ExecuteHttpRequest<TRequest, TResponse>(endPoint, HttpMethod.Post, queryBuilder, body, authToken);
-        }
+    public async Task<TResponse?> PUT<TRequest, TResponse>(string endPoint, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
+    {
+        return await ExecuteHttpRequest<TRequest, TResponse>(endPoint, HttpMethod.Put, queryBuilder, body, authToken);
+    }
 
-        public async Task<TResponse?> PATCH<TRequest, TResponse>(string endPoint, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
-        {
-            return await ExecuteHttpRequest<TRequest, TResponse>(endPoint, HttpMethod.Patch, queryBuilder, body, authToken);
-        }
+    public async Task<TResponse?> DELETE<TRequest, TResponse>(string endPoint, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
+    {
+        return await ExecuteHttpRequest<TRequest, TResponse>(endPoint, HttpMethod.Delete, queryBuilder, body, authToken);
+    }
 
-        public async Task<TResponse?> PUT<TRequest, TResponse>(string endPoint, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
-        {
-            return await ExecuteHttpRequest<TRequest, TResponse>(endPoint, HttpMethod.Put, queryBuilder, body, authToken);
-        }
+    private async Task<TResponse?> ExecuteHttpRequest<TRequest, TResponse>(string endPoint, HttpMethod method, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
+    {
+        if (HttpClient == null) return default;
 
-        public async Task<TResponse?> DELETE<TRequest, TResponse>(string endPoint, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
-        {
-            return await ExecuteHttpRequest<TRequest, TResponse>(endPoint, HttpMethod.Delete, queryBuilder, body, authToken);
-        }
+        var queryParams = queryBuilder?.CreateQueryParameterString();
+        var fullPath = $"{endPoint}{queryParams}";
 
-        private async Task<TResponse?> ExecuteHttpRequest<TRequest, TResponse>(string endPoint, HttpMethod method, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
-        {
-            if (HttpClient == null) return default;
+        using var request = new HttpRequestMessage(method, fullPath);
 
-            var queryParams = queryBuilder?.CreateQueryParameterString();
-            var fullPath = $"{endPoint}{queryParams}";
+        if (authToken != null)
+            request.Headers.Add(authToken?.Item1!, authToken?.Item2);
 
-            using var request = new HttpRequestMessage(method, fullPath);
+        if (body != null)
+            request.Content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
 
-            if (authToken != null)
-                request.Headers.Add(authToken?.Item1!, authToken?.Item2);
+        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            if (body != null)
-                request.Content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+        var response = await HttpClient.SendAsync(request);
+        response.EnsureSuccessStatusCode();
 
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            var response = await HttpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-
-            var jsonString = await response.Content.ReadAsStringAsync();
-            return JsonHelper.DeserializeObject<TResponse>(jsonString);
-        }
+        var jsonString = await response.Content.ReadAsStringAsync();
+        return JsonHelper.DeserializeObject<TResponse>(jsonString);
     }
 }

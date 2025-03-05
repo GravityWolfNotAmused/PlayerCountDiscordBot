@@ -1,20 +1,19 @@
-﻿namespace PlayerCountBot.Data
+﻿namespace DiscordPlayerCountBot.Data.CFX;
+
+public class CFXPlayerInformation
 {
-    public class CFXPlayerInformation
-    {
-        [JsonProperty("endpoint")]
-        public string Endpoint { get; set; }
+    [JsonProperty("endpoint")]
+    public string Endpoint { get; set; }
 
-        [JsonProperty("id")]
-        public int Id { get; set; }
+    [JsonProperty("id")]
+    public int Id { get; set; }
 
-        [JsonProperty("identifiers")]
-        public List<string> Identifiers { get; set; }
+    [JsonProperty("identifiers")]
+    public List<string> Identifiers { get; set; }
 
-        [JsonProperty("name")]
-        public string Name { get; set; }
+    [JsonProperty("name")]
+    public string Name { get; set; }
 
-        [JsonProperty("ping")]
-        public int Ping { get; set; }
-    }
+    [JsonProperty("ping")]
+    public int Ping { get; set; }
 }

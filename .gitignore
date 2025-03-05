@@ -1,5 +1,6 @@
 DiscordPlayerCountBot/bin/Debug/netcoreapp3.1/Config.json
 DiscordPlayerCountBot/obj/*
+docker-compose-test.yml
 *.suo
 *.user
 _ReSharper.*

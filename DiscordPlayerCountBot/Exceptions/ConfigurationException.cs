@@ -1,10 +1,5 @@
-﻿namespace PlayerCountBot.Exceptions
-{
-    internal class ConfigurationException : Exception
-    {
-        public ConfigurationException(string? message) : base(message)
-        {
+﻿namespace DiscordPlayerCountBot.Exceptions;
 
-        }
-    }
+internal class ConfigurationException(string? message) : Exception(message)
+{
 }

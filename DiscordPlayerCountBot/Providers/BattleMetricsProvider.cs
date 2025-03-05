@@ -1,48 +1,45 @@
-﻿using PlayerCountBot.Extensions;
+﻿using DiscordPlayerCountBot.Attributes;
+using DiscordPlayerCountBot.Bot;
+using DiscordPlayerCountBot.Enums;
+using DiscordPlayerCountBot.Extensions;
+using DiscordPlayerCountBot.Providers.Base;
+using DiscordPlayerCountBot.Services;
+using DiscordPlayerCountBot.ViewModels;
 
-namespace PlayerCountBot.Providers
+namespace DiscordPlayerCountBot.Providers;
+
+[Name("BattleMetrics")]
+public class BattleMetricsProvider(BattleMetricsService service) : ServerInformationProvider
 {
-    [Name("BattleMetrics")]
-    public class BattleMetricsProvider : ServerInformationProvider
+    public override DataProvider GetRequiredProviderType()
     {
-        private readonly BattleMetricsService Service;
+        return DataProvider.BATTLEMETRICS;
+    }
 
-        public BattleMetricsProvider(BattleMetricsService service)
+    public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
+    {
+        try
         {
-            Service = service;
-        }
+            var addressAndPort = information.GetAddressAndPort();
 
-        public override DataProvider GetRequiredProviderType()
-        {
-            return DataProvider.BATTLEMETRICS;
-        }
+            var server = await service.GetPlayerInformationAsync(addressAndPort.Item1, applicationVariables["BattleMetricsKey"])
+                ?? throw new ApplicationException("Server cannot be null. Is your server offline?");
 
-        public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
-        {
-            try
+            HandleLastException(information);
+
+            var model = server.GetViewModel();
+
+            if (model.Time.TryGetSunMoonPhase(information.SunriseHour, information.SunsetHour, out var sunMoon))
             {
-                var addressAndPort = information.GetAddressAndPort();
-                var server = await Service.GetPlayerInformationAsync(addressAndPort.Item1, applicationVariables["BattleMetricsKey"]);
-
-                if (server == null)
-                    throw new ApplicationException("Server cannot be null. Is your server offline?");
-
-                HandleLastException(information);
-
-                var model = server.GetViewModel();
-
-                if (model.Time.TryGetSunMoonPhase(information.SunriseHour, information.SunsetHour, out var sunMoon))
-                {
-                    model.SunMoon = sunMoon;
-                }
-
-                return model;
+                model.SunMoon = sunMoon;
             }
-            catch (Exception e)
-            {
-                HandleException(e, information.Id.ToString());
-                return null;
-            }
+
+            return model;
+        }
+        catch (Exception e)
+        {
+            HandleException(e, information.Id.ToString());
+            return null;
         }
     }
 }

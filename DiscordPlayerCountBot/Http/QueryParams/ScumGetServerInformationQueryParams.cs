@@ -1,11 +1,13 @@
-﻿namespace PlayerCountBot.Http
-{
-    public class ScumGetServerInformationQueryParams : QueryParameterBuilder
-    {
-        [Name("address")]
-        public string Address { get; set; }
+﻿using DiscordPlayerCountBot.Attributes;
+using DiscordPlayerCountBot.Http.QueryParams.Base;
 
-        [Name("port")]
-        public int? Port { get; set; } = null;
-    }
+namespace DiscordPlayerCountBot.Http.QueryParams;
+
+public class ScumGetServerInformationQueryParams : QueryParameterBuilder
+{
+    [Name("address")]
+    public string Address { get; set; }
+
+    [Name("port")]
+    public int? Port { get; set; } = null;
 }
