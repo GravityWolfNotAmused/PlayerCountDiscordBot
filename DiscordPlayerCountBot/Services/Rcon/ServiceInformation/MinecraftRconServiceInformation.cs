@@ -1,23 +1,22 @@
-﻿using PlayerCountBot.Enums;
-using PlayerCountBot.Services.Praser;
+﻿using DiscordPlayerCountBot.Enums;
+using DiscordPlayerCountBot.Services.Rcon.Praser;
 
-namespace PlayerCountBot.Services.Rcon.ServiceInformation
+namespace DiscordPlayerCountBot.Services.Rcon.ServiceInformation;
+
+public class MinecraftRconServiceInformation : IRconServiceInformation
 {
-    public class MinecraftRconServiceInformation : IRconServiceInformation
+    public IRconInformationParser GetParser()
     {
-        public IRconInformationParser GetParser()
-        {
-            return new MinecraftInformationParser();
-        }
+        return new MinecraftInformationParser();
+    }
 
-        public RconServiceType GetServiceType()
-        {
-            return RconServiceType.Minecraft;
-        }
+    public RconServiceType GetServiceType()
+    {
+        return RconServiceType.Minecraft;
+    }
 
-        public string GetPlayerListCommand()
-        {
-            return "list";
-        }
+    public string GetPlayerListCommand()
+    {
+        return "list";
     }
 }

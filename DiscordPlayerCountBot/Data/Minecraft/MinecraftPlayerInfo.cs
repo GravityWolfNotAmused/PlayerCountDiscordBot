@@ -1,13 +1,10 @@
-﻿namespace PlayerCountBot.Data
+﻿namespace DiscordPlayerCountBot.Data.Minecraft;
+
+public class MinecraftPlayerInfo
 {
-    public class MinecraftPlayerInfo
-    {
-        [JsonProperty("online")]
-        public int Online { get; set; }
+    [JsonProperty("online")]
+    public int Online { get; set; }
 
-        [JsonProperty("max")]
-        public int Max { get; set; }
-    }
-
-
+    [JsonProperty("max")]
+    public int Max { get; set; }
 }

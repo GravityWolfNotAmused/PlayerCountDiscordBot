@@ -1,11 +1,13 @@
-﻿namespace PlayerCountBot.Http
-{
-    public class SteamGetServerListQueryParams : QueryParameterBuilder
-    {
-        [Name("key")]
-        public string Key { get; set; }
+﻿using DiscordPlayerCountBot.Attributes;
+using DiscordPlayerCountBot.Http.QueryParams.Base;
 
-        [Name("filter")]
-        public string Filter { get; set; }
-    }
+namespace DiscordPlayerCountBot.Http.QueryParams;
+
+public class SteamGetServerListQueryParams : QueryParameterBuilder
+{
+    [Name("key")]
+    public string Key { get; set; }
+
+    [Name("filter")]
+    public string Filter { get; set; }
 }

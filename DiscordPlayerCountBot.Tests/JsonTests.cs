@@ -1,4 +1,6 @@
-﻿namespace PlayerCountBot.Tests;
+﻿using DiscordPlayerCountBot.Json;
+
+namespace PlayerCountBot.Tests;
 
 [Collection("Json Serialization Test Suite")]
 public class JsonTests

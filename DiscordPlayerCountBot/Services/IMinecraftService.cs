@@ -1,4 +1,6 @@
-﻿namespace PlayerCountBot.Services
+﻿using DiscordPlayerCountBot.Data.Minecraft;
+
+namespace DiscordPlayerCountBot.Services
 {
     public interface IMinecraftService
     {

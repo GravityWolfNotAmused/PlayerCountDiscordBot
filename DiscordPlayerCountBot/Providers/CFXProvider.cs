@@ -1,50 +1,52 @@
-﻿namespace PlayerCountBot.Providers
+﻿using DiscordPlayerCountBot.Attributes;
+using DiscordPlayerCountBot.Bot;
+using DiscordPlayerCountBot.Enums;
+using DiscordPlayerCountBot.Providers.Base;
+using DiscordPlayerCountBot.Services;
+using DiscordPlayerCountBot.ViewModels;
+using DiscordPlayerCountBot.ViewModels.CFX;
+
+namespace DiscordPlayerCountBot.Providers;
+
+[Name("CFX")]
+public class CFXProvider(CFXService service) : ServerInformationProvider
 {
-    [Name("CFX")]
-    public class CFXProvider : ServerInformationProvider
+    public readonly CFXService Service = service;
+
+    public override DataProvider GetRequiredProviderType()
     {
-        public readonly CFXService Service;
+        return DataProvider.CFX;
+    }
 
-        public CFXProvider(CFXService service)
+    public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
+    {
+        try
         {
-            Service = service;
-        }
+            var playerInfo = await Service.GetPlayerInformationAsync(information.Address);
+            var serverInfo = await Service.GetServerInformationAsync(information.Address);
+            var addressAndPort = information.GetAddressAndPort();
 
-        public override DataProvider GetRequiredProviderType()
-        {
-            return DataProvider.CFX;
-        }
+            if (playerInfo is null)
+                throw new ApplicationException("Player Information cannot be null. Is your server offline?");
 
-        public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
-        {
-            try
+            if (serverInfo is null)
+                throw new ApplicationException("Server Information cannot be null. Is your server offline?");
+
+            HandleLastException(information);
+
+            return new CFXViewModel()
             {
-                var playerInfo = await Service.GetPlayerInformationAsync(information.Address);
-                var serverInfo = await Service.GetServerInformationAsync(information.Address);
-                var addressAndPort = information.GetAddressAndPort();
-
-                if (playerInfo == null)
-                    throw new ApplicationException("Player Information cannot be null. Is your server offline?");
-
-                if (serverInfo == null)
-                    throw new ApplicationException("Server Information cannot be null. Is your server offline?");
-
-                HandleLastException(information);
-
-                return new CFXViewModel()
-                {
-                    Address = addressAndPort.Item1,
-                    Players = playerInfo.Count,
-                    MaxPlayers = serverInfo.GetMaxPlayers(),
-                    Port = addressAndPort.Item2,
-                    QueuedPlayers = 0
-                };
-            }
-            catch (Exception e)
-            {
-                HandleException(e, information.Id.ToString());
-                return null;
-            }
+                Address = addressAndPort.Item1,
+                Players = playerInfo.Count,
+                MaxPlayers = serverInfo.GetMaxPlayers(),
+                Port = addressAndPort.Item2,
+                QueuedPlayers = 0
+            };
+        }
+        catch (Exception e)
+        {
+            HandleException(e, information.Id.ToString());
+            return null;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace PlayerCountBot.Tests
+﻿using DiscordPlayerCountBot.Bot;
+
+namespace PlayerCountBot.Tests
 {
     [Collection("Sun & Moon Tag Test Suite")]
     public class SunMoonTagTests
@@ -53,6 +55,9 @@
         {
             var information = new BotInformation()
             {
+                Name = "Test",
+                Address = "127.0.0.1",
+                Token = "",
                 SunriseHour = 1,
                 SunsetHour = 21
             };

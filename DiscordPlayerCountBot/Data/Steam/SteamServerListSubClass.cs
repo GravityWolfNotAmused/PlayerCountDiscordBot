@@ -1,25 +1,24 @@
-﻿namespace PlayerCountBot
+﻿namespace DiscordPlayerCountBot.Data.Steam;
+
+public class SteamServerListSubClass
 {
-    public class SteamServerListSubClass
+    public List<SteamApiResponseData> servers { get; }
+
+    public SteamServerListSubClass()
     {
-        public List<SteamApiResponseData> servers { get; }
+        servers = new List<SteamApiResponseData>();
+    }
 
-        public SteamServerListSubClass()
+    public SteamApiResponseData? GetAddressDataByPort(int port)
+    {
+        foreach (SteamApiResponseData data in servers)
         {
-            servers = new List<SteamApiResponseData>();
-        }
-
-        public SteamApiResponseData? GetAddressDataByPort(int port)
-        {
-            foreach (SteamApiResponseData data in servers)
+            if (int.Parse(data.addr.Split(":")[1]) == port || data.gameport == port)
             {
-                if (int.Parse(data.addr.Split(":")[1]) == port || data.gameport == port)
-                {
-                    return data;
-                }
+                return data;
             }
-
-            return null;
         }
+
+        return null;
     }
 }

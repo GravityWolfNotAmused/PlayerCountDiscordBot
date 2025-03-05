@@ -1,13 +1,12 @@
-﻿namespace PlayerCountBot.Enums
+﻿namespace DiscordPlayerCountBot.Enums;
+
+public enum DataProvider
 {
-    public enum DataProvider
-    {
-        STEAM,
-        CFX,
-        SCUM,
-        MINECRAFT,
-        BATTLEMETRICS,
-        RCONCLIENT,
-        STEAMQUERY
-    }
+    STEAM,
+    CFX,
+    SCUM,
+    MINECRAFT,
+    BATTLEMETRICS,
+    RCONCLIENT,
+    STEAMQUERY
 }

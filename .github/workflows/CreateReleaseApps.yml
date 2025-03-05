@@ -8,7 +8,7 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Get current date
       id: date
       run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
@@ -16,9 +16,9 @@ jobs:
       id: branch-name
       uses: tj-actions/branch-names@v7.0.7 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 9.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -31,34 +31,34 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: playercountbot-${{ steps.branch-name.outputs.current_branch }}-${{steps.date.outputs.date}}
-        path: ./DiscordPlayerCountBot/bin/Release/net6.0/win-x64/publish
+        path: ./DiscordPlayerCountBot/bin/Release/net9.0/win-x64/publish
     - name: Publish x86
       run: dotnet publish -p:PublishSingleFile=true -r win-x86 -c Release --self-contained true -p:PublishTrimmed=true -p:UseAppHost=true    
     - name: Create Artifact x86
       uses: actions/upload-artifact@v3
       with:
         name: playercountbot-${{ steps.branch-name.outputs.current_branch }}-${{steps.date.outputs.date}}-win-x86
-        path: ./DiscordPlayerCountBot/bin/Release/net6.0/win-x86/publish
+        path: ./DiscordPlayerCountBot/bin/Release/net9.0/win-x86/publish
     - name: Publish Arm x86
       run: dotnet publish -p:PublishSingleFile=true -r win-arm -c Release --self-contained true -p:PublishTrimmed=true -p:UseAppHost=true    
     - name: Create Artifact Arm x86
       uses: actions/upload-artifact@v3
       with:
         name: playercountbot-${{ steps.branch-name.outputs.current_branch }}-${{steps.date.outputs.date}}-arm86
-        path: ./DiscordPlayerCountBot/bin/Release/net6.0/win-arm/publish 
+        path: ./DiscordPlayerCountBot/bin/Release/net9.0/win-arm/publish 
     - name: Publish Arm x64
       run: dotnet publish -p:PublishSingleFile=true -r win-arm64 -c Release --self-contained true -p:PublishTrimmed=true -p:UseAppHost=true
     - name: Create Artifact Arm x64
       uses: actions/upload-artifact@v3
       with:
         name: playercountbot-${{ steps.branch-name.outputs.current_branch }}-${{steps.date.outputs.date}}-arm64
-        path: ./DiscordPlayerCountBot/bin/Release/net6.0/win-arm64/publish 
+        path: ./DiscordPlayerCountBot/bin/Release/net9.0/win-arm64/publish 
 
   build-on-linux:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Get current date
       id: date
       run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
@@ -66,9 +66,9 @@ jobs:
       id: branch-name
       uses: tj-actions/branch-names@v7.0.7 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 9.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -81,18 +81,18 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: playercountbot-${{ steps.branch-name.outputs.current_branch }}-${{steps.date.outputs.date}}-linux64
-        path: ./DiscordPlayerCountBot/bin/Release/net6.0/linux-x64/publish
+        path: ./DiscordPlayerCountBot/bin/Release/net9.0/linux-x64/publish
     - name: Publish Arm x86
       run: dotnet publish -p:PublishSingleFile=true -r linux-arm -c Release --self-contained true -p:PublishTrimmed=true -p:UseAppHost=true    
     - name: Create Artifact Arm x86
       uses: actions/upload-artifact@v3
       with:
         name: playercountbot-${{ steps.branch-name.outputs.current_branch }}-${{steps.date.outputs.date}}-linux-arm86
-        path: ./DiscordPlayerCountBot/bin/Release/net6.0/linux-arm/publish 
+        path: ./DiscordPlayerCountBot/bin/Release/net9.0/linux-arm/publish 
     - name: Publish Arm x64
       run: dotnet publish -p:PublishSingleFile=true -r linux-arm64 -c Release --self-contained true -p:PublishTrimmed=true -p:UseAppHost=true    
     - name: Create Artifact Arm x64
       uses: actions/upload-artifact@v3
       with:
         name: playercountbot-${{ steps.branch-name.outputs.current_branch }}-${{steps.date.outputs.date}}-linux-arm64
-        path: ./DiscordPlayerCountBot/bin/Release/net6.0/linux-arm64/publish 
+        path: ./DiscordPlayerCountBot/bin/Release/net9.0/linux-arm64/publish 

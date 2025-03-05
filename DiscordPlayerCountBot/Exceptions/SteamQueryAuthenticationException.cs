@@ -1,9 +1,5 @@
-﻿namespace PlayerCountBot.Exceptions
+﻿namespace DiscordPlayerCountBot.Exceptions;
+
+internal class RconAuthenticationException(string? message) : Exception(message)
 {
-    internal class RconAuthenticationException : Exception
-    {
-        public RconAuthenticationException(string? message) : base(message)
-        {
-        }
-    }
 }
