@@ -8,13 +8,16 @@ namespace DiscordPlayerCountBot.Extensions
         public static IServiceCollection AddAllImplementationsOf<TInterface>(this IServiceCollection services, bool isTransient = false, params Assembly[] assemblies)
         {
             if (assemblies == null || assemblies.Length == 0)
-                assemblies = [typeof(TInterface).Assembly];
+                assemblies = [Assembly.GetEntryAssembly()!, Assembly.GetCallingAssembly(), Assembly.GetExecutingAssembly()];
 
             var implementationTypes = assemblies.SelectMany(a => a.GetTypes())
+                .Distinct()
                 .Where(t => typeof(TInterface).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract)
                 .ToList();
 
+#if DEBUG
             Console.WriteLine($"Registering: {implementationTypes.Count} {typeof(TInterface).Name}");
+#endif
 
             foreach (var type in implementationTypes)
             {
