@@ -23,7 +23,7 @@ jobs:
       run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       
     - name: Build the Docker image
-      run: docker build . -f ./DiscordPlayerCountBot/Dockerfile -t specker/discordplayercountbot:${{ steps.branch-name.outputs.current_branch }}
+      run: docker build ./DiscordPlayerCountBot -t specker/discordplayercountbot:${{ steps.branch-name.outputs.current_branch }}
       
     - name: Push
       run: docker push ${{secrets.DOCKER_USER}}/discordplayercountbot:${{ steps.branch-name.outputs.current_branch }}
