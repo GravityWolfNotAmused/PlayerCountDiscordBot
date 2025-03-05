@@ -1,4 +1,4 @@
-﻿global using Newtonsoft.Json;
+global using Newtonsoft.Json;
 global using System.Text;
 
 global using Discord;
@@ -25,8 +25,7 @@ Log.Logger = new LoggerConfiguration()
 
 Log.Information("[Application] - Starting Player Count Discord Bot.");
 
-var serviceCollection = new ServiceCollection()
-    .AddSingleton<UpdateController>();
+var serviceCollection = new ServiceCollection();
 
 serviceCollection.AddAllImplementationsOf<IEnvironmentParser>();
 serviceCollection.AddAllImplementationsOf<IConfigurable>();
@@ -42,6 +41,7 @@ serviceCollection.AddAllImplementationsOf<IServerInformationProvider>(true);
 serviceCollection.AddAllImplementationsOf<IRconServiceInformation>(true);
 
 serviceCollection.AddSingleton<EnvironmentParserResolver>();
+serviceCollection.AddSingleton<UpdateController>();
 
 var app = serviceCollection.BuildServiceProvider();
 
