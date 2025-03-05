@@ -8,7 +8,7 @@ RUN dotnet restore
 WORKDIR /app
 
 RUN ls -la /app
-RUN dotnet publish DiscordPlayerCountBot.csproj -c Release -o /app/publish
+RUN dotnet publish /app/DiscordPlayerCountBot.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 
