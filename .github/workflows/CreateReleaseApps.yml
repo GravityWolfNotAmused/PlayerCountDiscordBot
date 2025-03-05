@@ -39,13 +39,6 @@ jobs:
       with:
         name: playercountbot-${{ steps.branch-name.outputs.current_branch }}-${{steps.date.outputs.date}}-win-x86
         path: ./DiscordPlayerCountBot/bin/Release/net9.0/win-x86/publish
-    - name: Publish Arm x86
-      run: dotnet publish -p:PublishSingleFile=true -r win-arm -c Release --self-contained true -p:PublishTrimmed=true -p:UseAppHost=true    
-    - name: Create Artifact Arm x86
-      uses: actions/upload-artifact@v4
-      with:
-        name: playercountbot-${{ steps.branch-name.outputs.current_branch }}-${{steps.date.outputs.date}}-arm86
-        path: ./DiscordPlayerCountBot/bin/Release/net9.0/win-arm/publish 
     - name: Publish Arm x64
       run: dotnet publish -p:PublishSingleFile=true -r win-arm64 -c Release --self-contained true -p:PublishTrimmed=true -p:UseAppHost=true
     - name: Create Artifact Arm x64
