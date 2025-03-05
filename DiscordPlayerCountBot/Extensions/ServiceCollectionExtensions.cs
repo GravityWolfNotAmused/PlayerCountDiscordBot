@@ -1,8 +1,3 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
-
-namespace DiscordPlayerCountBot.Extensions
-{
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddAllImplementationsOf<TInterface>(this IServiceCollection services, bool isTransient = false, params Assembly[] assemblies)
@@ -14,9 +9,7 @@ namespace DiscordPlayerCountBot.Extensions
                 .Where(t => typeof(TInterface).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract)
                 .ToList();
 
-#if DEBUG
             Console.WriteLine($"Registering: {implementationTypes.Count} {typeof(TInterface).Name}");
-#endif
 
             foreach (var type in implementationTypes)
             {
@@ -29,4 +22,3 @@ namespace DiscordPlayerCountBot.Extensions
             return services;
         }
     }
-}
