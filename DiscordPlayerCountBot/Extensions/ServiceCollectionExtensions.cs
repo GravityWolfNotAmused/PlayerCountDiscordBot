@@ -1,3 +1,8 @@
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+
+namespace DiscordPlayerCountBot.Extensions
+{
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddAllImplementationsOf<TInterface>(this IServiceCollection services, bool isTransient = false, params Assembly[] assemblies)
@@ -22,3 +27,4 @@
             return services;
         }
     }
+}
