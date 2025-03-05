@@ -15,9 +15,7 @@ namespace DiscordPlayerCountBot.Extensions
                 .Where(t => typeof(TInterface).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract)
                 .ToList();
 
-#if DEBUG
             Console.WriteLine($"Registering: {implementationTypes.Count} {typeof(TInterface).Name}");
-#endif
 
             foreach (var type in implementationTypes)
             {
