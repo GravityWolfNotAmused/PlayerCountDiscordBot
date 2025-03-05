@@ -46,7 +46,7 @@ public abstract class ServerInformationProvider : LoggableClass, IServerInformat
 
         if (e is HttpRequestException requestException)
         {
-            Error($"The {Label} has failed to respond. {requestException.StatusCode}", id);
+            Error($"{Label} has failed to respond. {requestException.Message}", id);
             return;
         }
 
@@ -75,7 +75,7 @@ public abstract class ServerInformationProvider : LoggableClass, IServerInformat
             return;
         }
 
-        Error($"There was an error speaking with {Label}.", id, e);
+        Error($"There was an error speaking with {Label}. {e.Message}\n{e.StackTrace}", id, e);
         throw e;
     }
 

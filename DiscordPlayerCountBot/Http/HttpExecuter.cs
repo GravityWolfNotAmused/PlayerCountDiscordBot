@@ -14,9 +14,9 @@ public class HttpExecuter : IHttpExecuter, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public async Task<TResponse?> GET<TRequest, TResponse>(string endPoint, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
+    public async Task<TResponse?> GET<TRequest, TResponse>(string endPoint, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null, Dictionary<string, string>? additionalHeaders = null)
     {
-        return await ExecuteHttpRequest<TRequest, TResponse>(endPoint, HttpMethod.Get, queryBuilder, body, authToken);
+        return await ExecuteHttpRequest<TRequest, TResponse>(endPoint, HttpMethod.Get, queryBuilder, body, authToken, additionalHeaders);
     }
 
     public async Task<TResponse?> POST<TRequest, TResponse>(string endPoint, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
@@ -39,7 +39,7 @@ public class HttpExecuter : IHttpExecuter, IDisposable
         return await ExecuteHttpRequest<TRequest, TResponse>(endPoint, HttpMethod.Delete, queryBuilder, body, authToken);
     }
 
-    private async Task<TResponse?> ExecuteHttpRequest<TRequest, TResponse>(string endPoint, HttpMethod method, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null)
+    private async Task<TResponse?> ExecuteHttpRequest<TRequest, TResponse>(string endPoint, HttpMethod method, IQueryParameterBuilder? queryBuilder = null, TRequest? body = default, Tuple<string, string>? authToken = null, Dictionary<string, string>? additionalHeaders = null)
     {
         if (HttpClient == null) return default;
 
@@ -50,6 +50,14 @@ public class HttpExecuter : IHttpExecuter, IDisposable
 
         if (authToken != null)
             request.Headers.Add(authToken?.Item1!, authToken?.Item2);
+
+        if (additionalHeaders != null)
+        {
+            foreach (var item in additionalHeaders)
+            {
+                request.Headers.Add(item.Key, item.Value);
+            }
+        }
 
         if (body != null)
             request.Content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
