@@ -14,6 +14,8 @@ public class Bot : LoggableClass
     public readonly Dictionary<DataProvider, IServerInformationProvider> DataProviders = [];
     public readonly Dictionary<string, string> ApplicationTokens = [];
     public string LastKnownStatus = string.Empty;
+    private DateTime _lastChannelNameUpdate = DateTime.MinValue;
+    private readonly TimeSpan _channelNameUpdateRateLimit = TimeSpan.FromMinutes(5);
 
     public Bot(BotInformation info, Dictionary<string, string> applicationTokens, Dictionary<DataProvider, IServerInformationProvider> dataProviders)
     {
@@ -134,6 +136,11 @@ public class Bot : LoggableClass
         LastKnownStatus = serverInformation.ReplaceTagsWithValues(Information.StatusFormat, Information.UseNameAsLabel, Information.Name);
 
         await DiscordClient.SetGameAsync(LastKnownStatus, null, (ActivityType)activityInteger);
-        await DiscordClient.SetChannelName(Information.ChannelID, LastKnownStatus);
+
+        if (DateTime.UtcNow - _lastChannelNameUpdate > _channelNameUpdateRateLimit)
+        {
+            await DiscordClient.SetChannelName(Information.ChannelID, LastKnownStatus);
+            _lastChannelNameUpdate = DateTime.UtcNow;
+        }
     }
 }
