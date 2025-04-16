@@ -55,6 +55,20 @@ public class UpdateController : LoggableClass
         Time = config.Item2;
 
         Info($"Created: {Bots.Count} bot(s) that update every {Time} seconds.");
+        
+        // Check for channel IDs set with update frequency less than 5 minutes
+        if (Time < 300)
+        {
+            foreach (var bot in Bots.Values)
+            {
+                if (bot.Information.ChannelID != null && bot.Information.ChannelID != 0)
+                {
+                    Warn($"Bot '{bot.Information.Name}' has a channel ID set and update time is less than 5 minutes ({Time} seconds). " +
+                         $"Channel name updates will be rate-limited to once every 5 minutes regardless of update timer to avoid Discord API throttling.", 
+                         bot.Information.Id.ToString());
+                }
+            }
+        }
     }
 
     public async Task UpdatePlayerCounts()
