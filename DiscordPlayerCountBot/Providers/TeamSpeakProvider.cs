@@ -33,36 +33,52 @@ public class TeamSpeakProvider : ServerInformationProvider
             using var reader = new StreamReader(stream, Encoding.UTF8);
             using var writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
 
-            await reader.ReadLineAsync();
-            await reader.ReadLineAsync();
+            var line1 = await reader.ReadLineAsync();
+            var line2 = await reader.ReadLineAsync();
+            Console.WriteLine($"[TS] Banner1: {line1}");
+            Console.WriteLine($"[TS] Banner2: {line2}");
 
             if (!string.IsNullOrEmpty(information.QueryUsername) && !string.IsNullOrEmpty(information.QueryPassword))
             {
                 await writer.WriteLineAsync($"login {information.QueryUsername} {information.QueryPassword}");
-                await reader.ReadLineAsync();
-                await reader.ReadLineAsync();
+                var loginResp = await reader.ReadLineAsync();
+                Console.WriteLine($"[TS] Login: {loginResp}");
             }
 
             await writer.WriteLineAsync("use sid=1");
-            await reader.ReadLineAsync();
-            await reader.ReadLineAsync();
+            var useResp = await reader.ReadLineAsync();
+            Console.WriteLine($"[TS] Use: {useResp}");
 
             await writer.WriteLineAsync("serverinfo");
             var response = await reader.ReadLineAsync();
+            Console.WriteLine($"[TS] Serverinfo: {response?.Substring(0, Math.Min(200, response?.Length ?? 0))}");
 
             await writer.WriteLineAsync("quit");
 
             if (string.IsNullOrEmpty(response))
                 throw new ApplicationException("Empty response from TeamSpeak server.");
 
-            int online = 0, max = 0;
+            int online = 0, max = 0, queryClients = 0;
             foreach (var token in response.Split(' '))
             {
                 if (token.StartsWith("virtualserver_clientsonline="))
+                {
                     int.TryParse(token.Split('=')[1], out online);
+                    Console.WriteLine($"[TS] Found clientsonline={online}");
+                }
                 else if (token.StartsWith("virtualserver_maxclients="))
+                {
                     int.TryParse(token.Split('=')[1], out max);
+                    Console.WriteLine($"[TS] Found maxclients={max}");
+                }
+                else if (token.StartsWith("virtualserver_queryclientsonline="))
+                {
+                    int.TryParse(token.Split('=')[1], out queryClients);
+                    Console.WriteLine($"[TS] Found queryclientsonline={queryClients}");
+                }
             }
+
+            Console.WriteLine($"[TS] Result: Players={Math.Max(0, online - queryClients)}, Max={max}");
 
             HandleLastException(information);
 
@@ -70,12 +86,13 @@ public class TeamSpeakProvider : ServerInformationProvider
             {
                 Address = host,
                 Port = port,
-                Players = online,
+                Players = Math.Max(0, online - queryClients),
                 MaxPlayers = max
             };
         }
         catch (Exception e)
         {
+            Console.WriteLine($"[TS] Exception: {e.Message}");
             HandleException(e, information.Id.ToString());
             return null;
         }
