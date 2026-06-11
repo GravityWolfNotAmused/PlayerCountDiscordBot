@@ -1,71 +1,54 @@
-using System;
-using System.IO;
+using DiscordPlayerCountBot.Attributes;
+using DiscordPlayerCountBot.Bot;
+using DiscordPlayerCountBot.Enums;
+using DiscordPlayerCountBot.Providers.Base;
+using DiscordPlayerCountBot.ViewModels;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
-using DiscordPlayerCountBot.Providers.Base;
-using GenericBot.Entities;
-using Microsoft.Extensions.Logging;
 
-namespace DiscordPlayerCountBot.Providers
+namespace DiscordPlayerCountBot.Providers;
+
+[Name("TeamSpeak")]
+public class TeamSpeakProvider : ServerInformationProvider
 {
-    public class TeamSpeakProvider : IServerQueryProvider
+    public override DataProvider GetRequiredProviderType()
     {
-        private readonly ILogger<TeamSpeakProvider> _logger;
+        return DataProvider.TEAMSPEAK;
+    }
 
-        public TeamSpeakProvider(ILogger<TeamSpeakProvider> logger)
+    public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
+    {
+        try
         {
-            _logger = logger;
-        }
+            var addressAndPort = information.GetAddressAndPort();
+            var host = addressAndPort.Item1;
+            var port = addressAndPort.Item2 == 0 ? (ushort)10011 : addressAndPort.Item2;
 
-        public async Task<ServerInfo> GetServerInfoAsync(BotInformation information)
-        {
-            var parts = information.BotAddress.Split(':');
-            if (parts.Length < 2 || !int.TryParse(parts[1], out int queryPort))
-            {
-                _logger.LogError("TeamSpeak address must be in format host:queryport (e.g. 127.0.0.1:10011)");
-                return null;
-            }
+            using var client = new TcpClient();
+            client.ReceiveTimeout = 5000;
+            client.SendTimeout = 5000;
+            await client.ConnectAsync(host, port);
 
-            string host = parts[0];
-            int virtualServerId = information.ApplicationInformation?.TeamSpeakVirtualServerId ?? 1;
+            using var stream = client.GetStream();
+            using var reader = new StreamReader(stream, Encoding.UTF8);
+            using var writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
 
-            try
-            {
-                using var client = new TcpClient();
-                await client.ConnectAsync(host, queryPort);
-                using var stream = client.GetStream();
-                using var reader = new StreamReader(stream, Encoding.UTF8);
-                using var writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
+            await reader.ReadLineAsync();
+            await reader.ReadLineAsync();
 
-                await reader.ReadLineAsync();
-                await reader.ReadLineAsync();
+            await writer.WriteLineAsync("use sid=1");
+            await reader.ReadLineAsync();
+            await reader.ReadLineAsync();
 
-                await writer.WriteLineAsync($"use sid={virtualServerId}");
-                await reader.ReadLineAsync();
-                await reader.ReadLineAsync();
+            await writer.WriteLineAsync("serverinfo");
+            var response = await reader.ReadLineAsync();
 
-                await writer.WriteLineAsync("serverinfo");
-                string response = await reader.ReadLineAsync();
+            await writer.WriteLineAsync("quit");
 
-                await writer.WriteLineAsync("quit");
+            if (string.IsNullOrEmpty(response))
+                throw new ApplicationException("Empty response from TeamSpeak server.");
 
-                return ParseServerInfo(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to query TeamSpeak server at {Address}", information.BotAddress);
-                return null;
-            }
-        }
-
-        private ServerInfo ParseServerInfo(string response)
-        {
-            if (string.IsNullOrEmpty(response)) return null;
-
-            int online = 0;
-            int max = 0;
-
+            int online = 0, max = 0;
             foreach (var token in response.Split(' '))
             {
                 if (token.StartsWith("virtualserver_clientsonline="))
@@ -74,11 +57,20 @@ namespace DiscordPlayerCountBot.Providers
                     int.TryParse(token.Split('=')[1], out max);
             }
 
-            return new ServerInfo
+            HandleLastException(information);
+
+            return new BaseViewModel
             {
-                CurrentPlayers = online,
+                Address = host,
+                Port = port,
+                Players = online,
                 MaxPlayers = max
             };
+        }
+        catch (Exception e)
+        {
+            HandleException(e, information.Id.ToString());
+            return null;
         }
     }
 }
