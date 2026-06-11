@@ -36,6 +36,13 @@ public class TeamSpeakProvider : ServerInformationProvider
             await reader.ReadLineAsync();
             await reader.ReadLineAsync();
 
+            if (!string.IsNullOrEmpty(information.QueryUsername) && !string.IsNullOrEmpty(information.QueryPassword))
+            {
+                await writer.WriteLineAsync($"login {information.QueryUsername} {information.QueryPassword}");
+                await reader.ReadLineAsync();
+                await reader.ReadLineAsync();
+            }
+
             await writer.WriteLineAsync("use sid=1");
             await reader.ReadLineAsync();
             await reader.ReadLineAsync();

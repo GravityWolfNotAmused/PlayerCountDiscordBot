@@ -1,4 +1,4 @@
-﻿namespace DiscordPlayerCountBot.Bot;
+namespace DiscordPlayerCountBot.Bot;
 
 public class BotInformation
 {
@@ -15,6 +15,8 @@ public class BotInformation
     public int? SunriseHour { get; set; }
     public int? SunsetHour { get; set; }
     public string? RconServiceName { get; set; }
+    public string? QueryUsername { get; set; }
+    public string? QueryPassword { get; set; }
 
     public Tuple<string, ushort> GetAddressAndPort()
     {
