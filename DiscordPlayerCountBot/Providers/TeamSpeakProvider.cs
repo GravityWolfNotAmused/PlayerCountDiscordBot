@@ -24,61 +24,52 @@ public class TeamSpeakProvider : ServerInformationProvider
             var host = addressAndPort.Item1;
             var port = addressAndPort.Item2 == 0 ? (ushort)10011 : addressAndPort.Item2;
 
+            Console.WriteLine($"[TS] Connecting {host}:{port}");
+
             using var client = new TcpClient();
-            client.ReceiveTimeout = 5000;
-            client.SendTimeout = 5000;
+            client.ReceiveTimeout = 8000;
+            client.SendTimeout = 8000;
             await client.ConnectAsync(host, port);
 
             using var stream = client.GetStream();
             using var reader = new StreamReader(stream, Encoding.UTF8);
             using var writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
 
-            var line1 = await reader.ReadLineAsync();
-            var line2 = await reader.ReadLineAsync();
-            Console.WriteLine($"[TS] Banner1: {line1}");
-            Console.WriteLine($"[TS] Banner2: {line2}");
-
-            if (!string.IsNullOrEmpty(information.QueryUsername) && !string.IsNullOrEmpty(information.QueryPassword))
-            {
-                await writer.WriteLineAsync($"login {information.QueryUsername} {information.QueryPassword}");
-                var loginResp = await reader.ReadLineAsync();
-                Console.WriteLine($"[TS] Login: {loginResp}");
-            }
+            // baca 3 baris banner: "TS3", "", "Welcome to..."
+            var b1 = await reader.ReadLineAsync();
+            var b2 = await reader.ReadLineAsync();
+            var b3 = await reader.ReadLineAsync();
+            Console.WriteLine($"[TS] B1: {b1}");
+            Console.WriteLine($"[TS] B2: {b2}");
+            Console.WriteLine($"[TS] B3: {b3}");
 
             await writer.WriteLineAsync("use sid=1");
-            var useResp = await reader.ReadLineAsync();
-            Console.WriteLine($"[TS] Use: {useResp}");
+            var useR1 = await reader.ReadLineAsync();
+            var useR2 = await reader.ReadLineAsync();
+            Console.WriteLine($"[TS] Use R1: {useR1}");
+            Console.WriteLine($"[TS] Use R2: {useR2}");
 
             await writer.WriteLineAsync("serverinfo");
             var response = await reader.ReadLineAsync();
-            Console.WriteLine($"[TS] Serverinfo: {response?.Substring(0, Math.Min(200, response?.Length ?? 0))}");
+            Console.WriteLine($"[TS] Serverinfo: {response?.Substring(0, Math.Min(100, response?.Length ?? 0))}");
 
             await writer.WriteLineAsync("quit");
 
-            if (string.IsNullOrEmpty(response))
-                throw new ApplicationException("Empty response from TeamSpeak server.");
+            if (string.IsNullOrEmpty(response) || !response.StartsWith("virtualserver_"))
+                throw new ApplicationException($"Unexpected response: {response}");
 
             int online = 0, max = 0, queryClients = 0;
             foreach (var token in response.Split(' '))
             {
                 if (token.StartsWith("virtualserver_clientsonline="))
-                {
                     int.TryParse(token.Split('=')[1], out online);
-                    Console.WriteLine($"[TS] Found clientsonline={online}");
-                }
                 else if (token.StartsWith("virtualserver_maxclients="))
-                {
                     int.TryParse(token.Split('=')[1], out max);
-                    Console.WriteLine($"[TS] Found maxclients={max}");
-                }
                 else if (token.StartsWith("virtualserver_queryclientsonline="))
-                {
                     int.TryParse(token.Split('=')[1], out queryClients);
-                    Console.WriteLine($"[TS] Found queryclientsonline={queryClients}");
-                }
             }
 
-            Console.WriteLine($"[TS] Result: Players={Math.Max(0, online - queryClients)}, Max={max}");
+            Console.WriteLine($"[TS] Result: online={online}, max={max}, query={queryClients}, players={Math.Max(0, online - queryClients)}");
 
             HandleLastException(information);
 
