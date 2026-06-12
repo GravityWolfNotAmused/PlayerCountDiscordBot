@@ -16,6 +16,32 @@ public class TeamSpeakProvider : ServerInformationProvider
         return DataProvider.TEAMSPEAK;
     }
 
+    private async Task<string?> ReadUntilError(StreamReader reader)
+    {
+        string? last = null;
+        string? line;
+        while ((line = await reader.ReadLineAsync()) != null)
+        {
+            if (line.StartsWith("virtualserver_"))
+                last = line;
+            if (line.StartsWith("error"))
+                return line.Contains("id=0") ? (last ?? line) : throw new ApplicationException(line);
+        }
+        return last;
+    }
+
+    private async Task<bool> TrySendLogin(StreamWriter writer, StreamReader reader, string username, string password)
+    {
+        await writer.WriteLineAsync($"login {username} {password}");
+        string? line;
+        while ((line = await reader.ReadLineAsync()) != null)
+        {
+            if (line.StartsWith("error"))
+                return line.Contains("id=0");
+        }
+        return false;
+    }
+
     public async override Task<BaseViewModel?> GetServerInformation(BotInformation information, Dictionary<string, string> applicationVariables)
     {
         try
@@ -23,8 +49,6 @@ public class TeamSpeakProvider : ServerInformationProvider
             var addressAndPort = information.GetAddressAndPort();
             var host = addressAndPort.Item1;
             var port = addressAndPort.Item2 == 0 ? (ushort)10011 : addressAndPort.Item2;
-
-            Console.WriteLine($"[TS] Connecting {host}:{port}");
 
             using var client = new TcpClient();
             client.ReceiveTimeout = 8000;
@@ -35,28 +59,38 @@ public class TeamSpeakProvider : ServerInformationProvider
             using var reader = new StreamReader(stream, Encoding.UTF8);
             using var writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
 
-            // baca 3 baris banner: "TS3", "", "Welcome to..."
-            var b1 = await reader.ReadLineAsync();
-            var b2 = await reader.ReadLineAsync();
-            var b3 = await reader.ReadLineAsync();
-            Console.WriteLine($"[TS] B1: {b1}");
-            Console.WriteLine($"[TS] B2: {b2}");
-            Console.WriteLine($"[TS] B3: {b3}");
+            // baca banner sampai baris Welcome (baris terakhir banner TS3)
+            string? line;
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                if (line.Contains("for a list of commands"))
+                    break;
+            }
+
+            // login dengan retry sampai 5 kali
+            if (!string.IsNullOrEmpty(information.QueryUsername) && !string.IsNullOrEmpty(information.QueryPassword))
+            {
+                bool loggedIn = false;
+                for (int i = 0; i < 5; i++)
+                {
+                    await Task.Delay(300);
+                    loggedIn = await TrySendLogin(writer, reader, information.QueryUsername, information.QueryPassword);
+                    if (loggedIn) break;
+                }
+                if (!loggedIn)
+                    throw new ApplicationException("Login failed after 5 attempts.");
+            }
 
             await writer.WriteLineAsync("use sid=1");
-            var useR1 = await reader.ReadLineAsync();
-            var useR2 = await reader.ReadLineAsync();
-            Console.WriteLine($"[TS] Use R1: {useR1}");
-            Console.WriteLine($"[TS] Use R2: {useR2}");
+            await ReadUntilError(reader);
 
             await writer.WriteLineAsync("serverinfo");
-            var response = await reader.ReadLineAsync();
-            Console.WriteLine($"[TS] Serverinfo: {response?.Substring(0, Math.Min(100, response?.Length ?? 0))}");
+            var response = await ReadUntilError(reader);
 
             await writer.WriteLineAsync("quit");
 
             if (string.IsNullOrEmpty(response) || !response.StartsWith("virtualserver_"))
-                throw new ApplicationException($"Unexpected response: {response}");
+                throw new ApplicationException($"Unexpected serverinfo response: {response}");
 
             int online = 0, max = 0, queryClients = 0;
             foreach (var token in response.Split(' '))
@@ -68,8 +102,6 @@ public class TeamSpeakProvider : ServerInformationProvider
                 else if (token.StartsWith("virtualserver_queryclientsonline="))
                     int.TryParse(token.Split('=')[1], out queryClients);
             }
-
-            Console.WriteLine($"[TS] Result: online={online}, max={max}, query={queryClients}, players={Math.Max(0, online - queryClients)}");
 
             HandleLastException(information);
 
@@ -83,7 +115,6 @@ public class TeamSpeakProvider : ServerInformationProvider
         }
         catch (Exception e)
         {
-            Console.WriteLine($"[TS] Exception: {e.Message}");
             HandleException(e, information.Id.ToString());
             return null;
         }
