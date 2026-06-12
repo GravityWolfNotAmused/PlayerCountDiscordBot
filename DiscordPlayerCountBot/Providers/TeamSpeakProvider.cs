@@ -59,7 +59,7 @@ public class TeamSpeakProvider : ServerInformationProvider
             using var reader = new StreamReader(stream, Encoding.UTF8);
             using var writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
 
-            // baca banner sampai baris Welcome (baris terakhir banner TS3)
+
             string? line;
             while ((line = await reader.ReadLineAsync()) != null)
             {
@@ -67,7 +67,7 @@ public class TeamSpeakProvider : ServerInformationProvider
                     break;
             }
 
-            // login dengan retry sampai 5 kali
+
             if (!string.IsNullOrEmpty(information.QueryUsername) && !string.IsNullOrEmpty(information.QueryPassword))
             {
                 bool loggedIn = false;
