@@ -1,4 +1,5 @@
-#### Need help? Have suggestions? Join My Discord Server! 
+### News
+This repo is archived, but not lost forever. The reason this project is being archived is for me to focus on other projects.
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/GravityWolfNotAmused/PlayerCountDiscordBot)
 
