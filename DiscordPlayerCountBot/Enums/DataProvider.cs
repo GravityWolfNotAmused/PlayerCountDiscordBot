@@ -8,5 +8,6 @@ public enum DataProvider
     MINECRAFT,
     BATTLEMETRICS,
     RCONCLIENT,
-    STEAMQUERY
+    STEAMQUERY,
+    TEAMSPEAK
 }
